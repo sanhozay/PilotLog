@@ -1,0 +1,204 @@
+@CHARSET "UTF-8";
+
+body {
+    margin: 1em;
+    font-family: sans-serif;
+    min-width: 800px;
+}
+
+/* Header Section */
+#header {
+    width: 100%;
+    height: 155px;
+}
+
+#header img {
+    float: left;
+    width: 135px;
+    height: 155px;
+    margin-right: 10px;
+}
+
+#header .title {
+    float: left;
+    color: darkblue;
+}
+
+#header .title h1 {
+    font-size: 275%;
+    text-transform: uppercase;
+    margin-bottom: 0;
+}
+
+#header .title a {
+    color: darkblue;
+    text-decoration: none;
+    margin-left: 2px;
+    font-size: 95%;
+}
+
+#header .title a:hover {
+    text-decoration: underline;
+}
+
+#header form {
+    color: gray;
+    float: right;
+    margin-bottom: 1em;
+    font-size: small;
+}
+
+#header form fieldset {
+    border-radius: 10px;
+    padding: 10px;
+}
+
+#header form label {
+    padding-top: 5px;
+    width: 6em;
+    float: left;
+}
+
+#header form input[type='text'] {
+    margin: 2px;
+}
+
+#header form legend {
+    padding: 0 5px;
+    text-align: right;
+    text-transform: uppercase;
+}
+
+#header .buttons {
+    margin-top: 5px;
+    margin-right: 3px;
+    float: right;
+}
+
+/* Content Section */
+#content {
+    width: 100%;
+    clear: both;
+    min-width: 800px;
+}
+
+/* Tables */
+table {
+    margin-top: 1em;
+    border: solid #333333 4px;
+    padding: 1ex;
+    border-collapse: collapse;
+    width: 100%;
+    clear: both;
+}
+
+table caption {
+    text-align: left;
+    font-style: italic;
+    font-size: 90%;
+    margin-bottom: 0.5ex;
+    color: #a0a0a0;
+}
+
+tr.main {
+    font-size: 110%;
+    text-transform: uppercase;
+}
+
+th, td {
+    padding: 1ex;
+    border: solid #333333 1px;
+    text-align: center;
+    white-space: nowrap;
+}
+
+thead, tfoot {
+    background-color: #f8f8fa;
+}
+
+tbody {
+    border: solid #333333 3px;
+}
+
+tbody, .written {
+    color: #0000a0;
+    font-family: Comic Sans MS, cursive;
+}
+
+tfoot .footerTitle {
+    font-weight: bold;
+    text-align: right;
+}
+
+.COMPLETE, .COMPLETE a {
+    color: #0000a0;
+}
+
+.ACTIVE, .ACTIVE a {
+    color: #b0b0b0;
+}
+
+.INVALID, .INVALID a {
+    color: #c00000;
+    text-decoration: line-through;
+}
+
+tbody tr.ACTIVE:hover {
+    background: -webkit-linear-gradient(top, #bfbfbf, darkgray);
+    background: -moz-linear-gradient(top, #bfbfbf, darkgray);
+    background: -ms-linear-gradient(top, #bfbfbf, darkgray);
+    background: -o-linear-gradient(top, #bfbfbf, darkgray);
+    color: white;
+}
+
+tbody tr.COMPLETE:hover {
+    background: -webkit-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -moz-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -ms-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -o-linear-gradient(top, #8db0f2, cornflowerblue);
+    color: white;
+}
+
+tbody tr.INVALID:hover {
+    background: -webkit-linear-gradient(top, #de5454, #d62929);
+    background: -moz-linear-gradient(top, #de5454, #d62929);
+    background: -ms-linear-gradient(top, #de5454, #d62929);
+    background: -o-linear-gradient(top, #de5454, #d62929);
+    color: white;
+}
+
+tbody a {
+    text-decoration: none;
+}
+
+tbody tr:hover a {
+    color: white;
+    text-decoration: underline;
+}
+
+#footer {
+    width: 100%;
+    clear: both;
+    padding-top: 1em;
+}
+
+#footer .pageNumber {
+    color: #808080;
+    padding-right: 1ex;
+    display: inline;
+}
+
+#footer a {
+    color: darkblue;
+}
+
+#footer a.summaryLink {
+    float: right;
+}
+
+/* Miscellaneous */
+#footer a.disabled {
+    pointer-events: none;
+    cursor: default;
+    color: gray;
+}

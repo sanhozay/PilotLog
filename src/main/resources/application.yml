@@ -1,0 +1,24 @@
+spring:
+  profiles.active: development
+  data.rest.base-path: api
+logging:
+  config: classpath:logback.xml
+  level:
+    org.flightgear.pilotlog: info
+---
+spring:
+  profiles: development
+  datasource.url: jdbc:h2:mem:test
+  jpa.hibernate.ddl-auto: create-drop
+  thymeleaf.cache: false
+management:
+  security.enabled: false
+---
+spring:
+  profiles: production
+  datasource.url: jdbc:h2:file:~/.h2/pilotlog;DB_CLOSE_ON_EXIT=FALSE
+  jpa.hibernate.ddl-auto: update
+  thymeleaf.cache: true
+management:
+  security.enabled: true
+  

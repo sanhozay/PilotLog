@@ -1,0 +1,41 @@
+plugins {
+    id 'org.springframework.boot' version '1.5.1.RELEASE'
+    id 'java'
+    id 'groovy'
+}
+
+version = 0.1
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.springframework.boot:spring-boot-starter-web'
+    compile 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
+    compile 'org.springframework.boot:spring-boot-starter-data-rest'
+	compile 'org.springframework.boot:spring-boot-devtools'
+    compile 'com.fasterxml.jackson.core:jackson-core'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
+    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
+    compile 'com.h2database:h2'
+    
+    // Testing
+	compile 'org.codehaus.groovy:groovy-all'
+	testCompile 'org.spockframework:spock-core:'
+}
+
+jar {
+    manifest {
+        attributes(
+            'Implementation-Title': 'PilotLog',
+            'Implementation-Version': version,
+            'Main-Class': 'org.flightgear.pilotlog.Application'
+        )
+    }
+}
+
+springBoot {
+	executable = true;
+}

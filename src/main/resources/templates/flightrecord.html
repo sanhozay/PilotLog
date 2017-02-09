@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:include="fragments/common::head" />
+<body>
+  <div id="header" th:include="fragments/common::mainHeading(title='Flight Record')"></div>
+  <div id="content">
+    <table>
+      <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour.</caption>
+      <thead>
+        <tr class="main">
+          <th colspan="3">Details of Flight</th>
+          <th colspan="2">Departure</th>
+          <th colspan="2">Arrival</th>
+          <th colspan="4">Fuel</th>
+          <th colspan="1">Time</th>
+        </tr>
+        <tr>
+          <th>Date</th>
+          <th>Aircraft</th>
+          <th>Registration</th>
+          <th>Airport</th>
+          <th>Time</th>
+          <th>Airport</th>
+          <th>Time</th>
+          <th>Takeoff</th>
+          <th>Land</th>
+          <th>Used</th>
+          <th>Rate</th>
+          <th>Hours</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr th:class="${flight.status}" th:each="flight: ${flights}">
+          <td th:text="${#dates.format(flight.startTime, 'dd/MM/yy')}">01 Jan 17</td>
+          <td><a th:href="@{/(aircraft=${flight.aircraft})}"
+            th:text="${#strings.capitalize(flight.aircraft)}"
+            th:title="'Search for flights in ' + ${#strings.capitalize(flight.aircraft)}">
+              Aircraft</a></td>
+          <td><a th:href="@{/(callsign=${flight.callsign})}" th:text="${flight.callsign}"
+            th:title="'Search for flights for ' + ${flight.callsign}"> G-XXXX</a></td>
+          <td><a th:href="@{/(origin=${flight.origin})}" th:text="${flight.origin}"
+            th:title="'Search for flights from ' + ${flight.origin}"> XXXX</a></td>
+          <td th:text="${#dates.format(flight.startTime, 'HH:mm')}">00:00</td>
+          <td><a th:href="@{/(destination=${flight.destination})}"
+            th:text="${flight.destination}"
+            th:title="'Search for flights to ' + ${flight.destination}"> XXXX</a></td>
+          <td th:text="${flight.endTime} ? ${#dates.format(flight.endTime, 'HH:mm')}">00:00</td>
+          <td th:text="${#numbers.formatDecimal(flight.startFuel, 1, 1)}">10.0</td>
+          <td th:text="${flight.endFuel} ? ${#numbers.formatDecimal(flight.endFuel, 1, 1)}">10.0</td>
+          <td th:text="${flight.fuelUsed} ? ${#numbers.formatDecimal(flight.fuelUsed, 1, 1)}">10.0</td>
+          <td th:text="${flight.fuelRate} ? ${#numbers.formatDecimal(flight.fuelRate, 1, 1)}">10.0</td>
+          <td th:text="${@durationFormatter.format(flight.duration)}">00:00</td>
+        </tr>
+        <tr th:if="${flights.numberOfElements} == 0">
+          <td colspan="12">No matching flights</td>
+        </tr>
+      </tbody>
+      <tfoot>
+        <tr>
+          <td colspan="11" class="footerTitle">Page Total</td>
+          <td class="written" th:text="${@durationFormatter.format(total.pageTotal)}">0:00</td>
+        </tr>
+        <tr>
+          <td colspan="11" class="footerTitle">Other Total</td>
+          <td class="written" th:text="${@durationFormatter.format(total.otherTotal)}">0:00</td>
+        </tr>
+        <tr>
+          <td colspan="11" class="footerTitle">FLIGHT HOURS TOTAL</td>
+          <td class="written" th:text="${@durationFormatter.format(total.grandTotal)}">0:00</td>
+        </tr>
+      </tfoot>
+    </table>
+  </div>
+  <div th:if="${flights.totalPages}" id="footer">
+    <p class="pageNumber" th:text="'Page ' + ${flights.number + 1} + ' of ' + ${flights.totalPages}" />
+    <a th:class="${flights.first} ? 'disabled'" th:href="@{/(page=${flights.number} - 1)}">Prev</a>
+    <a th:class="${flights.last} ? 'disabled'" th:href="@{/(page=${flights.number} + 1)}">Next</a>
+  </div>
+</body>
+</html>
