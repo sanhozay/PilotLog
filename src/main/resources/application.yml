@@ -1,5 +1,5 @@
 spring:
-  profiles.active: development
+  profiles.active: production
   data.rest.base-path: api
 logging:
   config: classpath:logback.xml
@@ -13,8 +13,10 @@ logging.level:
 ---
 spring:
   profiles: development
-  datasource.url: jdbc:h2:file:~/.h2/pilotlog-dev;DB_CLOSE_ON_EXIT=FALSE
-  jpa.hibernate.ddl-auto: update
+  datasource:
+    url: jdbc:h2:file:~/.h2/pilotlog-dev;DB_CLOSE_ON_EXIT=FALSE
+    platform: dev
+  jpa.hibernate.ddl-auto: create
   thymeleaf.cache: false
 logging.level:
   org.flightgear.pilotlog: info
