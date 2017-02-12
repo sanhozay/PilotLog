@@ -45,7 +45,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class FlightServiceAdvice {
 
-    Logger log = LoggerFactory.getLogger(FlightServiceAdvice.class);
+    private static final Logger log = LoggerFactory.getLogger(FlightServiceAdvice.class);
 
     @Autowired(required = true)
     FlightRepository dao;
@@ -69,8 +69,9 @@ public class FlightServiceAdvice {
         final long id = (long)jp.getArgs()[0];
         final Flight flight = dao.findOne(id);
         flight.updateComputedFields();
-        if (flight.getDuration() < 1) {
+        if (flight.getDuration() == 0) {
             flight.setStatus(FlightStatus.INVALID);
+            log.warn("Invalidating flight {} because duration is zero", flight.getId());
         }
         log.info("Updated computed fields of flight {}", flight);
     }

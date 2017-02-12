@@ -33,10 +33,6 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import javax.validation.constraints.DecimalMin;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import javax.validation.constraints.Size;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -59,53 +55,25 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
     @Index(columnList = "origin", unique = false),
     @Index(columnList = "destination", unique = false),
 })
-@ValidFlight
 public class Flight implements Serializable, Comparable<Flight> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private long id;
 
-    @NotNull
-    @Size(min = 1)
-    private String callsign;
-
-    @NotNull
-    @Size(min = 1)
-    private String aircraft;
-
-    @NotNull
-    @Pattern(regexp = "[A-Z]{4}", flags = Pattern.Flag.CASE_INSENSITIVE)
-    private String origin;
-
-    @Pattern(regexp = "[A-Z]{4}", flags = Pattern.Flag.CASE_INSENSITIVE)
-    private String destination;
+    private String callsign, aircraft, origin, destination;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
-    @NotNull
     private Date startTime;
 
     @Temporal(TemporalType.TIMESTAMP)
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date endTime;
 
-    @NotNull
-    @DecimalMin("0.0")
-    private Double startFuel;
-
-    @DecimalMin("0.0")
-    private Double endFuel;
-
-    @NotNull
-    @DecimalMin("0.0")
-    private Double startOdometer;
-
-    @DecimalMin("0.0")
-    private Double endOdometer;
+    private Double startFuel, endFuel, startOdometer, endOdometer;
 
     @Enumerated(EnumType.STRING)
-    @NotNull
     private FlightStatus status;
 
     // Computed fields
@@ -131,7 +99,7 @@ public class Flight implements Serializable, Comparable<Flight> {
             duration = Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
             if (startFuel != null && endFuel != null) {
                 fuelUsed = startFuel - endFuel;
-                fuelRate = fuelUsed == 0 ? 0.0 : 60 * fuelUsed / duration;
+                fuelRate = fuelUsed == 0.0 ? null : 60 * fuelUsed / duration;
             }
             if (startOdometer != null && endOdometer != null) {
                 distance = endOdometer - startOdometer;

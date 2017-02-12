@@ -99,7 +99,9 @@ public class FlightServiceImpl implements FlightService {
         flight.setEndTime(new Date());
         if (flight.getEndFuel() > flight.getStartFuel()) {
             flight.setStatus(FlightStatus.INVALID);
-        } else if (!flight.getStatus().equals(FlightStatus.INVALID)) {
+            log.warn("Invalidating flight {} because fuel has increased", flight.getId());
+        }
+        if (flight.getStatus().equals(FlightStatus.ACTIVE)) {
             flight.setStatus(FlightStatus.COMPLETE);
         }
         log.info("Ended flight {}", flight);
@@ -124,7 +126,7 @@ public class FlightServiceImpl implements FlightService {
             throw new InvalidFlightStatusException(message);
         }
         flight.setStatus(FlightStatus.INVALID);
-        log.info("Invalidated flight {}", flight);
+        log.warn("Invalidated flight {}", flight);
         return flight;
     }
 
