@@ -64,6 +64,17 @@ public interface FlightService {
     Flight invalidateFlight(int id);
 
     /**
+     * Updates a flight with a new altitude.
+     * <p>
+     * The altitude is only written into the flight if the rounded value is
+     * greater than the current value.
+     *
+     * @param id the id of the flight to update
+     * @param altitude the new altitude
+     */
+    Flight updateFlightAltitude(int id, double altitude);
+
+    /**
      * Finds all flights.
      *
      * @return a list of all flights

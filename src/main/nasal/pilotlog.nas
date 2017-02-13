@@ -90,16 +90,32 @@ var invalidate = func(reason) {
     }
 }
 
-# Listeners
+var pirep = func {
+    var id = getprop(flight, "id");
+    if (id) {
+        var url = base;
+        url ~= "pirep";
+        url ~= "?id="~id;
+        url ~= "&altitude="~getprop("position/altitude-ft");
+        request(url);
+    }
+}
+
+# Listeners and timers
+
+var pirepTimer = maketimer(60, pirep);
 
 setlistener("gear/gear/wow", func(node) {
     if (getprop(inhibited))
         return;
     inhibit();
-    if (!node.getBoolValue())
+    if (!node.getBoolValue()) {
         departure();
-    else
+        pirepTimer.start();
+    } else {
+        pirepTimer.stop();
         arrival();
+    }
 }, startup=0, runtime=0);
 
 setlistener("sim/speed-up", func(node) {

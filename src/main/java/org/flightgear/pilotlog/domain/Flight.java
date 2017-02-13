@@ -78,7 +78,7 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     // Computed fields
 
-    private Integer duration, groundSpeed;
+    private Integer duration, groundSpeed, altitude;
     private Float fuelUsed, fuelRate, distance;
 
     public Flight() {}
@@ -244,6 +244,14 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     public void setGroundSpeed(Integer groundSpeed) {
         this.groundSpeed = groundSpeed;
+    }
+
+    public Integer getAltitude() {
+        return altitude;
+    }
+
+    public void setAltitude(Integer altitude) {
+        this.altitude = altitude;
     }
 
     // Comparison and equality

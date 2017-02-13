@@ -74,6 +74,12 @@ public class ServiceController {
         return service.invalidateFlight(id);
     }
 
+    @GetMapping(path = "pirep", produces = MediaType.TEXT_XML_VALUE)
+    public Flight pirep(@RequestParam("id") int id, @RequestParam("altitude") double altitude)
+        throws FlightNotFoundException, InvalidFlightStatusException {
+        return service.updateFlightAltitude(id, altitude);
+    }
+
     // Additional endpoints, over and above those created by Spring Data REST
 
     @GetMapping(path = "flights.xml", produces = {MediaType.TEXT_XML_VALUE,

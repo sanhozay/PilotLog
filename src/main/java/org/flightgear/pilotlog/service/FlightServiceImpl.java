@@ -130,6 +130,25 @@ public class FlightServiceImpl implements FlightService {
         return flight;
     }
 
+    @Override
+    public Flight updateFlightAltitude(int id, double altitude) {
+        final Flight flight = flightRepository.findOne(id);
+        if (flight == null) {
+            final String message = String.format("Attempt to update flight with invalid id %d", id);
+            throw new FlightNotFoundException(message);
+        }
+        if (flight.getStatus().equals(FlightStatus.COMPLETE)) {
+            final String message = String.format("Attempt to update completed flight %s", flight);
+            throw new InvalidFlightStatusException(message);
+        }
+        final int a = 100 * ((int)altitude / 100);
+        if (flight.getAltitude() == null || a > flight.getAltitude()) {
+            flight.setAltitude(a);
+            log.info("Updated altitude to {} on flight {}", a, flight);
+        }
+        return flight;
+    }
+
     // Query methods
 
     @Override
