@@ -34,7 +34,7 @@ props.globals.initNode(inhibited, 0, "BOOL");
 
 # Utility functions
 
-var inhibit = func(time = 5) 
+var inhibit = func(time = 15)
 {
     setprop(inhibited, 1);
     var timer = maketimer(time, func {
@@ -45,10 +45,12 @@ var inhibit = func(time = 5)
 }
 
 var request = func(url) {
-    print("Logbook: ", url);
-    fgcommand("xmlhttprequest", props.Node.new(
-        {url: url, targetnode: flight}
-    ));
+    if (!getprop("sim/replay/replay-state")) {
+        print("Logbook: ", url);
+        fgcommand("xmlhttprequest", props.Node.new(
+            {url: url, targetnode: flight}
+        ));
+    }
 }
 
 # Web service requests
