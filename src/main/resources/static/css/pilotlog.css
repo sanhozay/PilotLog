@@ -182,23 +182,35 @@ tbody tr:hover a {
     padding-top: 1em;
 }
 
-#footer .pageNumber {
-    color: #808080;
-    padding-right: 1ex;
-    display: inline;
-}
-
 #footer a {
-    color: darkblue;
+    text-align: center;
+    display: inline-block;
+    width: 18px;
+    text-decoration: none;
+    border: solid gray 1px;
+    border-radius: 5px;
+    color: gray;
+    background-color: white;
+    padding: 3px;
+    font-size: small;
 }
 
-#footer a.summaryLink {
+#footer a.current {
+    color: white;
+    background-color: cornflowerblue;
+}
+
+#footer a:hover:not(.current) {
+    background-color: #f0f0f0;
+}
+
+#footer #pager {
+    float: left;
+}
+
+#footer #count {
+    vertical-align: top;
     float: right;
-}
-
-/* Miscellaneous */
-#footer a.disabled {
-    pointer-events: none;
-    cursor: default;
+    margin-top: 0px;
     color: gray;
 }

@@ -1,8 +1,53 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
-<head th:include="fragments/common::head" />
+<head>
+<title>Pilot Log</title>
+<meta charset="UTF-8" />
+<link href="../static/css/normalize.css" th:href="@{/css/normalize.css}" rel="stylesheet" />
+<link href="../static/css/pilotlog.css" th:href="@{/css/pilotlog.css}" rel="stylesheet" />
+<script type="text/javascript">
+	function clearForm() {
+		document.forms[0].callsign.value = "";
+		document.forms[0].aircraft.value = "";
+		document.forms[0].origin.value = "";
+		document.forms[0].destination.value = "";
+		document.forms[0].submit();
+	}
+</script>
+</head>
 <body>
-  <div id="header" th:include="fragments/common::mainHeading(title='Flight Record')"></div>
+  <div id="header">
+    <img th:src="@{/images/logo.png}" />
+    <div class="title">
+      <h1>Flight Record</h1>
+      <a href="https://github.com/sanhozay/PilotLog" target="_blank">https://github.com/sanhozay/PilotLog</a>
+    </div>
+    <form th:fragment="searchForm" method="GET" th:object="${example}">
+      <fieldset>
+        <legend>Search</legend>
+        <div class="row">
+          <label for="aircraft">Aircraft</label>
+          <input type="text" name="aircraft" th:value="${example.aircraft}" autocomplete="off" />
+        </div>
+        <div class="row">
+          <label for="aircraft">Registration</label>
+          <input type="text" name="callsign" th:value="${example.callsign}" autocomplete="off" />
+        </div>
+        <div class="row">
+          <label for="aircraft">Departure</label>
+          <input type="text" name="origin" th:value="${example.origin}" autocomplete="off" />
+        </div>
+        <div class="row">
+          <label for="destination">Arrival</label>
+          <input type="text" name="destination" th:value="${example.destination}" autocomplete="off" />
+        </div>
+        <div class="buttons">
+          <input class="button" type="submit" value="Search" />
+          <input class="button" type="button" value="Clear" onClick="clearForm();" />
+        </div>
+      </fieldset>
+    </form>
+  </div>
   <div id="content">
     <table>
       <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour.</caption>
@@ -12,6 +57,7 @@
           <th colspan="2">Departure</th>
           <th colspan="2">Arrival</th>
           <th colspan="4">Fuel</th>
+          <th colspan="1">Dist</th>
           <th colspan="1">Time</th>
         </tr>
         <tr>
@@ -26,6 +72,7 @@
           <th>Land</th>
           <th>Used</th>
           <th>Rate</th>
+          <th>Nm</th>
           <th>Hours</th>
         </tr>
       </thead>
@@ -49,6 +96,7 @@
           <td th:text="${flight.endFuel} ? ${#numbers.formatDecimal(flight.endFuel, 1, 1)}">10.0</td>
           <td th:text="${flight.fuelUsed} ? ${#numbers.formatDecimal(flight.fuelUsed, 1, 1)}">10.0</td>
           <td th:text="${flight.fuelRate} ? ${#numbers.formatDecimal(flight.fuelRate, 1, 1)}">10.0</td>
+          <td th:text="${flight.distance} ? ${#numbers.formatDecimal(flight.distance, 1, 0)}">10.0</td>
           <td th:text="${@durationFormatter.format(flight.duration)}">00:00</td>
         </tr>
         <tr th:if="${flights.numberOfElements} == 0">
@@ -57,15 +105,15 @@
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="11" class="footerTitle">Page Total</td>
+          <td colspan="12" class="footerTitle">Page Total</td>
           <td class="written" th:text="${@durationFormatter.format(total.pageTotal)}">0:00</td>
         </tr>
         <tr>
-          <td colspan="11" class="footerTitle">Other Total</td>
+          <td colspan="12" class="footerTitle">Other Total</td>
           <td class="written" th:text="${@durationFormatter.format(total.otherTotal)}">0:00</td>
         </tr>
         <tr>
-          <td colspan="11" class="footerTitle">FLIGHT HOURS TOTAL</td>
+          <td colspan="12" class="footerTitle">FLIGHT HOURS TOTAL</td>
           <td class="written" th:text="${@durationFormatter.format(total.grandTotal)}">0:00</td>
         </tr>
       </tfoot>

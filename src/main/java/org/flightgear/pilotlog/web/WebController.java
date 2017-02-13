@@ -19,6 +19,9 @@
 
 package org.flightgear.pilotlog.web;
 
+import java.util.LinkedList;
+import java.util.List;
+
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.service.FlightService;
@@ -67,6 +70,7 @@ public class WebController {
 
         final Page<Flight> flights = service.findFlightsByExample(example, pageable);
         model.addAttribute("flights", flights);
+        model.addAttribute("pages", pager(flights));
 
         final FlightRecordTotals total = new FlightRecordTotals();
         total.setPageTotal(flights.getContent()
@@ -78,6 +82,14 @@ public class WebController {
         model.addAttribute("total", total);
 
         return "flightrecord";
+    }
+
+    private List<Integer> pager(Page<?> page) {
+        final List<Integer> pager = new LinkedList<>();
+        for (int p = 0; p < page.getTotalPages(); ++p) {
+            pager.add(p + 1);
+        }
+        return pager;
     }
 
 }
