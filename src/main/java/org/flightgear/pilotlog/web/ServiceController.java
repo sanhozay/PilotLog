@@ -26,9 +26,7 @@ import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
 import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -51,15 +49,13 @@ public class ServiceController {
     private FlightService service;
 
     @GetMapping(path = "departure", produces = MediaType.TEXT_XML_VALUE)
-    public ResponseEntity<Flight> departure(
+    public Flight departure(
         @RequestParam("callsign") String callsign,
         @RequestParam("aircraft") String aircraft,
         @RequestParam("airport") String airport,
         @RequestParam("fuel") double startFuel,
         @RequestParam("odometer") double startOdometer) {
-        return new ResponseEntity<>(
-            service.beginFlight(callsign, aircraft, airport, startFuel, startOdometer),
-            HttpStatus.CREATED);
+        return service.beginFlight(callsign, aircraft, airport, startFuel, startOdometer);
     }
 
     @GetMapping(path = "arrival", produces = MediaType.TEXT_XML_VALUE)
