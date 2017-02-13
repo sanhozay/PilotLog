@@ -34,10 +34,11 @@ class TestFlight extends Specification {
         def flight = new Flight("G-SHOZ", "pup100", "EGCJ", 12, 20)
         flight.startTime = new Date()
 
-        expect:
+        expect:"computed fields to be null"
         flight.duration == null
         flight.fuelUsed == null
         flight.fuelRate == null
+        flight.distance == null
     }
 
     def"Check fuel usage, duration and fuel rate for a completed flight"() {
@@ -46,12 +47,12 @@ class TestFlight extends Specification {
         def flight = new Flight("G-SHOZ", "pup100", "EGCJ", 12, 20)
         flight.startTime = new Date()
 
-        and:"Flight has ended"
+        and:"flight has ended"
         flight.endTime = Date.from(flight.startTime.toInstant().plusSeconds(7200))
         flight.endFuel = 10
         flight.endOdometer = 40
 
-        and:"AOP has updated the duration"
+        and:"fields have been computed"
         flight.updateComputedFields()
 
         expect:
@@ -59,5 +60,29 @@ class TestFlight extends Specification {
         flight.fuelUsed == 2
         flight.fuelRate == 1
         flight.distance == 20
+    }
+
+    def"Check fuel rate is null if fuel freeze is active"() {
+
+        given:"A new flight"
+        def flight = new Flight("G-SHOZ", "pup100", "EGCJ", 12, 20)
+
+        and:"flight ended with no fuel consumption"
+        flight.endFuel = flight.startFuel
+
+        and:"fields have been computed"
+        flight.updateComputedFields()
+
+        expect:
+        flight.fuelRate == null
+    }
+
+    def"Check no-argument constructor does not set status"() {
+
+        given:"A new flight example"
+        def flight = new Flight()
+
+        expect:
+        flight.status == null
     }
 }
