@@ -119,10 +119,12 @@
       </tfoot>
     </table>
   </div>
-  <div th:if="${flights.totalPages}" id="footer">
-    <p class="pageNumber" th:text="'Page ' + ${flights.number + 1} + ' of ' + ${flights.totalPages}" />
-    <a th:class="${flights.first} ? 'disabled'" th:href="@{/(page=${flights.number} - 1)}">Prev</a>
-    <a th:class="${flights.last} ? 'disabled'" th:href="@{/(page=${flights.number} + 1)}">Next</a>
+  <div id="footer">
+    <div th:if="${flights.totalPages > 1}" id="pager">
+      <a th:each="page: ${pages}" th:class="${page == flights.number + 1 ? 'current' : 'page'}"
+        th:href="@{/(page=${page} - 1)}" th:text="${page}">P</a>
+    </div>
+    <p id="count" th:text="${flights.totalElements} + ' flights'"></p>
   </div>
 </body>
 </html>
