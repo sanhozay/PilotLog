@@ -28,8 +28,18 @@ public class FlightRecordTotals {
 
     private long pageTotal, grandTotal;
 
+    public FlightRecordTotals(long pageTotal, long grandTotal) {
+        this.pageTotal = pageTotal;
+        this.grandTotal = grandTotal;
+    }
+
     // Other Methods
 
+    /**
+     * Gets the difference between the grand total and page total.
+     *
+     * @return the "other" total, i.e. outwith the page total
+     */
     public long getOtherTotal() {
         return grandTotal - pageTotal;
     }

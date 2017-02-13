@@ -72,14 +72,13 @@ public class WebController {
         model.addAttribute("flights", flights);
         model.addAttribute("pages", pager(flights));
 
-        final FlightRecordTotals total = new FlightRecordTotals();
-        total.setPageTotal(flights.getContent()
+        final long pageTotal = flights.getContent()
             .parallelStream()
             .filter(flight -> flight.getStatus().equals(FlightStatus.COMPLETE))
             .mapToLong(flight -> flight.getDuration())
-            .sum());
-        total.setGrandTotal(service.findFlightTimeTotal());
-        model.addAttribute("total", total);
+            .sum();
+        final long grandTotal = service.findFlightTimeTotal();
+        model.addAttribute("total", new FlightRecordTotals(pageTotal, grandTotal));
 
         return "flightrecord";
     }

@@ -257,24 +257,29 @@ public class Flight implements Serializable, Comparable<Flight> {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((startTime == null) ? 0 : startTime.hashCode());
+        result = prime * result + (startTime == null ? 0 : startTime.hashCode());
         return result;
     }
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj)
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         final Flight other = (Flight)obj;
         if (startTime == null) {
-            if (other.startTime != null)
+            if (other.startTime != null) {
                 return false;
-        } else if (!startTime.equals(other.startTime))
+            }
+        } else if (!startTime.equals(other.startTime)) {
             return false;
+        }
         return true;
     }
 

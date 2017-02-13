@@ -38,6 +38,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      * Finds flights by aircraft.
      *
      * @param aircraft the aircraft
+     * @return a list of flights for a given aircraft
      */
     public List<Flight> findByAircraft(@Param("aircraft") String aircraft);
 
@@ -45,6 +46,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      * Finds flights by callsign.
      *
      * @param callsign the callsign
+     * @return a list of flights for a given callsign
      */
     public List<Flight> findByCallsign(@Param("callsign") String callsign);
 
@@ -52,6 +54,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      * Finds flights by origin airport.
      *
      * @param origin the origin airport
+     * @return a list of flights for a given origin airport
      */
     public List<Flight> findByOrigin(@Param("origin") String origin);
 
@@ -59,6 +62,7 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      * Finds flights by destination airport.
      *
      * @param destination the destination airport
+     * @return a list of flights for a given destination airport
      */
     public List<Flight> findByDestination(@Param("destination") String destination);
 

@@ -17,24 +17,27 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog
+package org.flightgear.pilotlog.web.helpers
 
-import org.flightgear.pilotlog.domain.TestFlight
-import org.flightgear.pilotlog.web.helpers.TestDurationFormatter
-import org.flightgear.pilotlog.web.helpers.TestFlightRecordTotals
-import org.junit.runner.RunWith
-import org.junit.runners.Suite
-import org.junit.runners.Suite.SuiteClasses
+import spock.lang.Specification
 
 /**
- * Test suite.
+ * Tests for flight record totals.
  *
  * @author Richard Senior
  */
-@RunWith(Suite.class)
-@SuiteClasses([
-    TestFlight.class,
-    TestDurationFormatter.class,
-    TestFlightRecordTotals.class
-])
-class AllTests {}
+class TestFlightRecordTotals extends Specification {
+
+    def"Check that the other total is the grand total minus page total"() {
+
+        expect:
+        o == new FlightRecordTotals(p, g).otherTotal
+
+        where:
+        p | g || o
+        0 | 0 || 0
+        0 | 1 || 1
+        1 | 1 || 0
+        1 | 2 || 1
+    }
+}
