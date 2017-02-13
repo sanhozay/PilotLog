@@ -100,7 +100,7 @@
           <td th:text="${@durationFormatter.format(flight.duration)}">00:00</td>
         </tr>
         <tr th:if="${flights.numberOfElements} == 0">
-          <td colspan="12">No matching flights</td>
+          <td colspan="13">No matching flights</td>
         </tr>
       </tbody>
       <tfoot>
