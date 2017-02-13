@@ -66,7 +66,7 @@ public class FlightServiceAdvice {
     @AfterReturning("execution (* FlightService.endFlight(..))")
     @Transactional(propagation = Propagation.MANDATORY)
     public void compute(JoinPoint jp) {
-        final long id = (long)jp.getArgs()[0];
+        final int id = (int)jp.getArgs()[0];
         final Flight flight = dao.findOne(id);
         flight.updateComputedFields();
         if (flight.getDuration() == 0) {

@@ -53,23 +53,23 @@ public class ServiceController {
         @RequestParam("callsign") String callsign,
         @RequestParam("aircraft") String aircraft,
         @RequestParam("airport") String airport,
-        @RequestParam("fuel") double startFuel,
-        @RequestParam("odometer") double startOdometer) {
+        @RequestParam("fuel") float startFuel,
+        @RequestParam("odometer") float startOdometer) {
         return service.beginFlight(callsign, aircraft, airport, startFuel, startOdometer);
     }
 
     @GetMapping(path = "arrival", produces = MediaType.TEXT_XML_VALUE)
     public Flight arrival(
-        @RequestParam("id") long id,
+        @RequestParam("id") int id,
         @RequestParam("airport") String airport,
-        @RequestParam("fuel") double endFuel,
-        @RequestParam("odometer") double endOdometer)
+        @RequestParam("fuel") float endFuel,
+        @RequestParam("odometer") float endOdometer)
         throws FlightNotFoundException, InvalidFlightStatusException {
         return service.endFlight(id, airport, endFuel, endOdometer);
     }
 
     @GetMapping(path = "invalidate", produces = MediaType.TEXT_XML_VALUE)
-    public Flight invalidate(@RequestParam("id") long id)
+    public Flight invalidate(@RequestParam("id") int id)
         throws FlightNotFoundException, InvalidFlightStatusException {
         return service.invalidateFlight(id);
     }

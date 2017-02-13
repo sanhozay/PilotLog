@@ -64,7 +64,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public Flight beginFlight(String callsign, String aircraft, String airport,
-        double startFuel, double startOdometer) {
+        float startFuel, float startOdometer) {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
@@ -83,7 +83,7 @@ public class FlightServiceImpl implements FlightService {
      * @return the flight, with arrival fields updated
      */
     @Override
-    public Flight endFlight(long id, String airport, double endFuel, double endOdometer) {
+    public Flight endFlight(int id, String airport, float endFuel, float endOdometer) {
         final Flight flight = flightRepository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to end flight with invalid id %d", id);
@@ -115,7 +115,7 @@ public class FlightServiceImpl implements FlightService {
      * @return the flight with status updated
      */
     @Override
-    public Flight invalidateFlight(long id) {
+    public Flight invalidateFlight(int id) {
         final Flight flight = flightRepository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to invalidate flight with invalid id %d", id);
@@ -151,9 +151,9 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public long findFlightTimeTotal() {
-        final Long total = flightRepository.findFlightTimeByStatus(FlightStatus.COMPLETE);
-        return total != null ? total : 0L;
+    public int findFlightTimeTotal() {
+        final Integer total = flightRepository.findFlightTimeByStatus(FlightStatus.COMPLETE);
+        return total != null ? total : 0;
     }
 
 }

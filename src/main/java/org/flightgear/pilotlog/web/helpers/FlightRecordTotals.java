@@ -26,9 +26,9 @@ package org.flightgear.pilotlog.web.helpers;
  */
 public class FlightRecordTotals {
 
-    private long pageTotal, grandTotal;
+    private int pageTotal, grandTotal;
 
-    public FlightRecordTotals(long pageTotal, long grandTotal) {
+    public FlightRecordTotals(int pageTotal, int grandTotal) {
         this.pageTotal = pageTotal;
         this.grandTotal = grandTotal;
     }
@@ -40,25 +40,25 @@ public class FlightRecordTotals {
      *
      * @return the "other" total, i.e. outwith the page total
      */
-    public long getOtherTotal() {
+    public int getOtherTotal() {
         return grandTotal - pageTotal;
     }
 
     // Accessors
 
-    public long getPageTotal() {
+    public int getPageTotal() {
         return pageTotal;
     }
 
-    public void setPageTotal(long pageTotal) {
+    public void setPageTotal(int pageTotal) {
         this.pageTotal = pageTotal;
     }
 
-    public long getGrandTotal() {
+    public int getGrandTotal() {
         return grandTotal;
     }
 
-    public void setGrandTotal(long grandTotal) {
+    public void setGrandTotal(int grandTotal) {
         this.grandTotal = grandTotal;
     }
 

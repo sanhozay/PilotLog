@@ -32,7 +32,7 @@ import org.springframework.data.rest.core.annotation.RestResource;
  *
  * @author Richard Senior
  */
-public interface FlightRepository extends JpaRepository<Flight, Long> {
+public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     /**
      * Finds flights by aircraft.
@@ -85,6 +85,6 @@ public interface FlightRepository extends JpaRepository<Flight, Long> {
      */
     @RestResource(exported = false)
     @Query("select sum(duration) from Flight f where f.status = :status")
-    public Long findFlightTimeByStatus(@Param("status") FlightStatus status);
+    public Integer findFlightTimeByStatus(@Param("status") FlightStatus status);
 
 }

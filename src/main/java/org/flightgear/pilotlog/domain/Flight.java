@@ -59,7 +59,7 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private int id;
 
     private String callsign, aircraft, origin, destination;
 
@@ -71,19 +71,19 @@ public class Flight implements Serializable, Comparable<Flight> {
     @JsonFormat(shape = JsonFormat.Shape.STRING)
     private Date endTime;
 
-    private Double startFuel, endFuel, startOdometer, endOdometer;
+    private Float startFuel, endFuel, startOdometer, endOdometer;
 
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
     // Computed fields
 
-    private Long duration, groundSpeed;
-    private Double fuelUsed, fuelRate, distance;
+    private Integer duration, groundSpeed;
+    private Float fuelUsed, fuelRate, distance;
 
     public Flight() {}
 
-    public Flight(String callsign, String aircraft, String origin, double startFuel, double startOdometer) {
+    public Flight(String callsign, String aircraft, String origin, float startFuel, float startOdometer) {
         this.callsign = callsign;
         this.aircraft = aircraft;
         this.origin = origin;
@@ -96,25 +96,25 @@ public class Flight implements Serializable, Comparable<Flight> {
      */
     public void updateComputedFields() {
         if (startTime != null && endTime != null) {
-            duration = Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
+            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
             if (startFuel != null && endFuel != null) {
                 fuelUsed = startFuel - endFuel;
                 fuelRate = fuelUsed == 0.0 ? null : 60 * fuelUsed / duration;
             }
             if (startOdometer != null && endOdometer != null) {
                 distance = endOdometer - startOdometer;
-                groundSpeed = (long)(distance / (duration / 60.0));
+                groundSpeed = (int)(distance / (duration / 60.0));
             }
         }
     }
 
     // Accessors
 
-    public long getId() {
+    public int getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(int id) {
         this.id = id;
     }
 
@@ -174,75 +174,75 @@ public class Flight implements Serializable, Comparable<Flight> {
         this.endTime = endTime;
     }
 
-    public Double getStartFuel() {
+    public Float getStartFuel() {
         return startFuel;
     }
 
-    public void setStartFuel(Double startFuel) {
+    public void setStartFuel(Float startFuel) {
         this.startFuel = startFuel;
     }
 
-    public Double getEndFuel() {
+    public Float getEndFuel() {
         return endFuel;
     }
 
-    public void setEndFuel(Double endFuel) {
+    public void setEndFuel(Float endFuel) {
         this.endFuel = endFuel;
     }
 
-    public Long getDuration() {
+    public Integer getDuration() {
         return duration;
     }
 
-    public void setDuration(Long duration) {
+    public void setDuration(Integer duration) {
         this.duration = duration;
     }
 
-    public Double getFuelUsed() {
+    public Float getFuelUsed() {
         return fuelUsed;
     }
 
-    public void setFuelUsed(Double fuelUsed) {
+    public void setFuelUsed(Float fuelUsed) {
         this.fuelUsed = fuelUsed;
     }
 
-    public Double getFuelRate() {
+    public Float getFuelRate() {
         return fuelRate;
     }
 
-    public void setFuelRate(Double fuelRate) {
+    public void setFuelRate(Float fuelRate) {
         this.fuelRate = fuelRate;
     }
 
-    public Double getStartOdometer() {
+    public Float getStartOdometer() {
         return startOdometer;
     }
 
-    public void setStartOdometer(Double startOdometer) {
+    public void setStartOdometer(Float startOdometer) {
         this.startOdometer = startOdometer;
     }
 
-    public Double getEndOdometer() {
+    public Float getEndOdometer() {
         return endOdometer;
     }
 
-    public void setEndOdometer(Double endOdometer) {
+    public void setEndOdometer(Float endOdometer) {
         this.endOdometer = endOdometer;
     }
 
-    public Double getDistance() {
+    public Float getDistance() {
         return distance;
     }
 
-    public void setDistance(Double distance) {
+    public void setDistance(Float distance) {
         this.distance = distance;
     }
 
-    public Long getGroundSpeed() {
+    public Integer getGroundSpeed() {
         return groundSpeed;
     }
 
-    public void setGroundSpeed(Long groundSpeed) {
+    public void setGroundSpeed(Integer groundSpeed) {
         this.groundSpeed = groundSpeed;
     }
 
@@ -263,23 +263,18 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     @Override
     public boolean equals(Object obj) {
-        if (this == obj) {
+        if (this == obj)
             return true;
-        }
-        if (obj == null) {
+        if (obj == null)
             return false;
-        }
-        if (getClass() != obj.getClass()) {
+        if (getClass() != obj.getClass())
             return false;
-        }
         final Flight other = (Flight)obj;
         if (startTime == null) {
-            if (other.startTime != null) {
+            if (other.startTime != null)
                 return false;
-            }
-        } else if (!startTime.equals(other.startTime)) {
+        } else if (!startTime.equals(other.startTime))
             return false;
-        }
         return true;
     }
 

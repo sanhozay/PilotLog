@@ -42,7 +42,7 @@ public interface FlightService {
      * @return a new flight, with supplied fields and id field initialized
      */
     Flight beginFlight(String callsign, String aircraft, String airport,
-        double startFuel, double startOdometer);
+        float startFuel, float startOdometer);
 
     /**
      * Ends a flight.
@@ -53,7 +53,7 @@ public interface FlightService {
      * @param endOdometer the odometer reading at the end of the flight
      * @return the flight, with arrival fields updated
      */
-    Flight endFlight(long id, String airport, double endFuel, double endOdometer);
+    Flight endFlight(int id, String airport, float endFuel, float endOdometer);
 
     /**
      * Invalidates a flight.
@@ -61,7 +61,7 @@ public interface FlightService {
      * @param id the id of the flight to invalidate
      * @return the flight with status updated
      */
-    Flight invalidateFlight(long id);
+    Flight invalidateFlight(int id);
 
     /**
      * Finds all flights.
@@ -85,6 +85,6 @@ public interface FlightService {
      *
      * @return the total flight time
      */
-    long findFlightTimeTotal();
+    int findFlightTimeTotal();
 
 }

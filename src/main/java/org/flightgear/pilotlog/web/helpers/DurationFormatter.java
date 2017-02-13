@@ -35,7 +35,7 @@ public class DurationFormatter {
      * @param minutes the duration in minutes
      * @return the duration formatted in the format HH:MM
      */
-    public String format(Long minutes) {
+    public String format(Integer minutes) {
         return minutes != null ? String.format("%d:%02d", minutes / 60, minutes % 60) : null;
     }
 
