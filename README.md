@@ -24,6 +24,9 @@ such as jQuery, React or Angular.js.
 
 ## Prerequistes
 
+PilotLog requires Flightgear 2017.1.0 or later because prior versions do not handle the
+response status line sent by Tomcat server.
+
 To run the service, you will need a Java 8 runtime environment.
 
 If you are running a Linux distribution, your package manager may have a Java 8 runtime 
