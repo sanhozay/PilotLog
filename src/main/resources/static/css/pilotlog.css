@@ -137,7 +137,7 @@ tbody {
 
 tbody, .written {
     color: #0000a0;
-    font-family: Comic Sans MS, cursive;
+    font-family: Comic Sans MS, ChalkboardSE-Regular, cursive;
 }
 
 tfoot .footerTitle {
