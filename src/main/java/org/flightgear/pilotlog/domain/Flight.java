@@ -47,8 +47,8 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
 @JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer",
-    "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate", "duration",
-    "distance", "status"})
+    "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
+    "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
     @Index(columnList = "aircraft", unique = false),
     @Index(columnList = "callsign", unique = false),
@@ -78,7 +78,7 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     // Computed fields
 
-    private Long duration;
+    private Long duration, groundSpeed;
     private Double fuelUsed, fuelRate, distance;
 
     public Flight() {}
@@ -103,6 +103,7 @@ public class Flight implements Serializable, Comparable<Flight> {
             }
             if (startOdometer != null && endOdometer != null) {
                 distance = endOdometer - startOdometer;
+                groundSpeed = (long)(distance / (duration / 60.0));
             }
         }
     }
@@ -235,6 +236,14 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     public void setDistance(Double distance) {
         this.distance = distance;
+    }
+
+    public Long getGroundSpeed() {
+        return groundSpeed;
+    }
+
+    public void setGroundSpeed(Long groundSpeed) {
+        this.groundSpeed = groundSpeed;
     }
 
     // Comparison and equality

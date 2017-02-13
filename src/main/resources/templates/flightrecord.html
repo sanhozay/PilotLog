@@ -57,7 +57,7 @@
           <th colspan="2">Departure</th>
           <th colspan="2">Arrival</th>
           <th colspan="4">Fuel</th>
-          <th colspan="1">Dist</th>
+          <th colspan="2">Trip</th>
           <th colspan="1">Time</th>
         </tr>
         <tr>
@@ -72,7 +72,8 @@
           <th>Land</th>
           <th>Used</th>
           <th>Rate</th>
-          <th>Nm</th>
+          <th>NM</th>
+          <th>GS</th>
           <th>Hours</th>
         </tr>
       </thead>
@@ -97,23 +98,24 @@
           <td th:text="${flight.fuelUsed} ? ${#numbers.formatDecimal(flight.fuelUsed, 1, 1)}">10.0</td>
           <td th:text="${flight.fuelRate} ? ${#numbers.formatDecimal(flight.fuelRate, 1, 1)}">10.0</td>
           <td th:text="${flight.distance} ? ${#numbers.formatDecimal(flight.distance, 1, 0)}">10.0</td>
+          <td th:text="${flight.groundSpeed} ? ${flight.groundSpeed}">180</td>
           <td th:text="${@durationFormatter.format(flight.duration)}">00:00</td>
         </tr>
         <tr th:if="${flights.numberOfElements} == 0">
-          <td colspan="13">No matching flights</td>
+          <td colspan="14">No matching flights</td>
         </tr>
       </tbody>
       <tfoot>
         <tr>
-          <td colspan="12" class="footerTitle">Page Total</td>
+          <td colspan="13" class="footerTitle">Page Total</td>
           <td class="written" th:text="${@durationFormatter.format(total.pageTotal)}">0:00</td>
         </tr>
         <tr>
-          <td colspan="12" class="footerTitle">Other Total</td>
+          <td colspan="13" class="footerTitle">Other Total</td>
           <td class="written" th:text="${@durationFormatter.format(total.otherTotal)}">0:00</td>
         </tr>
         <tr>
-          <td colspan="12" class="footerTitle">FLIGHT HOURS TOTAL</td>
+          <td colspan="13" class="footerTitle">FLIGHT HOURS TOTAL</td>
           <td class="written" th:text="${@durationFormatter.format(total.grandTotal)}">0:00</td>
         </tr>
       </tfoot>
