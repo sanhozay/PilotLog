@@ -79,7 +79,7 @@ public class Flight implements Serializable, Comparable<Flight> {
     // Computed fields
 
     private Integer duration, groundSpeed, altitude;
-    private Float fuelUsed, fuelRate, distance;
+    private Float fuelUsed, fuelRate, reserve, distance;
 
     public Flight() {}
 
@@ -100,6 +100,7 @@ public class Flight implements Serializable, Comparable<Flight> {
             if (startFuel != null && endFuel != null) {
                 fuelUsed = startFuel - endFuel;
                 fuelRate = fuelUsed == 0.0 ? null : 60 * fuelUsed / duration;
+                reserve = 60 * endFuel / fuelRate;
             }
             if (startOdometer != null && endOdometer != null) {
                 distance = endOdometer - startOdometer;
@@ -252,6 +253,14 @@ public class Flight implements Serializable, Comparable<Flight> {
 
     public void setAltitude(Integer altitude) {
         this.altitude = altitude;
+    }
+
+    public Float getReserve() {
+        return reserve;
+    }
+
+    public void setReserve(Float reserve) {
+        this.reserve = reserve;
     }
 
     // Comparison and equality

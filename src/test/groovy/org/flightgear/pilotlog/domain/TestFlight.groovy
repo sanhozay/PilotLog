@@ -39,27 +39,29 @@ class TestFlight extends Specification {
         flight.fuelUsed == null
         flight.fuelRate == null
         flight.distance == null
+        flight.reserve == null
     }
 
     def"Check fuel usage, duration and fuel rate for a completed flight"() {
 
         given:"A new flight"
-        def flight = new Flight("G-SHOZ", "pup100", "EGCJ", 12, 20)
+        def flight = new Flight("G-SHOZ", "pup100", "EGCJ", 24, 0)
         flight.startTime = new Date()
 
         and:"flight has ended"
         flight.endTime = Date.from(flight.startTime.toInstant().plusSeconds(7200))
-        flight.endFuel = 10
-        flight.endOdometer = 40
+        flight.endFuel = 6
+        flight.endOdometer = 200
 
         and:"fields have been computed"
         flight.updateComputedFields()
 
         expect:
         flight.duration == 120
-        flight.fuelUsed == 2
-        flight.fuelRate == 1
-        flight.distance == 20
+        flight.fuelUsed == 18
+        flight.fuelRate == 9
+        flight.distance == 200
+        flight.reserve == 40
     }
 
     def"Check fuel rate is null if fuel freeze is active"() {
