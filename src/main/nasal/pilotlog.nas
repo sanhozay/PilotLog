@@ -124,8 +124,16 @@ setlistener("sim/speed-up", func(node) {
 }, startup=0, runtime=0);
 
 setlistener("sim/freeze/master", func(node) {
-    if (node.getBoolValue())
-        invalidate("Simulator+was+paused");
+    if (node.getBoolValue()) {
+        # Allow accidental pauses, as long as they are reverted
+        # within a short timeframe
+        var t = maketimer(5, func {
+            if (node.getBoolValue())
+                invalidate("Simulator+was+paused");
+        });
+        t.singleShot = 1;
+        t.start();
+    }
 }, startup=0, runtime=0);
 
 print("PilotLog client loaded");
