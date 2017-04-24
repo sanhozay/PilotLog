@@ -74,7 +74,7 @@ var arrival = func {
         url ~= "?id="~id;
         url ~= "&airport="~getprop("sim/airport/closest-airport-id");
         url ~= "&fuel="~getprop("consumables/fuel/total-fuel-gals");
-	    url ~= "&odometer="~getprop("instrumentation/gps/odometer");
+        url ~= "&odometer="~getprop("instrumentation/gps/odometer");
         request(url);
     }
 }
