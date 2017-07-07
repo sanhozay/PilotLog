@@ -71,6 +71,7 @@ public interface FlightService {
      *
      * @param id the id of the flight to update
      * @param altitude the new altitude
+     * @return the updated flight
      */
     Flight updateFlightAltitude(int id, double altitude);
 
