@@ -51,21 +51,20 @@ public class FlightServiceAdvice {
     FlightRepository dao;
 
     @Before("execution (* FlightService.beginFlight(..))")
-    @Transactional(propagation = Propagation.REQUIRES_NEW)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void purge() {
         final Set<Flight> toDelete = new HashSet<>();
         if (toDelete.addAll(dao.findByStatus(FlightStatus.INVALID)) ||
-            toDelete.addAll(dao.findByStatus(FlightStatus.ACTIVE))) {
+            toDelete.addAll(dao.findByStatus(FlightStatus.ACTIVE)))
             for (final Flight flight : toDelete) {
                 dao.delete(flight);
                 log.info("Deleted flight {}", flight);
             }
-        }
     }
 
     @AfterReturning("execution (* FlightService.endFlight(..))")
     @Transactional(propagation = Propagation.MANDATORY)
-    public void compute(JoinPoint jp) {
+    public void compute(final JoinPoint jp) {
         final int id = (int)jp.getArgs()[0];
         final Flight flight = dao.findOne(id);
         flight.updateComputedFields();
