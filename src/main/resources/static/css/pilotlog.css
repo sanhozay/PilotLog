@@ -182,6 +182,11 @@ tbody tr.INVALID:hover {
     color: white;
 }
 
+tbody td.delete {
+    padding: 0;
+    margin: 0;
+}
+
 tbody a {
     text-decoration: none;
 }

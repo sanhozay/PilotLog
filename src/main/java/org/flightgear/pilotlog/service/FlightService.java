@@ -76,11 +76,18 @@ public interface FlightService {
     Flight updateFlightAltitude(int id, double altitude);
 
     /**
+     * Deletes a flight.
+     *
+     * @param id the id of the flight to delete
+     */
+    void deleteFlight(int id);
+
+    /**
      * Finds all flights.
      *
      * @return a list of all flights
      */
-    public List<Flight> findAllFlights();
+    List<Flight> findAllFlights();
 
     /**
      * Gets flights that match an example flight, with paging and sorting

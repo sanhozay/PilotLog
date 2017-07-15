@@ -38,6 +38,7 @@ import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 /**
@@ -81,6 +82,12 @@ public class WebController {
         model.addAttribute("total", new FlightRecordTotals(pageTotal, grandTotal));
 
         return "flightrecord";
+    }
+
+    @GetMapping("/delete")
+    public String deleteFlight(@RequestParam int id) {
+        service.deleteFlight(id);
+        return "redirect:/";
     }
 
     private List<Integer> pager(Page<?> page) {

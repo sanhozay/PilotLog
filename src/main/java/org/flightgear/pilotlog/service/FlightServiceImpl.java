@@ -130,6 +130,26 @@ public class FlightServiceImpl implements FlightService {
         return flight;
     }
 
+    /**
+     * Deletes a flight.
+     *
+     * @param id the id of the flight to delete
+     */
+    @Override
+    public void deleteFlight(int id) {
+        final Flight flight = flightRepository.findOne(id);
+        if (flight == null) {
+            final String message = String.format("Attempt to delete flight with invalid id %d", id);
+            throw new FlightNotFoundException(message);
+        }
+        if (!flight.getStatus().equals(FlightStatus.COMPLETE)) {
+            final String message = String.format("Attempt to delete incomplete flight %s", flight);
+            throw new InvalidFlightStatusException(message);
+        }
+        flightRepository.delete(flight);
+        log.info("Deleted flight {}", flight);
+    }
+
     @Override
     public Flight updateFlightAltitude(int id, double altitude) {
         final Flight flight = flightRepository.findOne(id);
