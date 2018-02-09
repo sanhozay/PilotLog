@@ -48,6 +48,8 @@ public class ServiceController {
     @Autowired
     private FlightService service;
 
+    // Flightgear endpoints
+
     @GetMapping(path = "departure", produces = MediaType.TEXT_XML_VALUE)
     public Flight departure(
         @RequestParam("callsign") String callsign,
@@ -82,9 +84,14 @@ public class ServiceController {
 
     // Additional endpoints
 
+    @GetMapping(path = "flights", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public List<Flight> flightsJSON() {
+        return service.findAllFlights();
+    }
+
     @GetMapping(path = "flights.xml", produces = {MediaType.TEXT_XML_VALUE,
         MediaType.APPLICATION_XML_VALUE})
-    public List<Flight> flights() {
+    public List<Flight> flightsXML() {
         return service.findAllFlights();
     }
 

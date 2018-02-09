@@ -50,7 +50,7 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes({"example"})
 public class WebController {
 
-    @Autowired(required = true)
+    @Autowired
     FlightService service;
 
     @InitBinder
