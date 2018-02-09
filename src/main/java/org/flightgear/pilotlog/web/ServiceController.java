@@ -25,6 +25,7 @@ import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
 import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
+import org.flightgear.pilotlog.web.helpers.DurationAwarePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -89,9 +90,11 @@ public class ServiceController {
     // Additional endpoints
 
     @GetMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
-    public Page<Flight> flights(
+    public DurationAwarePage<Flight> flights(
             @PageableDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        return service.findCompletedFlights(pageable);
+        Page<Flight> page = service.findCompletedFlights(pageable);
+        return new DurationAwarePage<>(page.getContent(),
+                pageable, page.getTotalElements(), service.findFlightTimeTotal());
     }
 
     @GetMapping(path = "flights.json", produces = {MediaType.APPLICATION_JSON_VALUE})

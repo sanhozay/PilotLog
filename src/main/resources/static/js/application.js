@@ -24,14 +24,18 @@ app.controller('controller', function($scope, $http, $interval) {
         $http.get("/api/flights/?page=" + ($scope.currentPage - 1))
         .then(function(response) {
             $scope.flights = response.data.content
+
+            $scope.currentPage = response.data.number + 1
             $scope.totalPages = response.data.totalPages
             $scope.totalFlights = response.data.totalElements
-            $scope.currentPage = response.data.number + 1
-            $scope.totalMins = 0
             $scope.pages = []
             for (var i = 1; i <= $scope.totalPages; ++i) {
                 $scope.pages.push(i)
             }
+
+            $scope.pageDuration = response.data.pageDuration
+            $scope.otherDuration = response.data.otherDuration
+            $scope.totalDuration = response.data.totalDuration
         })
     }
     $scope.next = function() {

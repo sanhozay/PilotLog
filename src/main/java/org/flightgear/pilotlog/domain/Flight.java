@@ -55,7 +55,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
     @Index(columnList = "origin"),
     @Index(columnList = "destination"),
 })
-public class Flight implements Serializable, Comparable<Flight> {
+public class Flight implements Serializable, Comparable<Flight>, Timed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
