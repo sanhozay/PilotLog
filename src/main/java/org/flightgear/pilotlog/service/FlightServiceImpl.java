@@ -44,13 +44,17 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Richard Senior
  */
 @Service
-@Transactional(readOnly = false)
+@Transactional
 public class FlightServiceImpl implements FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightServiceImpl.class);
 
-    @Autowired(required = true)
-    FlightRepository flightRepository;
+    private final FlightRepository repository;
+
+    @Autowired
+    public FlightServiceImpl(FlightRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Begins a flight.
@@ -68,7 +72,7 @@ public class FlightServiceImpl implements FlightService {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
-        flight = flightRepository.save(flight);
+        flight = repository.save(flight);
         log.info("Started new flight {}", flight);
         return flight;
     }
@@ -84,7 +88,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public Flight endFlight(int id, String airport, float endFuel, float endOdometer) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to end flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -116,7 +120,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public Flight invalidateFlight(int id) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to invalidate flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -137,7 +141,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public void deleteFlight(int id) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to delete flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -146,13 +150,13 @@ public class FlightServiceImpl implements FlightService {
             final String message = String.format("Attempt to delete incomplete flight %s", flight);
             throw new InvalidFlightStatusException(message);
         }
-        flightRepository.delete(flight);
+        repository.delete(flight);
         log.info("Deleted flight {}", flight);
     }
 
     @Override
     public Flight updateFlightAltitude(int id, double altitude) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to update flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -174,7 +178,13 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     public List<Flight> findAllFlights() {
-        return flightRepository.findAll();
+        return repository.findAll();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Page<Flight> findAllFlights(Pageable pageable) {
+        return repository.findAll(pageable);
     }
 
     @Override
@@ -185,13 +195,13 @@ public class FlightServiceImpl implements FlightService {
             .withIgnoreCase()
             .withIgnoreNullValues()
             .withStringMatcher(StringMatcher.STARTING);
-        return flightRepository.findAll(Example.of(flight, matcher), pageable);
+        return repository.findAll(Example.of(flight, matcher), pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
     public int findFlightTimeTotal() {
-        final Integer total = flightRepository.findFlightTimeByStatus(FlightStatus.COMPLETE);
+        final Integer total = repository.findFlightTimeByStatus(FlightStatus.COMPLETE);
         return total != null ? total : 0;
     }
 
