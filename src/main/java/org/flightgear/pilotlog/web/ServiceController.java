@@ -26,6 +26,10 @@ import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
 import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -85,6 +89,12 @@ public class ServiceController {
     // Additional endpoints
 
     @GetMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public Page<Flight> flights(
+            @PageableDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable) {
+        return service.findAllFlights(pageable);
+    }
+
+    @GetMapping(path = "flights.json", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Flight> flightsJSON() {
         return service.findAllFlights();
     }
