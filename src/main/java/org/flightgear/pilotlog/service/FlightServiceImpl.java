@@ -183,8 +183,8 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Flight> findAllFlights(Pageable pageable) {
-        return repository.findAll(pageable);
+    public Page<Flight> findCompletedFlights(Pageable pageable) {
+        return repository.findByStatus(FlightStatus.COMPLETE, pageable);
     }
 
     @Override

@@ -90,12 +90,12 @@ public interface FlightService {
     List<Flight> findAllFlights();
 
     /**
-     * Finds all flights with a pageable instance.
+     * Finds all completed flights with a pageable instance.
      *
      * @param pageable the pageable implementation for paging and sorting
      * @return a list of all flights
      */
-    Page<Flight> findAllFlights(Pageable pageable);
+    Page<Flight> findCompletedFlights(Pageable pageable);
 
     /**
      * Gets flights that match an example flight, with paging and sorting

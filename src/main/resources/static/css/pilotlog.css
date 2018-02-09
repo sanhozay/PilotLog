@@ -213,6 +213,7 @@ tbody tr:hover a {
     background-color: white;
     padding: 3px;
     font-size: small;
+    cursor: pointer;
 }
 
 #footer a.current {

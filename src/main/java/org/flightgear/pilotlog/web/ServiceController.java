@@ -91,7 +91,7 @@ public class ServiceController {
     @GetMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public Page<Flight> flights(
             @PageableDefault(sort = "startTime", direction = Sort.Direction.DESC) Pageable pageable) {
-        return service.findAllFlights(pageable);
+        return service.findCompletedFlights(pageable);
     }
 
     @GetMapping(path = "flights.json", produces = {MediaType.APPLICATION_JSON_VALUE})

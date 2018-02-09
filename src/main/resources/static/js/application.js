@@ -21,18 +21,34 @@ var app = angular.module('application', [])
 
 app.controller('controller', function($scope, $http, $interval) {
     $scope.refresh = function() {
-        $http.get("/api/flights/")
+        $http.get("/api/flights/?page=" + ($scope.currentPage - 1))
         .then(function(response) {
-            $scope.flights = response.data
-            var mins = 0
-            for (i = 0; i < response.data.length; ++i) {
-                if (i in response.data) {
-                    var flight = response.data[i];
-                    mins += flight.duration
-                }
+            $scope.flights = response.data.content
+            $scope.totalPages = response.data.totalPages
+            $scope.totalFlights = response.data.totalElements
+            $scope.currentPage = response.data.number + 1
+            $scope.totalMins = 0
+            $scope.pages = []
+            for (var i = 1; i <= $scope.totalPages; ++i) {
+                $scope.pages.push(i)
             }
-            $scope.totalMins = mins
         })
+    }
+    $scope.next = function() {
+        if ($scope.currentPage < $scope.totalPages) {
+            $scope.currentPage += 1
+            $scope.refresh()
+        }
+    }
+    $scope.prev = function() {
+        if ($scope.currentPage > 1) {
+            $scope.currentPage -= 1
+            $scope.refresh()
+        }
+    }
+    $scope.gotoPage = function(page) {
+        $scope.currentPage = page
+        $scope.refresh()
     }
     $scope.refresh()
     $interval($scope.refresh, 1000)

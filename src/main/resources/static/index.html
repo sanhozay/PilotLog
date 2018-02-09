@@ -67,7 +67,7 @@
                 </tr>
             </thead>
             <tbody>
-                <tr ng-repeat="flight in flights | orderBy: '-startTime' " class="ng-class: flight.status">
+                <tr ng-repeat="flight in flights" class="ng-class: flight.status">
                     <td colspan="2">{{flight.startTime | date:'dd/MM/yy'}}</td>
                     <td>{{flight.aircraft | capitalize}}</td>
                     <td>{{flight.callsign}}</td>
@@ -88,11 +88,27 @@
             </tbody>
             <tfoot>
                 <tr>
+                    <td colspan="16" class="footerTitle">Page Total</td>
+                    <td class="written">0:00</td>
+                </tr>
+                <tr>
+                    <td colspan="16" class="footerTitle">Other Total</td>
+                    <td class="written">0:00</td>
+                </tr>
+                <tr>
                     <td colspan="16" class="footerTitle">FLIGHT HOURS TOTAL</td>
                     <td class="written">{{totalMins | duration}}</td>
                 </tr>
             </tfoot>
         </table>
+    </div>
+    <div id="footer">
+        <div id="pager" ng-show="totalPages > 1">
+            <a ng-repeat="page in pages"
+               class="ng-class: {{page == currentPage ? 'current' : 'page'}}"
+               ng-click="gotoPage(page)">{{page}}</a>
+        </div>
+        <p id="count">{{totalFlights + ' flights'}}</p>
     </div>
 </body>
 </html>

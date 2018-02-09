@@ -19,6 +19,8 @@
 
 package org.flightgear.pilotlog.domain;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -31,6 +33,16 @@ import java.util.Set;
  * @author Richard Senior
  */
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
+
+    /**
+     * Finds flights with a given status.
+     *
+     * @param status the flight status
+     * @param pageable the page context object
+     * @return a set of flights with the given status
+     * @see FlightStatus
+     */
+    Page<Flight> findByStatus(FlightStatus status, Pageable pageable);
 
     /**
      * Finds flights with a given status.

@@ -152,7 +152,7 @@
   <div id="footer">
     <div th:if="${flights.totalPages > 1}" id="pager">
       <a th:each="page: ${pages}" th:class="${page == flights.number + 1 ? 'current' : 'page'}"
-        th:href="@{/(page=${page} - 1)}" th:text="${page}">P</a>
+        th:href="@{/flightRecord?(page=${page} - 1)}" th:text="${page}">P</a>
     </div>
     <p id="count" th:text="${flights.totalElements} + ' flights'"></p>
   </div>
