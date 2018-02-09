@@ -19,13 +19,12 @@
 
 package org.flightgear.pilotlog.domain;
 
-import java.util.List;
-import java.util.Set;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.data.rest.core.annotation.RestResource;
+
+import java.util.List;
+import java.util.Set;
 
 /**
  * Repository of flights.
@@ -73,7 +72,6 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      * @param status the flight status
      * @return a set of flights with the given status
      */
-    @RestResource(exported = false)
     public Set<Flight> findByStatus(FlightStatus status);
 
     /**
@@ -83,7 +81,6 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      * @param status the flight status
      * @return the total flight time of flights with the given status
      */
-    @RestResource(exported = false)
     @Query("select sum(duration) from Flight f where f.status = :status")
     public Integer findFlightTimeByStatus(@Param("status") FlightStatus status);
 

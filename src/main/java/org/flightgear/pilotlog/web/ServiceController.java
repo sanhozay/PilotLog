@@ -45,7 +45,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 @RequestMapping("/api")
 public class ServiceController {
 
-    @Autowired(required = true)
+    @Autowired
     private FlightService service;
 
     @GetMapping(path = "departure", produces = MediaType.TEXT_XML_VALUE)
@@ -80,7 +80,7 @@ public class ServiceController {
         return service.updateFlightAltitude(id, altitude);
     }
 
-    // Additional endpoints, over and above those created by Spring Data REST
+    // Additional endpoints
 
     @GetMapping(path = "flights.xml", produces = {MediaType.TEXT_XML_VALUE,
         MediaType.APPLICATION_XML_VALUE})

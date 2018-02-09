@@ -108,11 +108,7 @@ In addition, endpoints can be discovered by following these links:
 
 ### Further information
 
-The application is built using Spring Boot and Spring Data REST. Information on installing
+The application is built using Spring Boot. Information on installing
 the application as a Linux daemon or Windows service can be found here:
 
 [Installing Spring Boot Applications](https://docs.spring.io/spring-boot/docs/current/reference/html/deployment-install.html)
-
-Information about web service endpoints exposes by Spring Data REST can be found here:
-
-[Spring Data REST - Reference Documentation](http://docs.spring.io/spring-data/rest/docs/current/reference/html/)
