@@ -1,14 +1,21 @@
-plugins {
-    id 'org.springframework.boot' version '1.5.1.RELEASE'
-    id 'java'
-    id 'groovy'
+buildscript {
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
+    }
 }
 
-version = 0.1
+apply plugin: 'groovy'
+apply plugin: 'java'
+apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
 }
+
+version = 0.2
 
 dependencies {
     compile 'org.springframework.boot:spring-boot-starter-web'
@@ -37,5 +44,5 @@ jar {
 }
 
 springBoot {
-    executable = true;
+    executable = true
 }
