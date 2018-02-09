@@ -84,7 +84,7 @@ public class ServiceController {
 
     // Additional endpoints
 
-    @GetMapping(path = "flights", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Flight> flightsJSON() {
         return service.findAllFlights();
     }

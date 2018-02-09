@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<!--
+  ~ PilotLog
+  ~
+  ~ Copyright © 2018 Richard Senior
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
+<html lang="en" ng-app="application">
+<head>
+    <meta charset="UTF-8">
+    <title>Pilot Log</title>
+    <link href="css/normalize.css" rel="stylesheet"/>
+    <link href="css/pilotlog.css" rel="stylesheet"/>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="js/application.js"></script>
+</head>
+<body ng-controller="controller">
+    <div id="header">
+        <img src="images/logo.png"/>
+        <div class="title">
+            <h1>Flight Record</h1>
+            <a href="https://github.com/sanhozay/PilotLog" target="_blank">https://github.com/sanhozay/PilotLog</a>
+        </div>
+    </div>
+    <div id="content">
+        <table>
+            <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour.</caption>
+            <thead>
+                <tr class="main">
+                    <th colspan="4">Details of Flight</th>
+                    <th colspan="2">Departure</th>
+                    <th colspan="2">Arrival</th>
+                    <th colspan="5">Fuel</th>
+                    <th colspan="3">Trip Data</th>
+                    <th colspan="1">Time</th>
+                </tr>
+                <tr>
+                    <th colspan="2">Date</th>
+                    <th>Aircraft</th>
+                    <th>Registration</th>
+                    <th>Airport</th>
+                    <th>Time</th>
+                    <th>Airport</th>
+                    <th>Time</th>
+                    <th>T/O</th>
+                    <th>Land</th>
+                    <th>Used</th>
+                    <th>Rate</th>
+                    <th>Resv</th>
+                    <th>NM</th>
+                    <th>GS</th>
+                    <th>Alt</th>
+                    <th>Hours</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr ng-repeat="flight in flights | orderBy: '-startTime' " class="ng-class: flight.status">
+                    <td colspan="2">{{flight.startTime | date:'dd/MM/yy'}}</td>
+                    <td>{{flight.aircraft | capitalize}}</td>
+                    <td>{{flight.callsign}}</td>
+                    <td>{{flight.origin}}</td>
+                    <td>{{flight.startTime | date:'HH:mm'}}</td>
+                    <td>{{flight.destination}}</td>
+                    <td>{{flight.endTime | date:'HH:mm'}}</td>
+                    <td>{{flight.startFuel.toFixed(1)}}</td>
+                    <td>{{flight.endFuel.toFixed(1)}}</td>
+                    <td>{{flight.fuelUsed.toFixed(1)}}</td>
+                    <td>{{flight.fuelRate.toFixed(1)}}</td>
+                    <td>{{flight.reserve | duration}}</td>
+                    <td>{{flight.distance.toFixed()}}</td>
+                    <td>{{flight.groundSpeed.toFixed()}}</td>
+                    <td>{{flight.altitude.toFixed()}}</td>
+                    <td>{{flight.duration | duration}}</td>
+                </tr>
+            </tbody>
+            <tfoot>
+                <tr>
+                    <td colspan="16" class="footerTitle">FLIGHT HOURS TOTAL</td>
+                    <td class="written">{{totalMins | duration}}</td>
+                </tr>
+            </tfoot>
+        </table>
+    </div>
+</body>
+</html>

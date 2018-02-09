@@ -64,7 +64,7 @@ public class WebController {
         return new Flight();
     }
 
-    @GetMapping("/")
+    @GetMapping("/flightRecord")
     public String flightRecord(Model model,
         @ModelAttribute("example") Flight example,
         @PageableDefault(size = 10, sort = "startTime", direction = Direction.DESC) Pageable pageable) {
