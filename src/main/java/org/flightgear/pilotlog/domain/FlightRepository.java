@@ -23,7 +23,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -34,54 +33,22 @@ import java.util.Set;
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     /**
-     * Finds flights by aircraft.
-     *
-     * @param aircraft the aircraft
-     * @return a list of flights for a given aircraft
-     */
-    public List<Flight> findByAircraft(@Param("aircraft") String aircraft);
-
-    /**
-     * Finds flights by callsign.
-     *
-     * @param callsign the callsign
-     * @return a list of flights for a given callsign
-     */
-    public List<Flight> findByCallsign(@Param("callsign") String callsign);
-
-    /**
-     * Finds flights by origin airport.
-     *
-     * @param origin the origin airport
-     * @return a list of flights for a given origin airport
-     */
-    public List<Flight> findByOrigin(@Param("origin") String origin);
-
-    /**
-     * Finds flights by destination airport.
-     *
-     * @param destination the destination airport
-     * @return a list of flights for a given destination airport
-     */
-    public List<Flight> findByDestination(@Param("destination") String destination);
-
-    /**
      * Finds flights with a given status.
      *
-     * @see FlightStatus
      * @param status the flight status
      * @return a set of flights with the given status
+     * @see FlightStatus
      */
-    public Set<Flight> findByStatus(FlightStatus status);
+    Set<Flight> findByStatus(FlightStatus status);
 
     /**
-     * Gets the total flight time, in hours, for flights with a given status.
+     * Gets the total flight time, in minutes, for flights with a given status.
      *
-     * @see FlightStatus
      * @param status the flight status
      * @return the total flight time of flights with the given status
+     * @see FlightStatus
      */
     @Query("select sum(duration) from Flight f where f.status = :status")
-    public Integer findFlightTimeByStatus(@Param("status") FlightStatus status);
+    Integer findFlightTimeByStatus(@Param("status") FlightStatus status);
 
 }

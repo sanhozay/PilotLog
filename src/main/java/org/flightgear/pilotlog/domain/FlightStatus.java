@@ -26,6 +26,6 @@ package org.flightgear.pilotlog.domain;
  */
 public enum FlightStatus {
 
-    NEW, ACTIVE, INVALID, COMPLETE;
+    NEW, ACTIVE, INVALID, COMPLETE
 
 }
