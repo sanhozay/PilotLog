@@ -141,7 +141,7 @@
     <div id="footer">
         <div id="pager" ng-show="totalPages > 1">
             <a ng-repeat="page in pages"
-               class="ng-class: {{page == currentPage ? 'current' : 'page'}}"
+               class="ng-class: page == currentPage ? 'current' : 'page'"
                ng-click="gotoPage(page)">{{page}}</a>
         </div>
         <p id="count">{{totalFlights + ' flight' + (totalFlights != 1 ? 's' : '')}}</p>
