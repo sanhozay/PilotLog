@@ -136,7 +136,7 @@
                class="ng-class: {{page == currentPage ? 'current' : 'page'}}"
                ng-click="gotoPage(page)">{{page}}</a>
         </div>
-        <p id="count">{{totalFlights + ' flights'}}</p>
+        <p id="count">{{totalFlights + ' flight' + (totalFlights != 1 ? 's' : '')}}</p>
     </div>
 </body>
 </html>
