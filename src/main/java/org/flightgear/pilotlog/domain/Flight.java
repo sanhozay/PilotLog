@@ -1,7 +1,7 @@
 /*
  * PilotLog
  *
- * Copyright (c) 2017 Richard Senior
+ * Copyright © 2018 Richard Senior
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -50,12 +50,12 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
     "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
     "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
-    @Index(columnList = "aircraft", unique = false),
-    @Index(columnList = "callsign", unique = false),
-    @Index(columnList = "origin", unique = false),
-    @Index(columnList = "destination", unique = false),
+    @Index(columnList = "aircraft"),
+    @Index(columnList = "callsign"),
+    @Index(columnList = "origin"),
+    @Index(columnList = "destination"),
 })
-public class Flight implements Serializable, Comparable<Flight> {
+public class Flight implements Serializable, Comparable<Flight>, Timed {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -95,18 +95,22 @@ public class Flight implements Serializable, Comparable<Flight> {
      * Updates computed fields of flight; duration, fuelUsed and fuelRate.
      */
     public void updateComputedFields() {
-        if (startTime != null && endTime != null) {
-            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
-            if (startFuel != null && endFuel != null) {
-                fuelUsed = startFuel - endFuel;
-                fuelRate = fuelUsed == 0.0 ? null : 60 * fuelUsed / duration;
-                reserve = 60 * endFuel / fuelRate;
-            }
-            if (startOdometer != null && endOdometer != null) {
-                distance = endOdometer - startOdometer;
-                groundSpeed = (int)(distance / (duration / 60.0));
-            }
+        if (startTime == null || endTime == null ||
+                startFuel == null || endFuel == null ||
+                startOdometer == null || endOdometer == null) {
+            return;
         }
+        duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
+        if (duration == 0) {
+            return;
+        }
+        fuelUsed = startFuel - endFuel;
+        fuelRate = 60 * fuelUsed / duration;
+        if (fuelRate > 0.0) {
+            reserve = 60 * endFuel / fuelRate;
+        }
+        distance = endOdometer - startOdometer;
+        groundSpeed = (int)(distance / (duration / 60.0));
     }
 
     // Accessors
@@ -288,17 +292,14 @@ public class Flight implements Serializable, Comparable<Flight> {
             return false;
         final Flight other = (Flight)obj;
         if (startTime == null) {
-            if (other.startTime != null)
-                return false;
-        } else if (!startTime.equals(other.startTime))
-            return false;
-        return true;
+            return other.startTime == null;
+        } else return startTime.equals(other.startTime);
     }
 
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.format("with id %d in %s from %s", id, aircraft, origin));
+        sb.append(String.format("#%d in %s from %s", id, aircraft, origin));
         if (destination != null) {
             sb.append(String.format(" to %s", destination));
         }

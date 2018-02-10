@@ -1,4 +1,23 @@
 <!DOCTYPE html>
+<!--
+  ~ PilotLog
+  ~
+  ~ Copyright © 2018 Richard Senior
+  ~
+  ~ This program is free software: you can redistribute it and/or modify
+  ~ it under the terms of the GNU General Public License as published by
+  ~ the Free Software Foundation, either version 3 of the License, or
+  ~ (at your option) any later version.
+  ~
+  ~ This program is distributed in the hope that it will be useful,
+  ~ but WITHOUT ANY WARRANTY; without even the implied warranty of
+  ~ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  ~ GNU General Public License for more details.
+  ~
+  ~ You should have received a copy of the GNU General Public License
+  ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  -->
+
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
 <title>Pilot Log</title>
@@ -133,7 +152,7 @@
   <div id="footer">
     <div th:if="${flights.totalPages > 1}" id="pager">
       <a th:each="page: ${pages}" th:class="${page == flights.number + 1 ? 'current' : 'page'}"
-        th:href="@{/(page=${page} - 1)}" th:text="${page}">P</a>
+        th:href="@{/flightRecord?(page=${page} - 1)}" th:text="${page}">P</a>
     </div>
     <p id="count" th:text="${flights.totalElements} + ' flights'"></p>
   </div>

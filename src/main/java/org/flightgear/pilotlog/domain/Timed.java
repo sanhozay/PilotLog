@@ -17,27 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.service.exceptions;
+package org.flightgear.pilotlog.domain;
 
-import org.flightgear.pilotlog.service.FlightService;
-import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ResponseStatus;
+public interface Timed {
 
-/**
- * Exception created by the {@link FlightService}.
- *
- * @author Richard Senior
- */
-@SuppressWarnings("serial")
-@ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class FlightNotFoundException extends RuntimeException {
-
-    public FlightNotFoundException(String message) {
-        super(message);
-    }
-
-    public FlightNotFoundException(String message, Throwable cause) {
-        super(message, cause);
-    }
+    Integer getDuration();
 
 }

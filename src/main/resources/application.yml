@@ -1,6 +1,5 @@
 spring:
   profiles.active: production
-  data.rest.base-path: api
 logging:
   config: classpath:logback.xml
 ---

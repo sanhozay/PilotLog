@@ -1,7 +1,7 @@
 /*
  * PilotLog
  *
- * Copyright (c) 2017 Richard Senior
+ * Copyright © 2018 Richard Senior
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -47,17 +47,16 @@ public class FlightServiceAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(FlightServiceAdvice.class);
 
-    @Autowired(required = true)
-    FlightRepository dao;
+    private FlightRepository repository;
 
     @Before("execution (* FlightService.beginFlight(..))")
     @Transactional(propagation = Propagation.REQUIRED)
     public void purge() {
         final Set<Flight> toDelete = new HashSet<>();
-        if (toDelete.addAll(dao.findByStatus(FlightStatus.INVALID)) ||
-            toDelete.addAll(dao.findByStatus(FlightStatus.ACTIVE)))
+        if (toDelete.addAll(repository.findByStatus(FlightStatus.INVALID)) ||
+            toDelete.addAll(repository.findByStatus(FlightStatus.ACTIVE)))
             for (final Flight flight : toDelete) {
-                dao.delete(flight);
+                repository.delete(flight);
                 log.info("Deleted flight {}", flight);
             }
     }
@@ -66,13 +65,18 @@ public class FlightServiceAdvice {
     @Transactional(propagation = Propagation.MANDATORY)
     public void compute(final JoinPoint jp) {
         final int id = (int)jp.getArgs()[0];
-        final Flight flight = dao.findOne(id);
+        final Flight flight = repository.findOne(id);
         flight.updateComputedFields();
         if (flight.getDuration() == 0) {
             flight.setStatus(FlightStatus.INVALID);
             log.warn("Invalidating flight {} because duration is zero", flight.getId());
         }
         log.info("Updated computed fields of flight {}", flight);
+    }
+
+    @Autowired
+    public void setRepository(FlightRepository repository) {
+        this.repository = repository;
     }
 
 }

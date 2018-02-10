@@ -1,7 +1,7 @@
 /*
  * PilotLog
  *
- * Copyright (c) 2017 Richard Senior
+ * Copyright © 2018 Richard Senior
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -102,8 +102,9 @@ public interface FlightService {
     /**
      * Gets the total flight time, in hours, excluding invalid flights.
      *
+     * @param flight the example flight
      * @return the total flight time
      */
-    int findFlightTimeTotal();
+    int getTotalFlightTimeByExample(Flight flight);
 
 }

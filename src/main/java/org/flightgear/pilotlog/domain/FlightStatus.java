@@ -1,7 +1,7 @@
 /*
  * PilotLog
  *
- * Copyright (c) 2017 Richard Senior
+ * Copyright © 2018 Richard Senior
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -26,6 +26,6 @@ package org.flightgear.pilotlog.domain;
  */
 public enum FlightStatus {
 
-    NEW, ACTIVE, INVALID, COMPLETE;
+    NEW, ACTIVE, INVALID, COMPLETE
 
 }
