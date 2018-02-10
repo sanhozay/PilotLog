@@ -33,19 +33,18 @@ app.controller('controller', function($scope, $http, $interval) {
         $scope.example.callsign = $scope.form.callsign
         $scope.example.destination = $scope.form.destination
         $scope.example.origin = $scope.form.origin
-        $scope.refresh()
+        $scope.gotoPage(1)
     }
     $scope.clear = function() {
         $scope.form = {}
         $scope.example = {}
-        $scope.refresh()
+        $scope.gotoPage(1)
     }
     $scope.gotoPage = function(page) {
         $scope.currentPage = page
         $scope.refresh()
     }
     $scope.clear()
-    $scope.refresh()
     $interval($scope.refresh, 1000)
 })
 
