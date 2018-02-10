@@ -38,6 +38,12 @@ app.controller('controller', function($scope, $http, $interval) {
             $scope.totalDuration = response.data.totalDuration
         })
     }
+    $scope.delete = function(flight) {
+        if (confirm("Delete " + description(flight) + "?")) {
+            $http.delete("/api/flights/flight/" + flight.id)
+            .then($scope.refresh)
+        }
+    }
     $scope.search = function() {
         $scope.example.aircraft = $scope.form.aircraft
         $scope.example.callsign = $scope.form.callsign
@@ -75,10 +81,16 @@ app.filter('duration', function() {
 })
 
 app.filter('capitalize', function() {
-    return function(s) {
-        if (s.length == 0) {
-            return s
-        }
-        return s[0].toUpperCase() + s.substring(1)
-    }
+    return capitalize
 })
+
+function capitalize(s) {
+    if (s.length == 0) {
+        return s
+    }
+    return s[0].toUpperCase() + s.substring(1)
+}
+
+function description(flight) {
+    return capitalize(flight.aircraft) + " flight from " + flight.origin + " to " + flight.destination
+}

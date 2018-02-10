@@ -182,16 +182,12 @@ tbody tr.INVALID:hover {
     color: white;
 }
 
-tbody td.delete {
-    padding: 0;
-    margin: 0;
-}
-
 tbody a {
     text-decoration: none;
 }
 
-tbody tr:hover a {
+tbody a:hover {
+    cursor: pointer;
     color: white;
     text-decoration: underline;
 }
