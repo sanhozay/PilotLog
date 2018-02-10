@@ -200,13 +200,11 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     public int getTotalFlightTimeByExample(Flight example) {
-        List<Flight> flights;
-        if (example != null) {
-            example.setStatus(FlightStatus.COMPLETE);
-            flights = repository.findAll(Example.of(example, matcher));
-        } else {
-            flights = repository.findAll();
+        if (example == null) {
+            example = new Flight();
         }
+        example.setStatus(FlightStatus.COMPLETE);
+        List<Flight> flights = repository.findAll(Example.of(example, matcher));
         return flights.parallelStream().mapToInt(Flight::getDuration).sum();
     }
 
