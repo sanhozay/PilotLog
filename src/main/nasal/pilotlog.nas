@@ -103,7 +103,7 @@ var pirep = func {
 
 # Listeners and timers
 
-var pirepTimer = maketimer(60, pirep);
+var pirepTimer = maketimer(10, pirep);
 
 setlistener("gear/gear/wow", func(node) {
     if (getprop(inhibited))
