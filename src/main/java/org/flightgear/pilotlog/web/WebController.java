@@ -50,8 +50,12 @@ import org.springframework.web.bind.annotation.SessionAttributes;
 @SessionAttributes({"example"})
 public class WebController {
 
+    private final FlightService service;
+
     @Autowired
-    FlightService service;
+    public WebController(FlightService service) {
+        this.service = service;
+    }
 
     @InitBinder
     protected void initBinder(WebDataBinder binder) {
@@ -64,10 +68,10 @@ public class WebController {
         return new Flight();
     }
 
-    @GetMapping("/")
+    @GetMapping("/flightRecord")
     public String flightRecord(Model model,
         @ModelAttribute("example") Flight example,
-        @PageableDefault(size = 10, sort = "startTime", direction = Direction.DESC) Pageable pageable) {
+        @PageableDefault(sort = "startTime", direction = Direction.DESC) Pageable pageable) {
 
         final Page<Flight> flights = service.findFlightsByExample(example, pageable);
         model.addAttribute("flights", flights);
@@ -76,9 +80,9 @@ public class WebController {
         final int pageTotal = flights.getContent()
             .parallelStream()
             .filter(flight -> flight.getStatus().equals(FlightStatus.COMPLETE))
-            .mapToInt(flight -> flight.getDuration())
+            .mapToInt(Flight::getDuration)
             .sum();
-        final int grandTotal = service.findFlightTimeTotal();
+        final int grandTotal = service.getTotalFlightTimeByExample(example);
         model.addAttribute("total", new FlightRecordTotals(pageTotal, grandTotal));
 
         return "flightrecord";

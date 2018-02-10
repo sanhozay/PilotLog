@@ -40,7 +40,7 @@ public class Application {
      * @param args the program arguments
      * @throws Exception underlying exceptions from the application
      */
-    public static void main(String[] args) throws Exception {
+    public static void main(String[] args) {
         SpringApplication.run(Application.class, args);
     }
 

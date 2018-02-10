@@ -19,13 +19,8 @@
 
 package org.flightgear.pilotlog.domain;
 
-/**
- * Enumeration to represent flight status, e.g. ACTIVE, INVALID
- *
- * @author Richard Senior
- */
-public enum FlightStatus {
+public interface Timed {
 
-    NEW, ACTIVE, INVALID, COMPLETE
+    Integer getDuration();
 
 }

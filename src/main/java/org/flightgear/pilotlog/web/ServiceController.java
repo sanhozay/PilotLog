@@ -19,22 +19,32 @@
 
 package org.flightgear.pilotlog.web;
 
-import java.util.List;
-
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.dataformat.csv.CsvMapper;
+import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
 import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
+import org.flightgear.pilotlog.web.helpers.DurationAwarePage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.dataformat.csv.CsvMapper;
-import com.fasterxml.jackson.dataformat.csv.CsvSchema;
+import java.util.List;
+
+import static org.springframework.data.domain.Sort.Direction.DESC;
+import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 
 /**
  * Web service controller for PilotLog.
@@ -50,47 +60,65 @@ public class ServiceController {
 
     // Flightgear endpoints
 
-    @GetMapping(path = "departure", produces = MediaType.TEXT_XML_VALUE)
+    @GetMapping(path = "departure", produces = TEXT_XML_VALUE)
     public Flight departure(
-        @RequestParam("callsign") String callsign,
-        @RequestParam("aircraft") String aircraft,
-        @RequestParam("airport") String airport,
-        @RequestParam("fuel") float startFuel,
-        @RequestParam("odometer") float startOdometer) {
+            @RequestParam("callsign") String callsign,
+            @RequestParam("aircraft") String aircraft,
+            @RequestParam("airport") String airport,
+            @RequestParam("fuel") float startFuel,
+            @RequestParam("odometer") float startOdometer) {
         return service.beginFlight(callsign, aircraft, airport, startFuel, startOdometer);
     }
 
-    @GetMapping(path = "arrival", produces = MediaType.TEXT_XML_VALUE)
+    @GetMapping(path = "arrival", produces = TEXT_XML_VALUE)
     public Flight arrival(
-        @RequestParam("id") int id,
-        @RequestParam("airport") String airport,
-        @RequestParam("fuel") float endFuel,
-        @RequestParam("odometer") float endOdometer)
-        throws FlightNotFoundException, InvalidFlightStatusException {
+            @RequestParam("id") int id,
+            @RequestParam("airport") String airport,
+            @RequestParam("fuel") float endFuel,
+            @RequestParam("odometer") float endOdometer)
+            throws FlightNotFoundException, InvalidFlightStatusException {
         return service.endFlight(id, airport, endFuel, endOdometer);
     }
 
-    @GetMapping(path = "invalidate", produces = MediaType.TEXT_XML_VALUE)
+    @GetMapping(path = "invalidate", produces = TEXT_XML_VALUE)
     public Flight invalidate(@RequestParam("id") int id)
-        throws FlightNotFoundException, InvalidFlightStatusException {
+            throws FlightNotFoundException, InvalidFlightStatusException {
         return service.invalidateFlight(id);
     }
 
-    @GetMapping(path = "pirep", produces = MediaType.TEXT_XML_VALUE)
+    @GetMapping(path = "pirep", produces = TEXT_XML_VALUE)
     public Flight pirep(@RequestParam("id") int id, @RequestParam("altitude") double altitude)
-        throws FlightNotFoundException, InvalidFlightStatusException {
+            throws FlightNotFoundException, InvalidFlightStatusException {
         return service.updateFlightAltitude(id, altitude);
     }
 
     // Additional endpoints
 
-    @GetMapping(path = "flights", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    public DurationAwarePage<Flight> flights(
+            @RequestBody(required = false) Flight example,
+            @PageableDefault(sort = "startTime", direction = DESC) Pageable pageable
+    ) {
+        Page<Flight> page;
+        page = service.findFlightsByExample(example, pageable);
+        return new DurationAwarePage<>(page.getContent(),
+                pageable,
+                page.getTotalElements(),
+                service.getTotalFlightTimeByExample(example)
+        );
+    }
+
+    @DeleteMapping(path = "flights/flight/{id}")
+    public void deleteFlight(@PathVariable int id) {
+        service.deleteFlight(id);
+    }
+
+    @GetMapping(path = "flights.json", produces = {MediaType.APPLICATION_JSON_VALUE})
     public List<Flight> flightsJSON() {
         return service.findAllFlights();
     }
 
-    @GetMapping(path = "flights.xml", produces = {MediaType.TEXT_XML_VALUE,
-        MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(path = "flights.xml", produces = {TEXT_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
     public List<Flight> flightsXML() {
         return service.findAllFlights();
     }

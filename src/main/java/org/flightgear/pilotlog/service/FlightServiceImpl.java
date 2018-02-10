@@ -19,9 +19,6 @@
 
 package org.flightgear.pilotlog.service;
 
-import java.util.Date;
-import java.util.List;
-
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
@@ -38,37 +35,50 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+import java.util.List;
+
 /**
  * Service for working with flights.
  *
  * @author Richard Senior
  */
 @Service
-@Transactional(readOnly = false)
+@Transactional
 public class FlightServiceImpl implements FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightServiceImpl.class);
 
-    @Autowired(required = true)
-    FlightRepository flightRepository;
+    private final FlightRepository repository;
+
+    private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
+            .withIgnorePaths("id")
+            .withIgnoreCase()
+            .withIgnoreNullValues()
+            .withStringMatcher(StringMatcher.STARTING);
+
+    @Autowired
+    public FlightServiceImpl(FlightRepository repository) {
+        this.repository = repository;
+    }
 
     /**
      * Begins a flight.
      *
-     * @param callsign the callsign or registration
-     * @param aircraft the aircraft model
-     * @param airport the ICAO code of the departure airport
-     * @param startFuel the amount of fuel at takeoff, in US gallons
+     * @param callsign      the callsign or registration
+     * @param aircraft      the aircraft model
+     * @param airport       the ICAO code of the departure airport
+     * @param startFuel     the amount of fuel at takeoff, in US gallons
      * @param startOdometer the odometer reading at the start of the flight
      * @return a new flight, with supplied fields and id field initialized
      */
     @Override
     public Flight beginFlight(String callsign, String aircraft, String airport,
-        float startFuel, float startOdometer) {
+                              float startFuel, float startOdometer) {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
-        flight = flightRepository.save(flight);
+        flight = repository.save(flight);
         log.info("Started new flight {}", flight);
         return flight;
     }
@@ -76,15 +86,15 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Ends a flight.
      *
-     * @param id the id of the flight that is to be ended
-     * @param airport the ICAO code of the destination airport
-     * @param endFuel the amount of fuel at landing, in US gallons
+     * @param id          the id of the flight that is to be ended
+     * @param airport     the ICAO code of the destination airport
+     * @param endFuel     the amount of fuel at landing, in US gallons
      * @param endOdometer the odometer reading at the end of the flight
      * @return the flight, with arrival fields updated
      */
     @Override
     public Flight endFlight(int id, String airport, float endFuel, float endOdometer) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to end flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -116,7 +126,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public Flight invalidateFlight(int id) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to invalidate flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -137,7 +147,7 @@ public class FlightServiceImpl implements FlightService {
      */
     @Override
     public void deleteFlight(int id) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to delete flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -146,13 +156,13 @@ public class FlightServiceImpl implements FlightService {
             final String message = String.format("Attempt to delete incomplete flight %s", flight);
             throw new InvalidFlightStatusException(message);
         }
-        flightRepository.delete(flight);
+        repository.delete(flight);
         log.info("Deleted flight {}", flight);
     }
 
     @Override
     public Flight updateFlightAltitude(int id, double altitude) {
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to update flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
@@ -174,25 +184,28 @@ public class FlightServiceImpl implements FlightService {
     @Override
     @Transactional(readOnly = true)
     public List<Flight> findAllFlights() {
-        return flightRepository.findAll();
+        return repository.findAll();
     }
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Flight> findFlightsByExample(Flight flight, Pageable pageable) {
-        final ExampleMatcher matcher = ExampleMatcher.matchingAll()
-            .withIgnorePaths("id")
-            .withIgnoreCase()
-            .withIgnoreNullValues()
-            .withStringMatcher(StringMatcher.STARTING);
-        return flightRepository.findAll(Example.of(flight, matcher), pageable);
+    public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
+        if (example != null) {
+            return repository.findAll(Example.of(example, matcher), pageable);
+        } else {
+            return repository.findAll(pageable);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
-    public int findFlightTimeTotal() {
-        final Integer total = flightRepository.findFlightTimeByStatus(FlightStatus.COMPLETE);
-        return total != null ? total : 0;
+    public int getTotalFlightTimeByExample(Flight example) {
+        if (example == null) {
+            example = new Flight();
+        }
+        example.setStatus(FlightStatus.COMPLETE);
+        List<Flight> flights = repository.findAll(Example.of(example, matcher));
+        return flights.parallelStream().mapToInt(Flight::getDuration).sum();
     }
 
 }

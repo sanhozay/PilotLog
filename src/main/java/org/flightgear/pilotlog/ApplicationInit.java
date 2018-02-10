@@ -19,6 +19,7 @@
 
 package org.flightgear.pilotlog;
 
+import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -44,9 +45,9 @@ public class ApplicationInit implements CommandLineRunner {
 
     @Override
     @Transactional
-    public void run(String... args) throws Exception {
+    public void run(String... args) {
         log.info("Updating computed fields on all flights");
-        service.findAllFlights().forEach(flight -> flight.updateComputedFields());
+        service.findAllFlights().forEach(Flight::updateComputedFields);
     }
 
 }
