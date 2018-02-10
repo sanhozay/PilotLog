@@ -98,11 +98,7 @@ public class ServiceController {
             @PageableDefault(size = 6, sort = "startTime", direction = DESC) Pageable pageable
     ) {
         Page<Flight> page;
-        if (example == null) {
-            page = service.findCompletedFlights(pageable);
-        } else {
-            page = service.findFlightsByExample(example, pageable);
-        }
+        page = service.findFlightsByExample(example, pageable);
         return new DurationAwarePage<>(page.getContent(),
                 pageable,
                 page.getTotalElements(),

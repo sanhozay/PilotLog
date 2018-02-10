@@ -35,7 +35,11 @@ public class DurationAwarePage<T extends Timed> extends PageImpl<T> {
     }
 
     public int getPageDuration() {
-        return getContent().parallelStream().mapToInt(Timed::getDuration).sum();
+        return getContent()
+                .parallelStream()
+                .filter(timed -> timed.getDuration() != null)
+                .mapToInt(Timed::getDuration)
+                .sum();
     }
 
     public int getOtherDuration() {

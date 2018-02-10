@@ -19,9 +19,6 @@
 
 package org.flightgear.pilotlog.service;
 
-import java.util.Date;
-import java.util.List;
-
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
@@ -37,6 +34,9 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Date;
+import java.util.List;
 
 /**
  * Service for working with flights.
@@ -65,16 +65,16 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Begins a flight.
      *
-     * @param callsign the callsign or registration
-     * @param aircraft the aircraft model
-     * @param airport the ICAO code of the departure airport
-     * @param startFuel the amount of fuel at takeoff, in US gallons
+     * @param callsign      the callsign or registration
+     * @param aircraft      the aircraft model
+     * @param airport       the ICAO code of the departure airport
+     * @param startFuel     the amount of fuel at takeoff, in US gallons
      * @param startOdometer the odometer reading at the start of the flight
      * @return a new flight, with supplied fields and id field initialized
      */
     @Override
     public Flight beginFlight(String callsign, String aircraft, String airport,
-        float startFuel, float startOdometer) {
+                              float startFuel, float startOdometer) {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
@@ -86,9 +86,9 @@ public class FlightServiceImpl implements FlightService {
     /**
      * Ends a flight.
      *
-     * @param id the id of the flight that is to be ended
-     * @param airport the ICAO code of the destination airport
-     * @param endFuel the amount of fuel at landing, in US gallons
+     * @param id          the id of the flight that is to be ended
+     * @param airport     the ICAO code of the destination airport
+     * @param endFuel     the amount of fuel at landing, in US gallons
      * @param endOdometer the odometer reading at the end of the flight
      * @return the flight, with arrival fields updated
      */
@@ -189,21 +189,24 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Flight> findCompletedFlights(Pageable pageable) {
-        return repository.findByStatus(FlightStatus.COMPLETE, pageable);
-    }
-
-    @Override
-    @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
-        return repository.findAll(Example.of(example, matcher), pageable);
+        if (example != null) {
+            return repository.findAll(Example.of(example, matcher), pageable);
+        } else {
+            return repository.findAll(pageable);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public int getTotalFlightTimeByExample(Flight example) {
-        example.setStatus(FlightStatus.COMPLETE);
-        List<Flight> flights = repository.findAll(Example.of(example, matcher));
+        List<Flight> flights;
+        if (example != null) {
+            example.setStatus(FlightStatus.COMPLETE);
+            flights = repository.findAll(Example.of(example, matcher));
+        } else {
+            flights = repository.findAll();
+        }
         return flights.parallelStream().mapToInt(Flight::getDuration).sum();
     }
 
