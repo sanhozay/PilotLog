@@ -97,7 +97,7 @@ public class ServiceController {
     @PostMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
     public DurationAwarePage<Flight> flights(
             @RequestBody(required = false) Flight example,
-            @PageableDefault(size = 6, sort = "startTime", direction = DESC) Pageable pageable
+            @PageableDefault(sort = "startTime", direction = DESC) Pageable pageable
     ) {
         Page<Flight> page;
         page = service.findFlightsByExample(example, pageable);
