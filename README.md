@@ -18,10 +18,6 @@ destination.
 In addition to the web interface, flight details can also be downloaded in XML or CSV format. The
 latter is easily imported into a spreadsheet.
 
-Should you prefer to write your own web application, PilotLog also provides various web service
-endpoints that return JSON. These can be consumed by web applications using Javascript libraries
-such as jQuery, React or Angular.js.
-
 ## Prerequistes
 
 PilotLog requires Flightgear 2017.1.0 or later because prior versions do not handle the
@@ -51,15 +47,15 @@ If you want to build the web service, you will need a Java 8 SDK, either the
 ### Installation
 
 1. Download a release distribution from 
-[https://githib.com/sanhozay/PilotLog-Releases](https://githib.com/sanhozay/PilotLog-Releases).
+[https://github.com/sanhozay/PilotLog/releases](https://github.com/sanhozay/PilotLog/releases).
 2. Create a `Nasal` directory in `$FG_HOME` if necessary.
 3. Copy `pilotlog.nas` to `$FG_HOME/Nasal`.
 
 ### Starting the service
 
-1. Run the executable JAR file `PilotLog-0.1.jar`
-2. Check the service is running  
-[http://localhost:8080](http://localhost:8080)
+1. Run the executable JAR file, e.g. `PilotLog-0.1.jar`, from a terminal or
+   command window
+2. Check the service is running  [http://localhost:8080](http://localhost:8080)
 
 The service must be running to record your flights so you may want to arrange for it to run when
 your computer starts or when you login. Instructions for doing that depend on your operating system.
@@ -96,15 +92,9 @@ the machine where you are running the service.
 
 The main endpoints are as follows:
 
-1. http://localhost:8080/api/flights (all flights as a JSON response)
+1. http://localhost:8080/api/flights.json (all flights as a JSON response)
 2. http://localhost:8080/api/flights.xml (all flights as an XML response)
 3. http://localhost:8080/api/flights.csv (all flights as a CSV response)
-
-In addition, endpoints can be discovered by following these links:
-
-1. http://localhost:8080/api
-2. http://localhost:8080/api/profile/flights
-3. http://localhost:8080/api/flights/search
 
 ### Further information
 
