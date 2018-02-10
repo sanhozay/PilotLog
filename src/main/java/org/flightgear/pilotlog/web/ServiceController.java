@@ -26,7 +26,7 @@ import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
 import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
-import org.flightgear.pilotlog.web.helpers.DurationAwarePage;
+import org.flightgear.pilotlog.domain.DurationAwarePage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
