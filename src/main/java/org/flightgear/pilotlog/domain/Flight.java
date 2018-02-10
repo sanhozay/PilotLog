@@ -299,7 +299,7 @@ public class Flight implements Serializable, Comparable<Flight>, Timed {
     @Override
     public String toString() {
         final StringBuilder sb = new StringBuilder();
-        sb.append(String.format("with id %d in %s from %s", id, aircraft, origin));
+        sb.append(String.format("#%d in %s from %s", id, aircraft, origin));
         if (destination != null) {
             sb.append(String.format(" to %s", destination));
         }
