@@ -110,8 +110,9 @@ public interface FlightService {
     /**
      * Gets the total flight time, in hours, excluding invalid flights.
      *
+     * @param flight the example flight
      * @return the total flight time
      */
-    int findFlightTimeTotal();
+    int getTotalFlightTimeByExample(Flight flight);
 
 }

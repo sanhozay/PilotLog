@@ -51,6 +51,12 @@ public class FlightServiceImpl implements FlightService {
 
     private final FlightRepository repository;
 
+    private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
+            .withIgnorePaths("id")
+            .withIgnoreCase()
+            .withIgnoreNullValues()
+            .withStringMatcher(StringMatcher.STARTING);
+
     @Autowired
     public FlightServiceImpl(FlightRepository repository) {
         this.repository = repository;
@@ -189,20 +195,16 @@ public class FlightServiceImpl implements FlightService {
 
     @Override
     @Transactional(readOnly = true)
-    public Page<Flight> findFlightsByExample(Flight flight, Pageable pageable) {
-        final ExampleMatcher matcher = ExampleMatcher.matchingAll()
-            .withIgnorePaths("id")
-            .withIgnoreCase()
-            .withIgnoreNullValues()
-            .withStringMatcher(StringMatcher.STARTING);
-        return repository.findAll(Example.of(flight, matcher), pageable);
+    public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
+        return repository.findAll(Example.of(example, matcher), pageable);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public int findFlightTimeTotal() {
-        final Integer total = repository.findFlightTimeByStatus(FlightStatus.COMPLETE);
-        return total != null ? total : 0;
+    public int getTotalFlightTimeByExample(Flight example) {
+        example.setStatus(FlightStatus.COMPLETE);
+        List<Flight> flights = repository.findAll(Example.of(example, matcher));
+        return flights.parallelStream().mapToInt(Flight::getDuration).sum();
     }
 
 }

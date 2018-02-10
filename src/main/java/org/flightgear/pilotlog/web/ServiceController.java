@@ -106,7 +106,7 @@ public class ServiceController {
         return new DurationAwarePage<>(page.getContent(),
                 pageable,
                 page.getTotalElements(),
-                service.findFlightTimeTotal()
+                service.getTotalFlightTimeByExample(example)
         );
     }
 

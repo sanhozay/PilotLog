@@ -53,14 +53,4 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      */
     Set<Flight> findByStatus(FlightStatus status);
 
-    /**
-     * Gets the total flight time, in minutes, for flights with a given status.
-     *
-     * @param status the flight status
-     * @return the total flight time of flights with the given status
-     * @see FlightStatus
-     */
-    @Query("select sum(duration) from Flight f where f.status = :status")
-    Integer findFlightTimeByStatus(@Param("status") FlightStatus status);
-
 }

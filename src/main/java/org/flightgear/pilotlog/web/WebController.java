@@ -82,7 +82,7 @@ public class WebController {
             .filter(flight -> flight.getStatus().equals(FlightStatus.COMPLETE))
             .mapToInt(Flight::getDuration)
             .sum();
-        final int grandTotal = service.findFlightTimeTotal();
+        final int grandTotal = service.getTotalFlightTimeByExample(example);
         model.addAttribute("total", new FlightRecordTotals(pageTotal, grandTotal));
 
         return "flightrecord";
