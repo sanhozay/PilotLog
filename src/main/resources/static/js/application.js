@@ -61,6 +61,9 @@ app.controller('controller', function($scope, $http, $interval) {
 
 app.filter('duration', function() {
     return function(minutes) {
+        if (minutes == null) {
+            return ""
+        }
         var hours = Math.floor(minutes / 60)
         var m = Math.floor(minutes % 60)
         var mins = m.toString()
