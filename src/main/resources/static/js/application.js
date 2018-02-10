@@ -1,13 +1,16 @@
 var app = angular.module('application', [])
 app.controller('controller', function($scope, $http, $interval) {
     $scope.refresh = function() {
-        $http.post("/api/flights/?page=" + ($scope.currentPage - 1), $scope.example)
+        var pageParam = "page=" + ($scope.currentPage - 1)
+        var sortParam = "sort=" + $scope.sortKey + "," + $scope.sortDirection
+        $http.post("/api/flights/?" + pageParam + "&" + sortParam, $scope.example)
         .then(function(response) {
             $scope.flights = response.data.content
 
             $scope.currentPage = response.data.number + 1
             $scope.totalPages = response.data.totalPages
             $scope.totalFlights = response.data.totalElements
+
             $scope.pages = []
             for (var i = 1; i <= $scope.totalPages; ++i) {
                 $scope.pages.push(i)
@@ -28,6 +31,18 @@ app.controller('controller', function($scope, $http, $interval) {
         $scope.form[term] = value
         $scope.search()
     }
+    $scope.sortBy = function(key) {
+        if ($scope.sortKey == key) {
+            $scope.sortDirection = $scope.sortDirection == "ASC" ? "DESC" : "ASC"
+        } else {
+            $scope.sortKey = key
+            if (key == "startTime" || key == "endTime") {
+                $scope.sortDirection = "DESC"
+            } else {
+                $scope.sortDirection = "ASC"
+            }
+        }
+    }
     $scope.search = function() {
         $scope.example.aircraft = $scope.form.aircraft
         $scope.example.callsign = $scope.form.callsign
@@ -44,6 +59,8 @@ app.controller('controller', function($scope, $http, $interval) {
         $scope.currentPage = page
         $scope.refresh()
     }
+    $scope.sortKey = "startTime"
+    $scope.sortDirection = "DESC"
     $scope.clear()
     $interval($scope.refresh, 1000)
 })

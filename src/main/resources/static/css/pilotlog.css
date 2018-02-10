@@ -182,7 +182,7 @@ tr.INVALID:hover {
     color: white;
 }
 
-tbody a:hover {
+table a:hover {
     cursor: pointer;
     text-decoration: underline;
 }
