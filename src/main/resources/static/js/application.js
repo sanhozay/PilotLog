@@ -44,6 +44,10 @@ app.controller('controller', function($scope, $http, $interval) {
             .then($scope.refresh)
         }
     }
+    $scope.addTerm = function(term, value) {
+        $scope.form[term] = value
+        $scope.search()
+    }
     $scope.search = function() {
         $scope.example.aircraft = $scope.form.aircraft
         $scope.example.callsign = $scope.form.callsign

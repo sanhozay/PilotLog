@@ -100,11 +100,11 @@
                         </a>
                         <span ng-hide="flight.status == 'COMPLETE'">{{flight.startTime | date:'dd/MM/yy'}}</span>
                     </td>
-                    <td>{{flight.aircraft | capitalize}}</td>
-                    <td>{{flight.callsign}}</td>
-                    <td>{{flight.origin}}</td>
+                    <td><a ng-click="addTerm('aircraft', flight.aircraft)">{{flight.aircraft | capitalize}}</a></td>
+                    <td><a ng-click="addTerm('callsign', flight.callsign)">{{flight.callsign}}</a></td>
+                    <td><a ng-click="addTerm('origin', flight.origin)">{{flight.origin}}</a></td>
                     <td>{{flight.startTime | date:'HH:mm'}}</td>
-                    <td>{{flight.destination}}</td>
+                    <td><a ng-click="addTerm('destination', flight.destination)">{{flight.destination}}</a></td>
                     <td>{{flight.endTime | date:'HH:mm'}}</td>
                     <td>{{flight.startFuel.toFixed(1)}}</td>
                     <td>{{flight.endFuel.toFixed(1)}}</td>
