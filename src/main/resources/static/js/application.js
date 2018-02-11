@@ -1,5 +1,5 @@
-var app = angular.module('application', [])
-app.controller('controller', function($scope, $http, $interval) {
+var app = angular.module('application', ["core"])
+app.controller('controller', function($scope, $http, $interval, $filter) {
     $scope.refresh = function() {
         var pageParam = "page=" + ($scope.currentPage - 1)
         var sortParam = "sort=" + $scope.sortKey + "," + $scope.sortDirection
@@ -22,7 +22,9 @@ app.controller('controller', function($scope, $http, $interval) {
         })
     }
     $scope.delete = function(flight) {
-        if (confirm("Delete " + description(flight) + "?")) {
+        var route = "from " + flight.origin + " to " + flight.destination
+        var description = $filter('capitalize')(flight.aircraft) + " flight " + route
+        if (confirm("Delete " + description + "?")) {
             $http.delete("/api/flights/flight/" + flight.id)
             .then($scope.refresh)
         }
@@ -64,33 +66,3 @@ app.controller('controller', function($scope, $http, $interval) {
     $scope.clear()
     $interval($scope.refresh, 1000)
 })
-
-app.filter('duration', function() {
-    return function(minutes) {
-        if (minutes == null) {
-            return ""
-        }
-        var hours = Math.floor(minutes / 60)
-        var m = Math.floor(minutes % 60)
-        var mins = m.toString()
-        if (m < 10) {
-            mins= '0' + mins
-        }
-        return hours + ":" + mins
-    }
-})
-
-app.filter('capitalize', function() {
-    return capitalize
-})
-
-function capitalize(s) {
-    if (s.length == 0) {
-        return s
-    }
-    return s[0].toUpperCase() + s.substring(1)
-}
-
-function description(flight) {
-    return capitalize(flight.aircraft) + " flight from " + flight.origin + " to " + flight.destination
-}
