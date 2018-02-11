@@ -31,7 +31,9 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -183,6 +185,10 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
+        if (pageable.getSort().getOrderFor("id") == null) {
+            Sort sort = pageable.getSort().and(new Sort("id"));
+            pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        }
         if (example != null) {
             return repository.findAll(Example.of(example, matcher), pageable);
         } else {
