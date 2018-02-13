@@ -58,6 +58,9 @@ angular.module("flightrecord").component("flightrecord", {
                     ctrl.durationTotals = response.data.durationTotals
                     ctrl.totalFlights = response.data.totalElements
                     ctrl.totalPages = response.data.totalPages
+                    if (ctrl.pageable.pageNumber > ctrl.totalPages) {
+                        ctrl.refreshPage(ctrl.totalPages)
+                    }
                 })
         }
     },
