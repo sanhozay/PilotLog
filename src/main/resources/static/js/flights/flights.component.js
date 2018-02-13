@@ -1,7 +1,7 @@
 angular.module("flights").component("flights", {
     bindings: {
         content: "<",
-        totals: "<",
+        durationTotals: "<",
         onClickColumn: "&",
         onClickHeading: "&"
     },

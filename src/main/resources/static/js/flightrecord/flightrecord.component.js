@@ -52,7 +52,7 @@ angular.module("flightrecord").component("flightrecord", {
             $http.post(url, ctrl.example)
                 .then(function(response) {
                     ctrl.content = response.data.content
-                    ctrl.totals = response.data.totals
+                    ctrl.durationTotals = response.data.durationTotals
                     ctrl.totalFlights = response.data.totalElements
                     ctrl.totalPages = response.data.totalPages
                 })
