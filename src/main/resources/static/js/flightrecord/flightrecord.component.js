@@ -1,11 +1,22 @@
 angular.module("flightrecord").component("flightrecord", {
-    controller: function($http, $interval, $filter) {
+    controller: function($http, $interval, $filter, $cookies) {
         var ctrl = this
         ctrl.$onInit = function() {
-            ctrl.pageable = {pageNumber: 1, sort: {property: "id", direction: "DESC"}}
+            if (!$cookies.get("pageSize")) {
+                $cookies.put("pageSize", 10)
+            }
+            ctrl.pageable = {pageNumber: 1,
+                size: $cookies.get("pageSize") || 10,
+                sort: {property: "id", direction: "DESC"}
+            }
             ctrl.search = {form: {}, example: {}}
-            ctrl.refresh()
+            ctrl.refreshPage(1)
             $interval(ctrl.refresh, 1000)
+        }
+        ctrl.adjustPageSize = function(pageSize) {
+            ctrl.pageable.size = pageSize
+            $cookies.put("pageSize", pageSize)
+            ctrl.refreshPage(1)
         }
         ctrl.columnClicked = function(flight, property) {
             if (property == "startTime") {
@@ -45,6 +56,7 @@ angular.module("flightrecord").component("flightrecord", {
         }
         ctrl.refresh = function() {
             var url = "/api/flights/?page=" + (ctrl.pageable.pageNumber - 1)
+            url += "&size=" + ctrl.pageable.size
             if (ctrl.pageable.sort) {
                 var sort = ctrl.pageable.sort
                 if (sort.property && sort.direction) {

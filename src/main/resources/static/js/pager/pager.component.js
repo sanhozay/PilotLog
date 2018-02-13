@@ -2,15 +2,20 @@ angular.module("pager").component("pager", {
     bindings: {
         page: "<",
         of: "<",
-        onPageChanged: "&"
+        pageSize: "<",
+        onPageChanged: "&",
+        onPageSizeChanged: "&"
     },
-    controller: function() {
+    controller: function($cookies) {
         var ctrl = this
         ctrl.goto = function(page) {
             if (page > 0 && page <= ctrl.of) {
                 ctrl.page = page
                 ctrl.onPageChanged({page: ctrl.page})
             }
+        }
+        ctrl.pageSizeChanged = function() {
+            ctrl.onPageSizeChanged({pageSize: ctrl.pageSize})
         }
         ctrl.pages = function() {
             var target = 12

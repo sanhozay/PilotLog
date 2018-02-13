@@ -229,6 +229,17 @@ table a:hover {
     float: left;
 }
 
+#pager #pageSize {
+    display: inline-block;
+    margin-right: 1em;
+    padding: 2px;
+    color: gray;
+}
+
+#pager #pageBalloons {
+    display: inline-block;
+}
+
 #footer #count {
     vertical-align: top;
     float: right;
