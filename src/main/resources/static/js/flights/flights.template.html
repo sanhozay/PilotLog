@@ -13,27 +13,27 @@
             <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('startTime')">Date</a></th>
             <th style="width: 20ex"><a ng-click="$ctrl.clickHeading('aircraft')">Aircraft</a></th>
             <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('callsign')">Registration</a></th>
-            <th style="width: 8ex"><a ng-click="$ctrl.clickHeading('origin')">Airport</a></th>
-            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('startTime')">Time</a></th>
-            <th style="width: 8ex"><a ng-click="$ctrl.clickHeading('destination')">Airport</a></th>
-            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('endTime')">Time</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('startFuel')">T/O</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('endFuel')">Land</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('fuelUsed')">Used</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('fuelRate')">Rate</a></th>
-            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('reserve')">Resv</a></th>
-            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('distance')">NM</a></th>
-            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('groundSpeed')">GS</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('altitude')">Alt</a></th>
-            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('duration')">Hours</a></th>
+            <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('origin')">Airport</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('startTime')">Time</a></th>
+            <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('destination')">Airport</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('endTime')">Time</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('startFuel')">T/O</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('endFuel')">Land</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelUsed')">Used</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate')">Rate</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('reserve')">Resv</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance')">NM</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('groundSpeed')">GS</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('altitude')">Alt</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('duration')">Hours</a></th>
         </tr>
     </thead>
-    <tbody ng-show="$ctrl.content.length == 0">
+    <tbody ng-show="$ctrl.totalFlights == 0">
         <tr>
             <td colspan="16">No flights</td>
         </tr>
     </tbody>
-    <tbody ng-hide="$ctrl.content.length == 0">
+    <tbody ng-hide="$ctrl.totalFlights == 0">
         <tr ng-repeat="flight in $ctrl.content" class="ng-class: flight.status">
             <td>
                 <a ng-show="flight.status == 'COMPLETE'" ng-click="$ctrl.clickColumn(flight, 'startTime')">
