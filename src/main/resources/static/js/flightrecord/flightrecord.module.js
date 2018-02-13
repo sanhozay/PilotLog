@@ -1,0 +1,1 @@
+angular.module("flightrecord", ["pageTitle", "search", "flights", "pager"]);

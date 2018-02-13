@@ -19,7 +19,6 @@
 
 package org.flightgear.pilotlog.domain;
 
-import org.flightgear.pilotlog.domain.Timed;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
@@ -27,27 +26,14 @@ import java.util.List;
 
 public class DurationAwarePage<T extends Timed> extends PageImpl<T> {
 
-    private final int totalDuration;
+    private Totals<T> totals;
 
     public DurationAwarePage(List<T> content, Pageable pageable, long total, int totalDuration) {
         super(content, pageable, total);
-        this.totalDuration = totalDuration;
+        totals = new Totals<>(content, totalDuration);
     }
 
-    public int getPageDuration() {
-        return getContent()
-                .parallelStream()
-                .filter(timed -> timed.getDuration() != null)
-                .mapToInt(Timed::getDuration)
-                .sum();
+    public Totals getTotals() {
+        return totals;
     }
-
-    public int getOtherDuration() {
-        return totalDuration - getPageDuration();
-    }
-
-    public int getTotalDuration() {
-        return totalDuration;
-    }
-
 }

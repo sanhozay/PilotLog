@@ -1,0 +1,93 @@
+<table>
+    <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour.</caption>
+    <thead>
+        <tr class="main">
+            <th colspan="3">Details of Flight</th>
+            <th colspan="2">Departure</th>
+            <th colspan="2">Arrival</th>
+            <th colspan="5">Fuel</th>
+            <th colspan="3">Trip Data</th>
+            <th colspan="1">Time</th>
+        </tr>
+        <tr>
+            <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('startTime')">Date</a></th>
+            <th style="width: 20ex"><a ng-click="$ctrl.clickHeading('aircraft')">Aircraft</a></th>
+            <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('callsign')">Registration</a></th>
+            <th style="width: 8ex"><a ng-click="$ctrl.clickHeading('origin')">Airport</a></th>
+            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('startTime')">Time</a></th>
+            <th style="width: 8ex"><a ng-click="$ctrl.clickHeading('destination')">Airport</a></th>
+            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('endTime')">Time</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('startFuel')">T/O</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('endFuel')">Land</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('fuelUsed')">Used</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('fuelRate')">Rate</a></th>
+            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('reserve')">Resv</a></th>
+            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('distance')">NM</a></th>
+            <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('groundSpeed')">GS</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('altitude')">Alt</a></th>
+            <th style="width: 7ex"><a ng-click="$ctrl.clickHeading('duration')">Hours</a></th>
+        </tr>
+    </thead>
+    <tbody ng-show="$ctrl.content.length == 0">
+        <tr>
+            <td colspan="16">No flights</td>
+        </tr>
+    </tbody>
+    <tbody ng-hide="$ctrl.content.length == 0">
+        <tr ng-repeat="flight in $ctrl.content" class="ng-class: flight.status">
+            <td>
+                <a ng-show="flight.status == 'COMPLETE'" ng-click="$ctrl.clickColumn(flight, 'startTime')">
+                    {{flight.startTime | date:'dd/MM/yy'}}
+                </a>
+                <span ng-hide="flight.status == 'COMPLETE'">
+                    {{flight.startTime | date:'dd/MM/yy'}}
+                </span>
+            </td>
+            <td>
+                <a ng-click="$ctrl.clickColumn(flight, 'aircraft')">
+                    {{flight.aircraft | capitalize}}
+                </a>
+            </td>
+            <td>
+                <a ng-click="$ctrl.clickColumn(flight, 'callsign')">
+                    {{flight.callsign}}
+                </a>
+            </td>
+            <td>
+                <a ng-click="$ctrl.clickColumn(flight, 'origin')">
+                    {{flight.origin}}
+                </a>
+            </td>
+            <td>{{flight.startTime | date:'HH:mm'}}</td>
+            <td>
+                <a ng-click="$ctrl.clickColumn(flight, 'destination')">
+                    {{flight.destination}}
+                </a>
+            </td>
+            <td>{{flight.endTime | date:'HH:mm'}}</td>
+            <td>{{flight.startFuel.toFixed(1)}}</td>
+            <td>{{flight.endFuel.toFixed(1)}}</td>
+            <td>{{flight.fuelUsed.toFixed(1)}}</td>
+            <td>{{flight.fuelRate.toFixed(1)}}</td>
+            <td>{{flight.reserve | duration}}</td>
+            <td>{{flight.distance.toFixed()}}</td>
+            <td>{{flight.groundSpeed.toFixed()}}</td>
+            <td>{{flight.altitude.toFixed()}}</td>
+            <td>{{flight.duration | duration}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="15" class="footerTitle">Page Total</td>
+            <td class="written">{{$ctrl.totals.pageDuration | duration}}</td>
+        </tr>
+        <tr>
+            <td colspan="15" class="footerTitle">Other Total</td>
+            <td class="written">{{$ctrl.totals.otherDuration | duration}}</td>
+        </tr>
+        <tr>
+            <td colspan="15" class="footerTitle">FLIGHT HOURS TOTAL</td>
+            <td class="written">{{$ctrl.totals.totalDuration | duration}}</td>
+        </tr>
+    </tfoot>
+</table>

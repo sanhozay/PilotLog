@@ -1,0 +1,6 @@
+<div id="pager" ng-hide="$ctrl.of <= 1">
+    <a ng-repeat="page in $ctrl.pages()" ng-click="$ctrl.goto(page)"
+       class="ng-class: page == $ctrl.page ? 'current' : 'page'">
+        {{page}}
+    </a>
+</div>
