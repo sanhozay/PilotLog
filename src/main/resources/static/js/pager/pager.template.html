@@ -1,0 +1,22 @@
+<div id="pager">
+    <div id="pageSize">
+        <select ng-model="$ctrl.pageSize" ng-change="$ctrl.pageSizeChanged()">
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+        </select>
+    </div>
+    <div id="pageBalloons" ng-hide="$ctrl.of <= 1">
+        <a ng-repeat="page in $ctrl.pages()" ng-click="$ctrl.goto(page)"
+           class="ng-class: (page < 0) ? 'spacer' : ((page == $ctrl.page) ? 'current' : 'page')">
+            {{page > 0 ? page : '...'}}
+        </a>
+    </div>
+</div>

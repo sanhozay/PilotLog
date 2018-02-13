@@ -1,0 +1,21 @@
+<div id="header">
+    <page-title title="Flight Record" url="https://github.com/sanhozay/PilotLog"></page-title>
+    <search example-changed="$ctrl.refreshPage(1)"></search>
+</div>
+<div id="content">
+    <flights content="$ctrl.content"
+             duration-totals="$ctrl.durationTotals"
+             total-flights="$ctrl.totalFlights"
+             on-click-column="$ctrl.columnClicked(flight, property)"
+             on-click-heading="$ctrl.headingClicked(property)">
+    </flights>
+</div>
+<div id="footer">
+    <pager page="$ctrl.pageable.pageNumber"
+           of="$ctrl.totalPages"
+           page-size="$ctrl.pageable.size"
+           on-page-changed="$ctrl.refreshPage(page)"
+           on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
+    </pager>
+    <p id="count">{{$ctrl.totalFlights + ' flight' + ($ctrl.totalFlights != 1 ? 's' : '')}}</p>
+</div>

@@ -196,7 +196,7 @@ table a:hover {
 #footer a {
     text-align: center;
     display: inline-block;
-    width: 18px;
+    width: 4ex;
     text-decoration: none;
     border: solid gray 1px;
     border-radius: 5px;
@@ -204,7 +204,7 @@ table a:hover {
     background-color: white;
     padding: 3px;
     font-size: small;
-    margin-right: 3px;
+    margin-right: 2px;
     cursor: pointer;
 }
 
@@ -213,12 +213,31 @@ table a:hover {
     background-color: cornflowerblue;
 }
 
-#footer a:hover:not(.current) {
-    background-color: #f0f0f0;
+#footer a.spacer {
+    color: gray;
+    border: none;
+    padding: 4px;
+    background-color: white;
+    cursor: default;
+}
+
+#footer a.page:hover {
+    background-color: #e0e0f0;
 }
 
 #footer #pager {
     float: left;
+}
+
+#pager #pageSize {
+    display: inline-block;
+    margin-right: 1em;
+    padding: 2px;
+    color: gray;
+}
+
+#pager #pageBalloons {
+    display: inline-block;
 }
 
 #footer #count {

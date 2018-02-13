@@ -19,6 +19,11 @@
 
 package org.flightgear.pilotlog.domain;
 
+/**
+ * Interface to represent anything that is timed, i.e. has a duration.
+ *
+ * @author Richard Senior
+ */
 public interface Timed {
 
     Integer getDuration();

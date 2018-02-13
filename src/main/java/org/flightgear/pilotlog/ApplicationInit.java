@@ -40,8 +40,12 @@ public class ApplicationInit implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(ApplicationInit.class);
 
+    private final FlightService service;
+
     @Autowired
-    FlightService service;
+    public ApplicationInit(FlightService service) {
+        this.service = service;
+    }
 
     @Override
     @Transactional

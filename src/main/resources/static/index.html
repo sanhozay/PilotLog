@@ -18,153 +18,30 @@
   ~ along with this program.  If not, see <http://www.gnu.org/licenses/>.
   -->
 
-<html lang="en" ng-app="application">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Pilot Log</title>
     <link href="css/normalize.css" rel="stylesheet"/>
-    <link href="css/pilotlog.css" rel="stylesheet"/>
+    <link href="css/pilotlog.css" rel="stylesheet">
+</head>
+<body ng-app="application">
+    <flightrecord></flightrecord>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
+    <script src="js/angular/angular-cookies.js"></script>
     <script src="js/application.js"></script>
     <script src="js/core/core.module.js"></script>
-    <script src="js/core/format/capitalize.filter.js"></script>
-    <script src="js/core/format/duration.filter.js"></script>
-</head>
-<body ng-controller="controller">
-    <div id="header">
-        <img src="images/logo.png"/>
-        <div class="title">
-            <h1>Flight Record</h1>
-            <a href="https://github.com/sanhozay/PilotLog" target="_blank">https://github.com/sanhozay/PilotLog</a>
-        </div>
-        <form novalidate>
-            <fieldset>
-                <legend>Search</legend>
-                <div class="row">
-                    <label for="aircraft">Aircraft</label>
-                    <input type="text" id="aircraft" autocomplete="off" ng-model="form.aircraft"/>
-                </div>
-                <div class="row">
-                    <label for="callsign">Registration</label>
-                    <input type="text" id="callsign" autocomplete="off" ng-model="form.callsign"/>
-                </div>
-                <div class="row">
-                    <label for="origin">Departure</label>
-                    <input type="text" id="origin" autocomplete="off" ng-model="form.origin"/>
-                </div>
-                <div class="row">
-                    <label for="destination">Arrival</label>
-                    <input type="text" id="destination" autocomplete="off" ng-model="form.destination"/>
-                </div>
-                <div class="buttons">
-                    <input class="button" type="submit" value="Search" ng-click="search()"/>
-                    <input class="button" type="button" value="Clear" ng-click="clear()"/>
-                </div>
-            </fieldset>
-        </form>
-    </div>
-    <div id="content">
-        <table>
-            <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour.</caption>
-            <thead>
-                <tr class="main">
-                    <th colspan="3">Details of Flight</th>
-                    <th colspan="2">Departure</th>
-                    <th colspan="2">Arrival</th>
-                    <th colspan="5">Fuel</th>
-                    <th colspan="3">Trip Data</th>
-                    <th colspan="1">Time</th>
-                </tr>
-                <tr>
-                    <th style="width: 10ex"><a ng-click="sortBy('startTime')">Date</a></th>
-                    <th style="width: 20ex"><a ng-click="sortBy('aircraft')">Aircraft</a></th>
-                    <th style="width: 10ex"><a ng-click="sortBy('callsign')">Registration</a></th>
-                    <th style="width: 8ex"><a ng-click="sortBy('origin')">Airport</a></th>
-                    <th style="width: 6ex"><a ng-click="sortBy('startTime')">Time</a></th>
-                    <th style="width: 8ex"><a ng-click="sortBy('destination')">Airport</a></th>
-                    <th style="width: 6ex"><a ng-click="sortBy('endTime')">Time</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('startFuel')">T/O</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('endFuel')">Land</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('fuelUsed')">Used</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('fuelRate')">Rate</a></th>
-                    <th style="width: 6ex"><a ng-click="sortBy('reserve')">Resv</a></th>
-                    <th style="width: 6ex"><a ng-click="sortBy('distance')">NM</a></th>
-                    <th style="width: 6ex"><a ng-click="sortBy('groundSpeed')">GS</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('altitude')">Alt</a></th>
-                    <th style="width: 7ex"><a ng-click="sortBy('duration')">Hours</a></th>
-                </tr>
-            </thead>
-            <tbody ng-show="totalFlights > 0">
-                <tr ng-repeat="flight in flights" class="ng-class: flight.status">
-                    <td>
-                        <a ng-show="flight.status == 'COMPLETE'" ng-click="delete(flight)" title="Delete flight">
-                            {{flight.startTime | date:'dd/MM/yy'}}
-                        </a>
-                        <span ng-hide="flight.status == 'COMPLETE'">
-                            {{flight.startTime | date:'dd/MM/yy'}}
-                        </span>
-                    </td>
-                    <td>
-                        <a ng-click="addTerm('aircraft', flight.aircraft)">
-                            {{flight.aircraft | capitalize}}
-                        </a>
-                    </td>
-                    <td>
-                        <a ng-click="addTerm('callsign', flight.callsign)">
-                            {{flight.callsign}}
-                        </a>
-                    </td>
-                    <td>
-                        <a ng-click="addTerm('origin', flight.origin)">
-                            {{flight.origin}}
-                        </a>
-                    </td>
-                    <td>{{flight.startTime | date:'HH:mm'}}</td>
-                    <td>
-                        <a ng-click="addTerm('destination', flight.destination)">
-                            {{flight.destination}}
-                        </a>
-                    </td>
-                    <td>{{flight.endTime | date:'HH:mm'}}</td>
-                    <td>{{flight.startFuel.toFixed(1)}}</td>
-                    <td>{{flight.endFuel.toFixed(1)}}</td>
-                    <td>{{flight.fuelUsed.toFixed(1)}}</td>
-                    <td>{{flight.fuelRate.toFixed(1)}}</td>
-                    <td>{{flight.reserve | duration}}</td>
-                    <td>{{flight.distance.toFixed()}}</td>
-                    <td>{{flight.groundSpeed.toFixed()}}</td>
-                    <td>{{flight.altitude.toFixed()}}</td>
-                    <td>{{flight.duration | duration}}</td>
-                </tr>
-            </tbody>
-            <tbody ng-show="totalFlights == 0">
-                <tr>
-                    <td colspan="16">No flights</td>
-                </tr>
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td colspan="15" class="footerTitle">Page Total</td>
-                    <td class="written">{{pageDuration | duration}}</td>
-                </tr>
-                <tr>
-                    <td colspan="15" class="footerTitle">Other Total</td>
-                    <td class="written">{{otherDuration | duration}}</td>
-                </tr>
-                <tr>
-                    <td colspan="15" class="footerTitle">FLIGHT HOURS TOTAL</td>
-                    <td class="written">{{totalDuration | duration}}</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-    <div id="footer">
-        <div id="pager" ng-show="totalPages > 1">
-            <a ng-repeat="page in pages"
-               class="ng-class: page == currentPage ? 'current' : 'page'"
-               ng-click="gotoPage(page)">{{page}}</a>
-        </div>
-        <p id="count">{{totalFlights + ' flight' + (totalFlights != 1 ? 's' : '')}}</p>
-    </div>
+    <script src="js/core/filter/capitalize.filter.js"></script>
+    <script src="js/core/filter/duration.filter.js"></script>
+    <script src="js/flightrecord/flightrecord.module.js"></script>
+    <script src="js/flightrecord/flightrecord.component.js"></script>
+    <script src="js/pageTitle/pageTitle.module.js"></script>
+    <script src="js/pageTitle/pageTitle.component.js"></script>
+    <script src="js/search/search.module.js"></script>
+    <script src="js/search/search.component.js"></script>
+    <script src="js/flights/flights.module.js"></script>
+    <script src="js/flights/flights.component.js"></script>
+    <script src="js/pager/pager.module.js"></script>
+    <script src="js/pager/pager.component.js"></script>
 </body>
 </html>
