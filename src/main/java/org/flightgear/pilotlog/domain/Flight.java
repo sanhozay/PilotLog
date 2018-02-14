@@ -104,13 +104,13 @@ public class Flight implements Serializable, Comparable<Flight> {
         if (startOdometer != null && endOdometer != null) {
             distance = endOdometer - startOdometer;
         }
-        if (fuelUsed != null && duration != null && duration > 10) {
+        if (fuelUsed != null && duration != null && duration >= 10) {
             fuelRate = 60 * fuelUsed / duration;
         }
         if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
             reserve = 60 * endFuel / fuelRate;
         }
-        if (distance != null && duration != null && duration > 10) {
+        if (distance != null && duration != null && duration >= 10) {
             groundSpeed = (int)(distance / (duration / 60.0));
         }
     }
