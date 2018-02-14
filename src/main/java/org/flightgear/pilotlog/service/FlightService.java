@@ -158,7 +158,16 @@ public class FlightService {
         log.info("Deleted flight {}", flight);
     }
 
-    public Flight updateFlightAltitude(int id, double altitude) {
+    /**
+     * Updates a flight.
+     *
+     * @param id the id of the flight to update
+     * @param altitude the current altitude
+     * @param fuel the current fuel level
+     * @param odometer the current odometer
+     * @return the updated flight
+     */
+    public Flight updateFlight(int id, float altitude, float fuel, float odometer) {
         final Flight flight = repository.findOne(id);
         if (flight == null) {
             final String message = String.format("Attempt to update flight with invalid id %d", id);
@@ -173,6 +182,9 @@ public class FlightService {
             flight.setAltitude(a);
             log.info("Updated altitude to {} on flight {}", a, flight);
         }
+        flight.setEndFuel(fuel);
+        flight.setEndOdometer(odometer);
+        flight.setEndTime(new Date());
         return flight;
     }
 
@@ -203,7 +215,10 @@ public class FlightService {
         }
         example.setStatus(FlightStatus.COMPLETE);
         List<Flight> flights = repository.findAll(Example.of(example, matcher));
-        return flights.parallelStream().mapToInt(Flight::getDuration).sum();
+        return flights.parallelStream()
+                .filter(flight -> flight.getDuration() != null)
+                .mapToInt(Flight::getDuration)
+                .sum();
     }
 
 }

@@ -10,7 +10,7 @@ import java.util.List;
  * @author Richard Senior
  */
 @SuppressWarnings("WeakerAccess")
-public class DurationTotals<T extends Timed> {
+public class DurationTotals<T extends Flight> {
 
     private final int totalDuration;
     private List<T> content;
@@ -28,8 +28,8 @@ public class DurationTotals<T extends Timed> {
     public int getPageDuration() {
         return content
                 .parallelStream()
-                .filter(timed -> timed.getDuration() != null)
-                .mapToInt(Timed::getDuration)
+                .filter(flight -> flight.getStatus() == FlightStatus.COMPLETE)
+                .mapToInt(Flight::getDuration)
                 .sum();
     }
 

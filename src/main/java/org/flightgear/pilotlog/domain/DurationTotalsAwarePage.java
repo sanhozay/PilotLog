@@ -33,7 +33,7 @@ import java.util.List;
  *
  * @author Richard Senior
  */
-public class DurationTotalsAwarePage<T extends Timed> extends PageImpl<T> {
+public class DurationTotalsAwarePage<T extends Flight> extends PageImpl<T> {
 
     private DurationTotals<T> durationTotals;
 

@@ -97,6 +97,8 @@ var pirep = func {
         url ~= "pirep";
         url ~= "?id="~id;
         url ~= "&altitude="~getprop("position/altitude-ft");
+        url ~= "&fuel="~getprop("consumables/fuel/total-fuel-gals");
+        url ~= "&odometer="~getprop("instrumentation/gps/odometer");
         request(url);
     }
 }

@@ -55,7 +55,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
     @Index(columnList = "origin"),
     @Index(columnList = "destination"),
 })
-public class Flight implements Serializable, Comparable<Flight>, Timed {
+public class Flight implements Serializable, Comparable<Flight> {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -95,22 +95,24 @@ public class Flight implements Serializable, Comparable<Flight>, Timed {
      * Updates computed fields of flight; duration, fuelUsed and fuelRate.
      */
     public void updateComputedFields() {
-        if (startTime == null || endTime == null ||
-                startFuel == null || endFuel == null ||
-                startOdometer == null || endOdometer == null) {
-            return;
+        if (startTime != null && endTime != null) {
+            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
         }
-        duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
-        if (duration == 0) {
-            return;
+        if (startFuel != null && endFuel != null) {
+            fuelUsed = startFuel - endFuel;
         }
-        fuelUsed = startFuel - endFuel;
-        fuelRate = 60 * fuelUsed / duration;
-        if (fuelRate > 0.0) {
+        if (startOdometer != null && endOdometer != null) {
+            distance = endOdometer - startOdometer;
+        }
+        if (fuelUsed != null && duration != null && duration > 10) {
+            fuelRate = 60 * fuelUsed / duration;
+        }
+        if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
             reserve = 60 * endFuel / fuelRate;
         }
-        distance = endOdometer - startOdometer;
-        groundSpeed = (int)(distance / (duration / 60.0));
+        if (distance != null && duration != null && duration > 10) {
+            groundSpeed = (int)(distance / (duration / 60.0));
+        }
     }
 
     // Accessors

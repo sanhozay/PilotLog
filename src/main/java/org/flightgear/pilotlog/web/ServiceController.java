@@ -87,9 +87,12 @@ public class ServiceController {
     }
 
     @GetMapping(path = "pirep", produces = TEXT_XML_VALUE)
-    public Flight pirep(@RequestParam("id") int id, @RequestParam("altitude") double altitude)
+    public Flight pirep(@RequestParam("id") int id,
+            @RequestParam("altitude") float altitude,
+            @RequestParam("fuel") float fuel,
+            @RequestParam("odometer") float odometer)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return service.updateFlightAltitude(id, altitude);
+        return service.updateFlight(id, altitude, fuel, odometer);
     }
 
     // Additional endpoints

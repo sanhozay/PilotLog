@@ -64,7 +64,11 @@
                     {{flight.destination}}
                 </a>
             </td>
-            <td>{{flight.endTime | date:'HH:mm'}}</td>
+            <td>
+                <span ng-show="flight.status == 'COMPLETE'">
+                    {{flight.endTime | date:'HH:mm'}}
+                </span>
+            </td>
             <td>{{flight.startFuel.toFixed(1)}}</td>
             <td>{{flight.endFuel.toFixed(1)}}</td>
             <td>{{flight.fuelUsed.toFixed(1)}}</td>
@@ -73,7 +77,11 @@
             <td>{{flight.distance.toFixed()}}</td>
             <td>{{flight.groundSpeed.toFixed()}}</td>
             <td>{{flight.altitude.toFixed()}}</td>
-            <td>{{flight.duration | duration}}</td>
+            <td>
+                <span ng-show="flight.duration > 0">
+                    {{flight.duration | duration}}
+                </span>
+            </td>
         </tr>
     </tbody>
     <tfoot>
