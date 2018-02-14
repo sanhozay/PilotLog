@@ -57,11 +57,11 @@ class TestFlight extends Specification {
         flight.updateComputedFields()
 
         expect:
-        flight.duration == 120
+        flight.duration == 7200
         flight.fuelUsed == 18
         flight.fuelRate == 9
         flight.distance == 200
-        flight.reserve == 40
+        flight.reserve == 2400
     }
 
     def"Check fuel rate is null if fuel freeze is active"() {

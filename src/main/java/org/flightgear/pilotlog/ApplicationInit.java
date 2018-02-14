@@ -35,7 +35,6 @@ import org.springframework.transaction.annotation.Transactional;
  * @author Richard Senior
  */
 @Component
-@Profile("development")
 public class ApplicationInit implements CommandLineRunner {
 
     private static final Logger log = LoggerFactory.getLogger(ApplicationInit.class);

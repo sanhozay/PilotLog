@@ -96,7 +96,7 @@ public class Flight implements Serializable, Comparable<Flight> {
      */
     public void updateComputedFields() {
         if (startTime != null && endTime != null) {
-            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).toMinutes();
+            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).getSeconds();
         }
         if (startFuel != null && endFuel != null) {
             fuelUsed = startFuel - endFuel;
@@ -105,13 +105,13 @@ public class Flight implements Serializable, Comparable<Flight> {
             distance = endOdometer - startOdometer;
         }
         if (fuelUsed != null && duration != null && duration >= 10) {
-            fuelRate = 60 * fuelUsed / duration;
+            fuelRate = 3600 * fuelUsed / duration;
         }
         if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
-            reserve = 60 * endFuel / fuelRate;
+            reserve = 3600 * endFuel / fuelRate;
         }
         if (distance != null && duration != null && duration >= 10) {
-            groundSpeed = (int)(distance / (duration / 60.0));
+            groundSpeed = (int)(distance / (duration / 3600.0));
         }
     }
 
