@@ -110,9 +110,9 @@ table {
 table caption {
     text-align: left;
     font-style: italic;
-    font-size: 90%;
+    font-size: small;
     margin-bottom: 0.5ex;
-    color: #a0a0a0;
+    color: gray;
 }
 
 tr.main {
@@ -227,13 +227,14 @@ table a:hover {
 
 #footer #pager {
     float: left;
+    font-size: small;
+    color: gray;
 }
 
 #pager #pageSize {
     display: inline-block;
     margin-right: 1em;
     padding: 2px;
-    color: gray;
 }
 
 #pager #pageBalloons {
