@@ -6,7 +6,7 @@ angular.module("pager").component("pager", {
         onPageChanged: "&",
         onPageSizeChanged: "&"
     },
-    controller: function($cookies) {
+    controller: function() {
         var ctrl = this
         ctrl.goto = function(page) {
             if (page > 0 && page <= ctrl.of) {

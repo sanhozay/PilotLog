@@ -1,12 +1,14 @@
 angular.module("flightrecord").component("flightrecord", {
     controller: function($http, $interval, $filter, $cookies) {
         var ctrl = this
+        var cookie = "pilotlog.page.size"
+        var nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
         ctrl.$onInit = function() {
-            if (!$cookies.get("pageSize")) {
-                $cookies.put("pageSize", 10)
+            if (!$cookies.get(cookie)) {
+                $cookies.put(cookie, 10, {expires: nextYear})
             }
             ctrl.pageable = {pageNumber: 1,
-                size: $cookies.get("pageSize") || 10,
+                size: $cookies.get(cookie) || 10,
                 sort: {property: "id", direction: "DESC"}
             }
             ctrl.search = {form: {}, example: {}}
@@ -15,7 +17,7 @@ angular.module("flightrecord").component("flightrecord", {
         }
         ctrl.adjustPageSize = function(pageSize) {
             ctrl.pageable.size = pageSize
-            $cookies.put("pageSize", pageSize)
+            $cookies.put(cookie, pageSize, {expires: nextYear})
             ctrl.refreshPage(1)
         }
         ctrl.columnClicked = function(flight, property) {
