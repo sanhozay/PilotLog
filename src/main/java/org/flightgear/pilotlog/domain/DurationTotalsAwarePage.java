@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class DurationTotalsAwarePage<T extends Flight> extends PageImpl<T> {
 
-    private DurationTotals<T> durationTotals;
+    private final DurationTotals<T> durationTotals;
 
     /**
      * Construct a duration totals aware page.

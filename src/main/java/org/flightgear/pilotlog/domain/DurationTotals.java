@@ -13,7 +13,7 @@ import java.util.List;
 public class DurationTotals<T extends Flight> {
 
     private final int totalDuration;
-    private List<T> content;
+    private final List<T> content;
 
     public DurationTotals(List<T> content, int totalDuration) {
         this.content = content;
