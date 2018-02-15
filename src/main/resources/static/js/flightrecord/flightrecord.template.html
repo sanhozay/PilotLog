@@ -17,5 +17,5 @@
            on-page-changed="$ctrl.refreshPage(page)"
            on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
     </pager>
-    <p id="count">{{$ctrl.totalFlights + ' flight' + ($ctrl.totalFlights != 1 ? 's' : '')}}</p>
+    <status entity="flight" plural="flights" count="$ctrl.totalFlights"></status>
 </div>
