@@ -3,19 +3,18 @@
     <search example-changed="$ctrl.refreshPage(1)"></search>
 </div>
 <div id="content">
-    <flights content="$ctrl.content"
-             duration-totals="$ctrl.durationTotals"
-             total-flights="$ctrl.totalFlights"
+    <flights content="$ctrl.data.content"
+             duration-totals="$ctrl.data.durationTotals"
              on-click-column="$ctrl.columnClicked(flight, property)"
              on-click-heading="$ctrl.headingClicked(property)">
     </flights>
 </div>
 <div id="footer">
     <pager page="$ctrl.pageable.pageNumber"
-           of="$ctrl.totalPages"
+           of="$ctrl.data.totalPages"
            page-size="$ctrl.pageable.size"
            on-page-changed="$ctrl.refreshPage(page)"
            on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
     </pager>
-    <status entity="flight" plural="flights" count="$ctrl.totalFlights"></status>
+    <status entity="flight" plural="flights" count="$ctrl.data.totalElements"></status>
 </div>

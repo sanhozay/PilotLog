@@ -68,10 +68,7 @@ angular.module("flightrecord").component("flightrecord", {
             }
             $http.post(url, ctrl.search.example)
                 .then(function(response) {
-                    ctrl.content = response.data.content
-                    ctrl.durationTotals = response.data.durationTotals
-                    ctrl.totalFlights = response.data.totalElements
-                    ctrl.totalPages = response.data.totalPages
+                    ctrl.data = response.data
                     if (ctrl.pageable.pageNumber > ctrl.totalPages) {
                         ctrl.refreshPage(ctrl.totalPages)
                     }
