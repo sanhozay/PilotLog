@@ -24,6 +24,7 @@ package org.flightgear.pilotlog.domain;
  *
  * @author Richard Senior
  */
+@SuppressWarnings("JavaDoc")
 public enum FlightStatus {
 
     NEW, ACTIVE, INVALID, COMPLETE

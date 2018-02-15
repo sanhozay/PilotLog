@@ -20,8 +20,8 @@
 package org.flightgear.pilotlog
 
 import org.flightgear.pilotlog.domain.TestFlight
-import org.flightgear.pilotlog.web.helpers.TestDurationFormatter
-import org.flightgear.pilotlog.web.helpers.TestFlightRecordTotals
+
+
 import org.junit.runner.RunWith
 import org.junit.runners.Suite
 import org.junit.runners.Suite.SuiteClasses
@@ -34,7 +34,5 @@ import org.junit.runners.Suite.SuiteClasses
 @RunWith(Suite.class)
 @SuiteClasses([
     TestFlight.class,
-    TestDurationFormatter.class,
-    TestFlightRecordTotals.class
 ])
 class AllTests {}

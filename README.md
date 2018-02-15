@@ -1,3 +1,7 @@
+[![GPL3](https://img.shields.io/badge/license-GPL3-%23a42e2b.svg)](https://www.gnu.org/licenses/gpl-3.0.en.html)
+[![Travis branch](https://img.shields.io/travis/sanhozay/PilotLog/master.svg?label=master)](https://travis-ci.org/sanhozay/PilotLog)
+[![Travis branch](https://img.shields.io/travis/sanhozay/PilotLog/develop.svg?label=develop)](https://travis-ci.org/sanhozay/PilotLog)
+
 # PilotLog
 
 PilotLog is a simple flight logging service for Flightgear. It collects data as Flightgear runs, and

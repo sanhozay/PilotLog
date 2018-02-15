@@ -26,6 +26,7 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
+import org.aspectj.lang.annotation.Pointcut;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
@@ -61,18 +62,24 @@ public class FlightServiceAdvice {
             }
     }
 
-    @AfterReturning("execution (* FlightService.endFlight(..))")
+    @AfterReturning("endFlight() || updateFlight()")
     @Transactional(propagation = Propagation.MANDATORY)
     public void compute(final JoinPoint jp) {
         final int id = (int)jp.getArgs()[0];
         final Flight flight = repository.findOne(id);
         flight.updateComputedFields();
-        if (flight.getDuration() == 0) {
+        if (flight.getDuration() == 0 && flight.getStatus() == FlightStatus.COMPLETE) {
             flight.setStatus(FlightStatus.INVALID);
             log.warn("Invalidating flight {} because duration is zero", flight.getId());
         }
         log.info("Updated computed fields of flight {}", flight);
     }
+
+    @Pointcut("execution (* FlightService.endFlight(..))")
+    private void endFlight() {}
+
+    @Pointcut("execution (* FlightService.updateFlight(..))")
+    private void updateFlight() {}
 
     @Autowired
     public void setRepository(FlightRepository repository) {

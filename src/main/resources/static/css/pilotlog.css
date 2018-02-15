@@ -110,9 +110,9 @@ table {
 table caption {
     text-align: left;
     font-style: italic;
-    font-size: 90%;
+    font-size: small;
     margin-bottom: 0.5ex;
-    color: #a0a0a0;
+    color: gray;
 }
 
 tr.main {
@@ -182,7 +182,7 @@ tr.INVALID:hover {
     color: white;
 }
 
-tbody a:hover {
+table a:hover {
     cursor: pointer;
     text-decoration: underline;
 }
@@ -196,7 +196,7 @@ tbody a:hover {
 #footer a {
     text-align: center;
     display: inline-block;
-    width: 18px;
+    width: 4ex;
     text-decoration: none;
     border: solid gray 1px;
     border-radius: 5px;
@@ -204,7 +204,7 @@ tbody a:hover {
     background-color: white;
     padding: 3px;
     font-size: small;
-    margin-right: 3px;
+    margin-right: 2px;
     cursor: pointer;
 }
 
@@ -213,12 +213,32 @@ tbody a:hover {
     background-color: cornflowerblue;
 }
 
-#footer a:hover:not(.current) {
-    background-color: #f0f0f0;
+#footer a.spacer {
+    color: gray;
+    border: none;
+    padding: 4px;
+    background-color: white;
+    cursor: default;
+}
+
+#footer a.page:hover {
+    background-color: #e0e0f0;
 }
 
 #footer #pager {
     float: left;
+    font-size: small;
+    color: gray;
+}
+
+#pager #pageSize {
+    display: inline-block;
+    margin-right: 1em;
+    padding: 2px;
+}
+
+#pager #pageBalloons {
+    display: inline-block;
 }
 
 #footer #count {
