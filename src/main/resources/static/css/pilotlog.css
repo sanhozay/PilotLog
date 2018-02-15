@@ -6,98 +6,96 @@ body {
     min-width: 800px;
 }
 
-/* Header Section */
-#header {
-    width: 100%;
-    height: 155px;
-}
+/* Heading */
 
-#header img {
+heading img {
     float: left;
     width: 135px;
     height: 155px;
     margin-right: 10px;
 }
 
-#header .title {
+heading .compositeTitle {
     float: left;
-    color: darkblue;
+    color: DarkBlue;
 }
 
-#header .title h1 {
+heading .compositeTitle h1 {
     font-size: 275%;
     text-transform: uppercase;
     margin-bottom: 0;
 }
 
-#header .title a {
-    color: darkblue;
+heading .compositeTitle a {
+    color: DarkBlue;
     text-decoration: none;
     margin-left: 2px;
     font-size: 95%;
 }
 
-#header .title a:hover {
+heading .compositeTitle a:hover {
     text-decoration: underline;
 }
 
-#header form {
+/* Search form */
+
+search form {
     color: gray;
     float: right;
     margin-bottom: 1em;
     font-size: small;
 }
 
-#header form fieldset {
+search form fieldset {
     border-radius: 10px;
     padding: 10px;
 }
 
-#header form label {
-    padding-top: 5px;
-    width: 6em;
-    float: left;
-}
-
-#header form input[type='text'] {
-    margin: 2px;
-}
-
-#header form input.button {
-    background: -webkit-linear-gradient(top, #8db0f2, cornflowerblue);
-    background: -moz-linear-gradient(top, #8db0f2, cornflowerblue);
-    background: -ms-linear-gradient(top, #8db0f2, cornflowerblue);
-    background: -o-linear-gradient(top, #8db0f2, cornflowerblue);
-    color: #f0f0f8;
-    width: 5em;
-    border: none;
-    border-radius: 5px;
-}
-
-#header form input.button:hover {
-    color: white;
-}
-
-#header form legend {
+search form legend {
     padding: 0 5px;
     text-align: right;
     text-transform: uppercase;
 }
 
-#header .buttons {
+search form label {
+    padding-top: 5px;
+    width: 6em;
+    float: left;
+}
+
+search form input[type='text'] {
+    margin: 2px;
+}
+
+search form input.button {
+    background: -webkit-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -moz-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -ms-linear-gradient(top, #8db0f2, cornflowerblue);
+    background: -o-linear-gradient(top, #8db0f2, cornflowerblue);
+    color: #f0f0f8;
+    width: 5.5em;
+    border: none;
+    border-radius: 5px;
+}
+
+search form input.button:hover {
+    color: white;
+}
+
+search form .buttons {
     margin-top: 5px;
     margin-right: 3px;
     float: right;
 }
 
-/* Content Section */
-#content {
+/* Flights */
+
+flights {
     width: 100%;
     clear: both;
     min-width: 800px;
 }
 
-/* Tables */
 table {
     margin-top: 1em;
     border: solid #333333 4px;
@@ -112,7 +110,7 @@ table caption {
     font-style: italic;
     font-size: small;
     margin-bottom: 0.5ex;
-    color: gray;
+    color: Gray;
 }
 
 tr.main {
@@ -187,13 +185,43 @@ table a:hover {
     text-decoration: underline;
 }
 
-#footer {
+/* Footer */
+
+footer {
     width: 100%;
     clear: both;
-    padding-top: 1em;
+    margin-top: 1em;
 }
 
-#footer a {
+/* Pager */
+
+pager {
+    float: left;
+    font-size: small;
+    color: Gray;
+}
+
+pager label {
+    margin-right: 0.5ex;
+}
+
+pager .pageSizeChooser {
+    display: inline-block;
+    margin-right: 1em;
+    padding: 2px;
+}
+
+pager .pageBalloons {
+    display: inline-block;
+}
+
+pager .pageBalloons ol {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+}
+
+pager .pageBalloons li {
     text-align: center;
     display: inline-block;
     width: 4ex;
@@ -202,18 +230,18 @@ table a:hover {
     border-radius: 5px;
     color: gray;
     background-color: white;
-    padding: 3px;
+    padding: 2px;
     font-size: small;
     margin-right: 2px;
     cursor: pointer;
 }
 
-#footer a.current {
+pager .pageBalloons .current {
     color: white;
     background-color: cornflowerblue;
 }
 
-#footer a.spacer {
+pager .pageBalloons .spacer {
     color: gray;
     border: none;
     padding: 4px;
@@ -221,29 +249,15 @@ table a:hover {
     cursor: default;
 }
 
-#footer a.page:hover {
+pager .pageBalloons .page:hover {
     background-color: #e0e0f0;
 }
 
-#footer #pager {
-    float: left;
-    font-size: small;
-    color: gray;
-}
+/* Status */
 
-#pager #pageSize {
-    display: inline-block;
-    margin-right: 1em;
-    padding: 2px;
-}
-
-#pager #pageBalloons {
-    display: inline-block;
-}
-
-#footer #status {
-    vertical-align: top;
+status p {
     float: right;
-    margin-top: 0px;
-    color: gray;
+    margin: 0;
+    padding: 0;
+    color: Gray;
 }

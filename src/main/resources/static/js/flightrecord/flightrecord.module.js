@@ -1,1 +1,1 @@
-angular.module("flightrecord", ["pageTitle", "search", "flights", "pager", "status", "ngCookies"]);
+angular.module("flightrecord", ["heading", "search", "flights", "pager", "status", "ngCookies"]);
