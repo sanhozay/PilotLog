@@ -26,9 +26,15 @@
     <link href="css/pilotlog.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-app="application">
-    <flightrecord></flightrecord>
+    <header>
+        <heading title="Flight Record" url="https://github.com/sanhozay/PilotLog"></heading>
+    </header>
+    <content>
+        <ng-view></ng-view>
+    </content>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
     <script src="js/application.js"></script>
     <script src="js/core/core.module.js"></script>
     <script src="js/flightrecord/flightrecord.module.js"></script>
