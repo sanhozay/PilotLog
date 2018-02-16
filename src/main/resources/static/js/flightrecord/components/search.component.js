@@ -1,4 +1,4 @@
-angular.module("search").component("search", {
+angular.module("flightrecord").component("search", {
     bindings: {
         exampleChanged: "&"
     },
@@ -20,7 +20,7 @@ angular.module("search").component("search", {
             ctrl.exampleChanged()
         }
     },
-    templateUrl: "js/search/search.template.html"
+    templateUrl: "js/flightrecord/components/search.template.html"
 });
 
 

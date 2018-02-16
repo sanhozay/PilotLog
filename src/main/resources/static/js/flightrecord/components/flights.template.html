@@ -28,12 +28,12 @@
             <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('duration')">Hours</a></th>
         </tr>
     </thead>
-    <tbody ng-show="$ctrl.totalFlights == 0">
+    <tbody ng-show="$ctrl.content.length == 0">
         <tr>
             <td colspan="16">No flights</td>
         </tr>
     </tbody>
-    <tbody ng-hide="$ctrl.totalFlights == 0">
+    <tbody ng-hide="$ctrl.content.length == 0">
         <tr ng-repeat="flight in $ctrl.content" class="ng-class: flight.status">
             <td>
                 <a ng-show="flight.status == 'COMPLETE'" ng-click="$ctrl.clickColumn(flight, 'startTime')">

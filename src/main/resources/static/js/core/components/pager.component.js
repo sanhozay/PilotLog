@@ -1,4 +1,4 @@
-angular.module("pager").component("pager", {
+angular.module("core").component("pager", {
     bindings: {
         page: "<",
         of: "<",
@@ -49,7 +49,7 @@ angular.module("pager").component("pager", {
             return gapped
         }
     },
-    templateUrl: "js/pager/pager.template.html"
+    templateUrl: "js/core/components/pager.template.html"
 });
 
 

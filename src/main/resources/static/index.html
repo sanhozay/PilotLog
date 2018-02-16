@@ -22,8 +22,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Pilot Log</title>
-    <link href="css/normalize.css" rel="stylesheet"/>
-    <link href="css/pilotlog.css" rel="stylesheet">
+    <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
+    <link href="css/pilotlog.css" rel="stylesheet" type="text/css">
 </head>
 <body ng-app="application">
     <flightrecord></flightrecord>
@@ -31,17 +31,14 @@
     <script src="js/angular/angular-cookies.js"></script>
     <script src="js/application.js"></script>
     <script src="js/core/core.module.js"></script>
-    <script src="js/core/filter/capitalize.filter.js"></script>
-    <script src="js/core/filter/duration.filter.js"></script>
     <script src="js/flightrecord/flightrecord.module.js"></script>
-    <script src="js/flightrecord/flightrecord.component.js"></script>
-    <script src="js/pageTitle/pageTitle.module.js"></script>
-    <script src="js/pageTitle/pageTitle.component.js"></script>
-    <script src="js/search/search.module.js"></script>
-    <script src="js/search/search.component.js"></script>
-    <script src="js/flights/flights.module.js"></script>
-    <script src="js/flights/flights.component.js"></script>
-    <script src="js/pager/pager.module.js"></script>
-    <script src="js/pager/pager.component.js"></script>
+    <script src="js/core/filters/capitalize.filter.js"></script>
+    <script src="js/core/filters/duration.filter.js"></script>
+    <script src="js/core/components/heading.component.js"></script>
+    <script src="js/core/components/pager.component.js"></script>
+    <script src="js/core/components/status.component.js"></script>
+    <script src="js/flightrecord/components/flightrecord.component.js"></script>
+    <script src="js/flightrecord/components/flights.component.js"></script>
+    <script src="js/flightrecord/components/search.component.js"></script>
 </body>
 </html>
