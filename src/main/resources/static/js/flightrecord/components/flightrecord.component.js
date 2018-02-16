@@ -75,5 +75,5 @@ angular.module("flightrecord").component("flightrecord", {
                 })
         }
     },
-    templateUrl: "js/flightrecord/flightrecord.template.html"
+    templateUrl: "js/flightrecord/components/flightrecord.template.html"
 });

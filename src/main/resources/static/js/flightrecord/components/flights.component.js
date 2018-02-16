@@ -1,4 +1,4 @@
-angular.module("flights").component("flights", {
+angular.module("flightrecord").component("flights", {
     bindings: {
         content: "<",
         durationTotals: "<",
@@ -14,7 +14,7 @@ angular.module("flights").component("flights", {
             ctrl.onClickHeading({property: property})
         }
     },
-    templateUrl: "js/flights/flights.template.html"
+    templateUrl: "js/flightrecord/components/flights.template.html"
 });
 
 
