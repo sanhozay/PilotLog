@@ -1,0 +1,12 @@
+<summary content="$ctrl.data.content"
+         on-click-column=""
+         on-click-heading="$ctrl.headingClicked(property)">
+></summary>
+<footer>
+    <pager page="$ctrl.pageable.pageNumber"
+           of="$ctrl.data.totalPages"
+           page-size="$ctrl.pageable.size"
+           on-page-changed="$ctrl.refreshPage(page)"
+           on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
+    </pager>
+</footer>

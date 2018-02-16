@@ -1,0 +1,71 @@
+<table>
+    <caption>Fuel quantities in US gallons, fuel rate in US gallons per hour. Distance in nautical miles, groundspeed in knots.</caption>
+    <thead>
+        <tr class="main">
+            <th colspan="2">Flight</th>
+            <th colspan="3">Fuel Rate</th>
+            <th colspan="3">Distance</th>
+            <th colspan="3">Ground Speed</th>
+            <th colspan="4">Total</th>
+        </tr>
+        <tr>
+            <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('last')">Recent</th>
+            <th style="width: 20ex"><a ng-click="$ctrl.clickHeading('model')">Aircraft</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('fuelRate.min')">Min</th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.max')">Max</th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.avg')">Avg</th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('distance.min')">Min</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.max')">Max</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.avg')">Avg</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.min')">Min</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.max')">Max</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.avg')">Avg</th>
+            <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('totalFuel')">Fuel</a></th>
+            <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('totalDistance')">Distance</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalFlights')">Flights</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalDuration')">Hours</a></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr ng-repeat="summary in $ctrl.content" class="COMPLETE">
+            <td>{{summary.last | date:'dd/MM/yy'}}</td>
+            <td>{{summary.model | capitalize}}</td>
+            <td>{{summary.fuelRate.min.toFixed(1)}}</td>
+            <td>{{summary.fuelRate.max.toFixed(1)}}</td>
+            <td>{{summary.fuelRate.avg.toFixed(1)}}</td>
+            <td>{{summary.distance.min.toFixed()}}</td>
+            <td>{{summary.distance.max.toFixed()}}</td>
+            <td>{{summary.distance.avg.toFixed()}}</td>
+            <td>{{summary.speed.min}}</td>
+            <td>{{summary.speed.max}}</td>
+            <td>{{summary.speed.avg.toFixed()}}</td>
+            <td>{{summary.totalFuel.toFixed()}}</td>
+            <td>{{summary.totalDistance.toFixed()}}</td>
+            <td>{{summary.totalFlights}}</td>
+            <td>{{summary.totalDuration | duration}}</td>
+        </tr>
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="11" class="footerTitle">Page Total</td>
+            <td class="written">1243</td>
+            <td class="written">1234</td>
+            <td class="written">6</td>
+            <td class="written">32:30</td>
+        </tr>
+        <tr>
+            <td colspan="11" class="footerTitle">Other Total</td>
+            <td class="written">12345</td>
+            <td class="written">12345</td>
+            <td class="written">32</td>
+            <td class="written">100:00</td>
+        </tr>
+        <tr>
+            <td colspan="11" class="footerTitle">GRAND TOTAL</td>
+            <td class="written">123456</td>
+            <td class="written">123432</td>
+            <td class="written">38</td>
+            <td class="written">132:30</td>
+        </tr>
+    </tfoot>
+</table>
