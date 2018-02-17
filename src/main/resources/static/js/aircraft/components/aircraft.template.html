@@ -1,11 +1,8 @@
-<aside>
-    <search example-changed="$ctrl.refreshPage(1)"></search>
-</aside>
-<flights content="$ctrl.data.content"
+<summary content="$ctrl.data.content"
          totals="$ctrl.data.totals"
-         on-click-column="$ctrl.columnClicked(flight, property)"
+         on-click-column=""
          on-click-heading="$ctrl.headingClicked(property)">
-</flights>
+</summary>
 <footer>
     <pager page="$ctrl.pageable.pageNumber"
            of="$ctrl.data.totalPages"
@@ -13,5 +10,4 @@
            on-page-changed="$ctrl.refreshPage(page)"
            on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
     </pager>
-    <status entity="flight" plural="flights" count="$ctrl.data.totalElements"></status>
 </footer>

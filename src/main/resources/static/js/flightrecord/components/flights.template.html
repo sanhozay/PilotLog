@@ -87,15 +87,15 @@
     <tfoot>
         <tr>
             <td colspan="15" class="footerTitle">Page Total</td>
-            <td class="written">{{$ctrl.durationTotals.pageDuration | duration}}</td>
+            <td class="written">{{$ctrl.totals.duration.pageTotal | duration}}</td>
         </tr>
         <tr>
             <td colspan="15" class="footerTitle">Other Total</td>
-            <td class="written">{{$ctrl.durationTotals.otherDuration | duration}}</td>
+            <td class="written">{{$ctrl.totals.duration.otherTotal | duration}}</td>
         </tr>
         <tr>
             <td colspan="15" class="footerTitle">FLIGHT HOURS TOTAL</td>
-            <td class="written">{{$ctrl.durationTotals.totalDuration | duration}}</td>
+            <td class="written">{{$ctrl.totals.duration.total | duration}}</td>
         </tr>
     </tfoot>
 </table>

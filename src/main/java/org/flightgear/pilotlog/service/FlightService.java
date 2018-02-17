@@ -31,13 +31,10 @@ import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -198,53 +195,12 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
-        /*
-         * There are a couple of things going on in this method to manipulate the
-         * pageable passed in from the web tier:
-         *
-         * 1. If the sort property is one that contains duplicate values, the sort
-         *    can become unstable. Adding a sort by primary key (id) prevents this.
-         *
-         * 2. If the sort property has values with mixed case, but the web tier should
-         *    present them in case-insensitive order, the sort order is replaced with
-         *    a version that ignores case.
-         */
-        boolean stable = false;
-        List<Sort.Order> orders = new ArrayList<>();
-        log.debug("Sort order:");
-        for (Sort.Order order : pageable.getSort()) {
-            if ("aircraft".equals(order.getProperty())) {
-                orders.add(order.ignoreCase());
-                log.debug(" - {} {} (ignoring case)", order.getProperty(), order.getDirection());
-            } else {
-                orders.add(order);
-                log.debug(" - {} {}", order.getProperty(), order.getDirection());
-            }
-            stable = stable || order.getProperty().equals("id");
-        }
-        if (!stable) {
-            orders.add(new Sort.Order("id"));
-            log.debug(" - id");
-        }
-        pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(orders));
+        pageable = PageableUtil.adjustPageable(pageable, "id", "aircraft");
         if (example != null) {
             return repository.findAll(Example.of(example, matcher), pageable);
         } else {
             return repository.findAll(pageable);
         }
-    }
-
-    @Transactional(readOnly = true)
-    public int getTotalFlightTimeByExample(Flight example) {
-        if (example == null) {
-            example = new Flight();
-        }
-        example.setStatus(FlightStatus.COMPLETE);
-        List<Flight> flights = repository.findAll(Example.of(example, matcher));
-        return flights.parallelStream()
-                .filter(flight -> flight.getDuration() != null)
-                .mapToInt(Flight::getDuration)
-                .sum();
     }
 
 }

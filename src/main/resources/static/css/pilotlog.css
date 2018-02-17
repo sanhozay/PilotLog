@@ -13,6 +13,7 @@ heading img {
     width: 135px;
     height: 155px;
     margin-right: 10px;
+    margin-bottom: 1em;
 }
 
 heading .compositeTitle {
@@ -37,12 +38,28 @@ heading .compositeTitle a:hover {
     text-decoration: underline;
 }
 
+heading .menu {
+    margin: 0;
+    padding: 0;
+}
+
+heading .menu li {
+    margin-top: 1ex;
+    padding: 0 0.5ex;
+    border-left: solid DarkBlue 1px;
+    display: inline-block;
+}
+
+heading .menu li:first-child {
+    padding: 0 0.5ex 0 0;
+    border-left: none;
+}
+
 /* Search form */
 
 search form {
     color: gray;
     float: right;
-    margin-bottom: 1em;
     font-size: small;
 }
 
@@ -88,16 +105,18 @@ search form .buttons {
     float: right;
 }
 
-/* Flights */
+/* Views */
 
-flights {
+flights, summary {
+    margin-top: 2em;
     width: 100%;
     clear: both;
     min-width: 800px;
 }
 
+/* Tables */
+
 table {
-    margin-top: 1em;
     border: solid #333333 4px;
     padding: 1ex;
     border-collapse: collapse;
