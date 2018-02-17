@@ -37,6 +37,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -67,10 +68,10 @@ public class FlightService {
     /**
      * Begins a flight.
      *
-     * @param callsign      the callsign or registration
-     * @param aircraft      the aircraft model
-     * @param airport       the ICAO code of the departure airport
-     * @param startFuel     the amount of fuel at takeoff, in US gallons
+     * @param callsign the callsign or registration
+     * @param aircraft the aircraft model
+     * @param airport the ICAO code of the departure airport
+     * @param startFuel the amount of fuel at takeoff, in US gallons
      * @param startOdometer the odometer reading at the start of the flight
      * @return a new flight, with supplied fields and id field initialized
      */
@@ -87,9 +88,9 @@ public class FlightService {
     /**
      * Ends a flight.
      *
-     * @param id          the id of the flight that is to be ended
-     * @param airport     the ICAO code of the destination airport
-     * @param endFuel     the amount of fuel at landing, in US gallons
+     * @param id the id of the flight that is to be ended
+     * @param airport the ICAO code of the destination airport
+     * @param endFuel the amount of fuel at landing, in US gallons
      * @param endOdometer the odometer reading at the end of the flight
      * @return the flight, with arrival fields updated
      */
@@ -197,10 +198,35 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
-        if (pageable.getSort().getOrderFor("id") == null) {
-            Sort sort = pageable.getSort().and(new Sort("id"));
-            pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), sort);
+        /*
+         * There are a couple of things going on in this method to manipulate the
+         * pageable passed in from the web tier:
+         *
+         * 1. If the sort property is one that contains duplicate values, the sort
+         *    can become unstable. Adding a sort by primary key (id) prevents this.
+         *
+         * 2. If the sort property has values with mixed case, but the web tier should
+         *    present them in case-insensitive order, the sort order is replaced with
+         *    a version that ignores case.
+         */
+        boolean stable = false;
+        List<Sort.Order> orders = new ArrayList<>();
+        log.debug("Sort order:");
+        for (Sort.Order order : pageable.getSort()) {
+            if ("aircraft".equals(order.getProperty())) {
+                orders.add(order.ignoreCase());
+                log.debug(" - {} {} (ignoring case)", order.getProperty(), order.getDirection());
+            } else {
+                orders.add(order);
+                log.debug(" - {} {}", order.getProperty(), order.getDirection());
+            }
+            stable = stable || order.getProperty().equals("id");
         }
+        if (!stable) {
+            orders.add(new Sort.Order("id"));
+            log.debug(" - id");
+        }
+        pageable = new PageRequest(pageable.getPageNumber(), pageable.getPageSize(), new Sort(orders));
         if (example != null) {
             return repository.findAll(Example.of(example, matcher), pageable);
         } else {
