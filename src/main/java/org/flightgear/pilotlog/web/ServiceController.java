@@ -35,7 +35,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
-import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,6 +50,7 @@ import java.util.Map;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
+import static org.springframework.http.MediaType.APPLICATION_XML_VALUE;
 import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 
 /**
@@ -108,15 +108,15 @@ public class ServiceController {
 
     // Additional endpoints
 
-    @PostMapping(path = "flights/", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @PostMapping(path = "flights/", produces = {APPLICATION_JSON_VALUE})
     public TotalsAwarePage<Flight> flights(
             @RequestBody(required = false) Flight example,
             @PageableDefault(sort = "startTime", direction = DESC) Pageable pageable
     ) {
-        List<Flight> all = flightService.findAllFlights();
+        List<Flight> matches = flightService.findFlightsByExample(example);
         Page<Flight> page = flightService.findFlightsByExample(example, pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("duration", getFlightDurationTotal(all, page));
+        totals.put("duration", getFlightDurationTotal(page, matches));
         return new TotalsAwarePage<>(
                 page.getContent(),
                 pageable,
@@ -125,12 +125,12 @@ public class ServiceController {
         );
     }
 
-    private Total<Integer> getFlightDurationTotal(List<Flight> all, Page<Flight> page) {
-        int grandTotal = all.parallelStream()
+    private Total<Integer> getFlightDurationTotal(Page<Flight> page, List<Flight> matches) {
+        int pageTotal = page.getContent().parallelStream()
                 .filter(flight -> flight.getStatus() == FlightStatus.COMPLETE)
                 .mapToInt(Flight::getDuration)
                 .sum();
-        int pageTotal = page.getContent().parallelStream()
+        int grandTotal = matches.parallelStream()
                 .filter(flight -> flight.getStatus() == FlightStatus.COMPLETE)
                 .mapToInt(Flight::getDuration)
                 .sum();
@@ -142,12 +142,12 @@ public class ServiceController {
         flightService.deleteFlight(id);
     }
 
-    @GetMapping(path = "flights.json", produces = {MediaType.APPLICATION_JSON_VALUE})
+    @GetMapping(path = "flights.json", produces = {APPLICATION_JSON_VALUE})
     public List<Flight> flightsJSON() {
         return flightService.findAllFlights();
     }
 
-    @GetMapping(path = "flights.xml", produces = {TEXT_XML_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @GetMapping(path = "flights.xml", produces = {TEXT_XML_VALUE, APPLICATION_XML_VALUE})
     public List<Flight> flightsXML() {
         return flightService.findAllFlights();
     }
@@ -219,6 +219,5 @@ public class ServiceController {
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }
-
 
 }

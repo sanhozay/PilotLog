@@ -203,4 +203,13 @@ public class FlightService {
         }
     }
 
+    @Transactional(readOnly = true)
+    public List<Flight> findFlightsByExample(Flight example) {
+        if (example != null) {
+            return repository.findAll(Example.of(example, matcher));
+        } else {
+            return repository.findAll();
+        }
+    }
+
 }
