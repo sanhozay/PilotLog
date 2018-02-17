@@ -1,7 +1,7 @@
 angular.module("flightrecord").component("flights", {
     bindings: {
         content: "<",
-        durationTotals: "<",
+        totals: "<",
         onClickColumn: "&",
         onClickHeading: "&"
     },

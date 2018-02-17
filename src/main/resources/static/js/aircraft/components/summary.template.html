@@ -9,20 +9,20 @@
             <th colspan="4">Total</th>
         </tr>
         <tr>
-            <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('last')">Recent</th>
+            <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('last')">Recent</a></th>
             <th style="width: 20ex"><a ng-click="$ctrl.clickHeading('model')">Aircraft</a></th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('fuelRate.min')">Min</th>
-            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.max')">Max</th>
-            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.avg')">Avg</th>
-            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('distance.min')">Min</th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.max')">Max</th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.avg')">Avg</th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.min')">Min</th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.max')">Max</th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.avg')">Avg</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('fuelRate.min')">Min</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.max')">Max</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('fuelRate.avg')">Avg</a></th>
+            <th style="width:  7ex"><a ng-click="$ctrl.clickHeading('distance.min')">Min</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.max')">Max</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('distance.avg')">Avg</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.min')">Min</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.max')">Max</a></th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('speed.avg')">Avg</a></th>
             <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('totalFuel')">Fuel</a></th>
             <th style="width:  8ex"><a ng-click="$ctrl.clickHeading('totalDistance')">Distance</a></th>
-            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalFlights')">Flights</th>
+            <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalFlights')">Flights</a></th>
             <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalDuration')">Hours</a></th>
         </tr>
     </thead>
@@ -48,24 +48,24 @@
     <tfoot>
         <tr>
             <td colspan="11" class="footerTitle">Page Total</td>
-            <td class="written">1243</td>
-            <td class="written">1234</td>
-            <td class="written">6</td>
-            <td class="written">32:30</td>
+            <td class="written">{{$ctrl.totals.fuel.pageTotal.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.distance.pageTotal.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.flights.pageTotal}}</td>
+            <td class="written">{{$ctrl.totals.duration.pageTotal | duration}}</td>
         </tr>
         <tr>
             <td colspan="11" class="footerTitle">Other Total</td>
-            <td class="written">12345</td>
-            <td class="written">12345</td>
-            <td class="written">32</td>
-            <td class="written">100:00</td>
+            <td class="written">{{$ctrl.totals.fuel.otherTotal.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.distance.otherTotal.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.flights.otherTotal}}</td>
+            <td class="written">{{$ctrl.totals.duration.otherTotal | duration}}</td>
         </tr>
         <tr>
             <td colspan="11" class="footerTitle">GRAND TOTAL</td>
-            <td class="written">123456</td>
-            <td class="written">123432</td>
-            <td class="written">38</td>
-            <td class="written">132:30</td>
+            <td class="written">{{$ctrl.totals.fuel.total.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.distance.total.toFixed()}}</td>
+            <td class="written">{{$ctrl.totals.flights.total}}</td>
+            <td class="written">{{$ctrl.totals.duration.total | duration}}</td>
         </tr>
     </tfoot>
 </table>

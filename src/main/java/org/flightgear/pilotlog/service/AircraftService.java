@@ -12,6 +12,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 public class AircraftService {
@@ -25,6 +27,11 @@ public class AircraftService {
     public AircraftService(AircraftRepository aircraftRepository, FlightRepository flightRepository) {
         this.aircraftRepository = aircraftRepository;
         this.flightRepository = flightRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public List<Aircraft> findAllAircraft() {
+        return aircraftRepository.findAll();
     }
 
     @Transactional(readOnly = true)

@@ -1,7 +1,7 @@
 angular.module("aircraft").component("summary", {
     bindings: {
         content: "<",
-        durationTotals: "<",
+        totals: "<",
         onClickColumn: "&",
         onClickHeading: "&"
     },

@@ -203,17 +203,4 @@ public class FlightService {
         }
     }
 
-    @Transactional(readOnly = true)
-    public int getTotalFlightTimeByExample(Flight example) {
-        if (example == null) {
-            example = new Flight();
-        }
-        example.setStatus(FlightStatus.COMPLETE);
-        List<Flight> flights = repository.findAll(Example.of(example, matcher));
-        return flights.parallelStream()
-                .filter(flight -> flight.getDuration() != null)
-                .mapToInt(Flight::getDuration)
-                .sum();
-    }
-
 }
