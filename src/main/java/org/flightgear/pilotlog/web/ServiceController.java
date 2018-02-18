@@ -24,7 +24,6 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Aircraft;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.domain.Total;
 import org.flightgear.pilotlog.domain.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AircraftService;
@@ -47,6 +46,9 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.function.ToDoubleFunction;
+import java.util.function.ToIntFunction;
+import java.util.function.ToLongFunction;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -116,25 +118,8 @@ public class ServiceController {
         List<Flight> matches = flightService.findFlightsByExample(example);
         Page<Flight> page = flightService.findFlightsByExample(example, pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("duration", getFlightDurationTotal(page, matches));
-        return new TotalsAwarePage<>(
-                page.getContent(),
-                pageable,
-                page.getTotalElements(),
-                totals
-        );
-    }
-
-    private Total<Integer> getFlightDurationTotal(Page<Flight> page, List<Flight> matches) {
-        int pageTotal = page.getContent().parallelStream()
-                .filter(flight -> flight.getStatus() == FlightStatus.COMPLETE)
-                .mapToInt(Flight::getDuration)
-                .sum();
-        int grandTotal = matches.parallelStream()
-                .filter(flight -> flight.getStatus() == FlightStatus.COMPLETE)
-                .mapToInt(Flight::getDuration)
-                .sum();
-        return new Total<>(pageTotal, grandTotal);
+        totals.put("duration", totalOf(Flight::getDuration, page, matches));
+        return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
     @DeleteMapping(path = "flights/flight/{id}")
@@ -159,6 +144,8 @@ public class ServiceController {
         return mapper.writer(schema).writeValueAsString(flightService.findAllFlights());
     }
 
+    // Aircraft
+
     @GetMapping(path = "aircraft/", produces = APPLICATION_JSON_VALUE)
     public TotalsAwarePage<Aircraft> aircraft(
             @PageableDefault(sort = "totalFlights", direction = DESC) Pageable pageable
@@ -166,56 +153,43 @@ public class ServiceController {
         List<Aircraft> all = aircraftService.findAllAircraft();
         Page<Aircraft> page = aircraftService.findAllAircraft(pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("duration", getAircraftDurationTotal(all, page));
-        totals.put("fuel", getAircraftFuelTotal(all, page));
-        totals.put("distance", getAircraftDistanceTotal(all, page));
-        totals.put("flights", getAircraftFlightsTotal(all, page));
-        return new TotalsAwarePage<>(
-                page.getContent(),
-                pageable,
-                page.getTotalElements(),
-                totals
-        );
+        totals.put("distance", totalOf(Aircraft::getTotalDistance, all, page));
+        totals.put("duration", totalOf(Aircraft::getTotalDuration, all, page));
+        totals.put("flights", totalOf(Aircraft::getTotalFlights, all, page));
+        totals.put("fuel", totalOf(Aircraft::getTotalFuel, all, page));
+        return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
-    // TODO: Refactor these methods into something more generic
+    // Accumulators for page/other/grand totals
 
-    private Total<Long> getAircraftDurationTotal(List<Aircraft> all, Page<Aircraft> page) {
+    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {
+        int pageTotal = page.getContent().parallelStream()
+                .filter(Flight::isComplete)
+                .mapToInt(function)
+                .sum();
+        int grandTotal = matches.parallelStream()
+                .filter(Flight::isComplete)
+                .mapToInt(function)
+                .sum();
+        return new Total<>(pageTotal, grandTotal);
+    }
+
+    private Total<Long> totalOf(ToLongFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
         long grandTotal = all.parallelStream()
-                .mapToLong(Aircraft::getTotalDuration)
+                .mapToLong(function)
                 .sum();
         long pageTotal = page.getContent().parallelStream()
-                .mapToLong(Aircraft::getTotalDuration)
+                .mapToLong(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }
 
-    private Total<Long> getAircraftFlightsTotal(List<Aircraft> all, Page<Aircraft> page) {
-        long grandTotal = all.parallelStream()
-                .mapToLong(Aircraft::getTotalFlights)
-                .sum();
-        long pageTotal = page.getContent().parallelStream()
-                .mapToLong(Aircraft::getTotalFlights)
-                .sum();
-        return new Total<>(pageTotal, grandTotal);
-    }
-
-    private Total<Double> getAircraftFuelTotal(List<Aircraft> all, Page<Aircraft> page) {
+    private Total<Double> totalOf(ToDoubleFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
         double grandTotal = all.parallelStream()
-                .mapToDouble(Aircraft::getTotalFuel)
+                .mapToDouble(function)
                 .sum();
         double pageTotal = page.getContent().parallelStream()
-                .mapToDouble(Aircraft::getTotalFuel)
-                .sum();
-        return new Total<>(pageTotal, grandTotal);
-    }
-
-    private Total<Double> getAircraftDistanceTotal(List<Aircraft> all, Page<Aircraft> page) {
-        double grandTotal = all.parallelStream()
-                .mapToDouble(Aircraft::getTotalDistance)
-                .sum();
-        double pageTotal = page.getContent().parallelStream()
-                .mapToDouble(Aircraft::getTotalDistance)
+                .mapToDouble(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }

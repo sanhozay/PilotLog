@@ -115,6 +115,15 @@ public class Flight implements Serializable, Comparable<Flight> {
         }
     }
 
+    /**
+     * Convenience function to check if a flight is complete.
+     *
+     * @return true if the status if COMPLETE
+     */
+    public boolean isComplete() {
+        return status == FlightStatus.COMPLETE;
+    }
+
     // Accessors
 
     public int getId() {
