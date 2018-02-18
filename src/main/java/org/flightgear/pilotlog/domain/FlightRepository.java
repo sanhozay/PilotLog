@@ -69,7 +69,7 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
             "sum(f.duration), " +
             "count(f.id), " +
             "sum(f.fuelUsed)" +
-            ") from Flight f where f.aircraft = :model")
+            ") from Flight f where f.aircraft = :model and f.status = 'COMPLETE'")
     Aircraft aircraftSummaryByModel(@Param("model") String model);
 
 }

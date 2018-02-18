@@ -19,9 +19,9 @@
 
 package org.flightgear.pilotlog.domain;
 
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,10 +33,10 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import javax.persistence.Transient;
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Date;
 
 /**
  * Domain object representing a flight.
@@ -120,6 +120,7 @@ public class Flight implements Serializable, Comparable<Flight> {
      *
      * @return true if the status if COMPLETE
      */
+    @Transient
     public boolean isComplete() {
         return status == FlightStatus.COMPLETE;
     }

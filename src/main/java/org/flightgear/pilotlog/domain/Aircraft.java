@@ -52,8 +52,8 @@ public class Aircraft implements Serializable {
     @Embedded
     private Statistic<Integer> speed;
 
-    private double totalFuel, totalDistance;
-    private long totalFlights, totalDuration;
+    private Double totalFuel, totalDistance;
+    private Long totalFlights, totalDuration;
 
     public Aircraft() {}
 
@@ -63,10 +63,10 @@ public class Aircraft implements Serializable {
 
     public Aircraft(
             String model, Date last,
-            float distanceMin, float distanceMax, double distanceAvg,
-            float fuelRateMin, float fuelRateMax, double fuelRateAvg,
-            int speedMin, int speedMax, double speedAvg,
-            double totalDistance, long totalDuration, long totalFlights, double totalFuel
+            Float distanceMin, Float distanceMax, Double distanceAvg,
+            Float fuelRateMin, Float fuelRateMax, Double fuelRateAvg,
+            Integer speedMin, Integer speedMax, Double speedAvg,
+            Double totalDistance, Long totalDuration, Long totalFlights, Double totalFuel
     ) {
         this.model = model;
         this.last = last;
@@ -121,35 +121,35 @@ public class Aircraft implements Serializable {
         this.speed = speed;
     }
 
-    public double getTotalFuel() {
+    public Double getTotalFuel() {
         return totalFuel;
     }
 
-    public void setTotalFuel(double totalFuel) {
+    public void setTotalFuel(Double totalFuel) {
         this.totalFuel = totalFuel;
     }
 
-    public double getTotalDistance() {
+    public Double getTotalDistance() {
         return totalDistance;
     }
 
-    public void setTotalDistance(double totalDistance) {
+    public void setTotalDistance(Double totalDistance) {
         this.totalDistance = totalDistance;
     }
 
-    public long getTotalFlights() {
+    public Long getTotalFlights() {
         return totalFlights;
     }
 
-    public void setTotalFlights(long totalFlights) {
+    public void setTotalFlights(Long totalFlights) {
         this.totalFlights = totalFlights;
     }
 
-    public long getTotalDuration() {
+    public Long getTotalDuration() {
         return totalDuration;
     }
 
-    public void setTotalDuration(long totalDuration) {
+    public void setTotalDuration(Long totalDuration) {
         this.totalDuration = totalDuration;
     }
 

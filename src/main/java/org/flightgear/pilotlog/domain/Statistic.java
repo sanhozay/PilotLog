@@ -14,11 +14,11 @@ import java.io.Serializable;
 public class Statistic<T extends Number> implements Serializable {
 
     private T min, max;
-    private double avg;
+    private Double avg;
 
     public Statistic() {}
 
-    public Statistic(T min, T max, double avg) {
+    public Statistic(T min, T max, Double avg) {
         this.min = min;
         this.max = max;
         this.avg = avg;
@@ -32,7 +32,7 @@ public class Statistic<T extends Number> implements Serializable {
         this.max = max;
     }
 
-    public void setAvg(double avg) {
+    public void setAvg(Double avg) {
         this.avg = avg;
     }
 
@@ -44,7 +44,7 @@ public class Statistic<T extends Number> implements Serializable {
         return max;
     }
 
-    public double getAvg() {
+    public Double getAvg() {
         return avg;
     }
 
