@@ -26,7 +26,12 @@
             <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('totalDuration')">Hours</a></th>
         </tr>
     </thead>
-    <tbody>
+    <tbody ng-show="$ctrl.content.length == 0">
+        <tr>
+            <td colspan="15">No flights</td>
+        </tr>
+    </tbody>
+    <tbody ng-show="$ctrl.content.length > 0">
         <tr ng-repeat="summary in $ctrl.content" class="COMPLETE">
             <td>{{summary.last | date:'dd/MM/yy'}}</td>
             <td>{{summary.model | capitalize}}</td>
