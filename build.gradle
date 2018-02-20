@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'groovy'
     id "org.springframework.boot" version "1.5.10.RELEASE"
 }
 
@@ -20,9 +19,8 @@ dependencies {
         'com.fasterxml.jackson.dataformat:jackson-dataformat-xml',
         'com.h2database:h2',
     )
-    testCompile(
-        'org.spockframework:spock-core',
-        'org.codehaus.groovy:groovy-all',
+    testCompile (
+        'org.springframework.boot:spring-boot-starter-test',
     )
 }
 
