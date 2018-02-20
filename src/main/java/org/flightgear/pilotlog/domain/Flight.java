@@ -47,13 +47,13 @@ import java.util.Date;
 @SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
 @JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer",
-    "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
-    "distance", "groundSpeed", "duration", "status"})
+        "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
+        "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
-    @Index(columnList = "aircraft"),
-    @Index(columnList = "callsign"),
-    @Index(columnList = "origin"),
-    @Index(columnList = "destination"),
+        @Index(columnList = "aircraft"),
+        @Index(columnList = "callsign"),
+        @Index(columnList = "origin"),
+        @Index(columnList = "destination"),
 })
 public class Flight implements Serializable, Comparable<Flight> {
 

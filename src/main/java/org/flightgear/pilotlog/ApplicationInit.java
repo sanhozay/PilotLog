@@ -19,7 +19,6 @@
 
 package org.flightgear.pilotlog;
 
-import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.service.AircraftService;
 import org.flightgear.pilotlog.service.FlightService;
 import org.slf4j.Logger;

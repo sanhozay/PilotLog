@@ -19,16 +19,16 @@ public class PageableUtil {
     /**
      * Adapts a pageable to ensure stable sorting and allows properties to
      * sort in a case-insensitive order.
-     *
+     * <p>
      * There are a couple of things going on in this method to manipulate the
      * pageable passed in from the web tier:
-     *
+     * <p>
      * 1. If the sort property is one that contains duplicate values, the sort
-     *    can become unstable. Adding a sort by primary key (id) prevents this.
-     *
+     * can become unstable. Adding a sort by primary key (id) prevents this.
+     * <p>
      * 2. If the sort property has values with mixed case, but the web tier should
-     *    present them in case-insensitive order, the sort order is replaced with
-     *    a version that ignores case.
+     * present them in case-insensitive order, the sort order is replaced with
+     * a version that ignores case.
      *
      * @param pageable the original pageable
      * @param idProperty the unique id property for the entity

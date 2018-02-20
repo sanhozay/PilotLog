@@ -7,7 +7,6 @@ import java.io.Serializable;
  * Embedded object to represent a min/max/avg statistic.
  *
  * @param <T> the numeric type of the statistic
- *
  * @author Richard Senior
  */
 @Embeddable
@@ -24,28 +23,28 @@ public class Statistic<T extends Number> implements Serializable {
         this.avg = avg;
     }
 
-    public void setMin(T min) {
-        this.min = min;
-    }
-
-    public void setMax(T max) {
-        this.max = max;
-    }
-
-    public void setAvg(Double avg) {
-        this.avg = avg;
-    }
-
     public T getMin() {
         return min;
+    }
+
+    public void setMin(T min) {
+        this.min = min;
     }
 
     public T getMax() {
         return max;
     }
 
+    public void setMax(T max) {
+        this.max = max;
+    }
+
     public Double getAvg() {
         return avg;
+    }
+
+    public void setAvg(Double avg) {
+        this.avg = avg;
     }
 
 }
