@@ -1,15 +1,8 @@
-buildscript {
-    repositories {
-        mavenCentral()
-    }
-    dependencies {
-        classpath("org.springframework.boot:spring-boot-gradle-plugin:1.5.10.RELEASE")
-    }
+plugins {
+    id 'java'
+    id 'groovy'
+    id "org.springframework.boot" version "1.5.10.RELEASE"
 }
-
-apply plugin: 'groovy'
-apply plugin: 'java'
-apply plugin: 'org.springframework.boot'
 
 repositories {
     mavenCentral()
@@ -18,17 +11,19 @@ repositories {
 version = '1.0.0'
 
 dependencies {
-    compile 'org.springframework.boot:spring-boot-starter-web'
-    compile 'org.springframework.boot:spring-boot-starter-data-jpa'
-    compile 'org.springframework.boot:spring-boot-devtools'
-    compile 'com.fasterxml.jackson.core:jackson-core'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-csv'
-    compile 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml'
-    compile 'com.h2database:h2'
-
-    // Testing
-    compile 'org.codehaus.groovy:groovy-all'
-    testCompile 'org.spockframework:spock-core:'
+    compile(
+        'org.springframework.boot:spring-boot-starter-web',
+        'org.springframework.boot:spring-boot-starter-data-jpa',
+        'org.springframework.boot:spring-boot-devtools',
+        'com.fasterxml.jackson.core:jackson-core',
+        'com.fasterxml.jackson.dataformat:jackson-dataformat-csv',
+        'com.fasterxml.jackson.dataformat:jackson-dataformat-xml',
+        'com.h2database:h2',
+    )
+    testCompile(
+        'org.spockframework:spock-core',
+        'org.codehaus.groovy:groovy-all',
+    )
 }
 
 jar {
@@ -44,3 +39,4 @@ jar {
 springBoot {
     executable = true
 }
+
