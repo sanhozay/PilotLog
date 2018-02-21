@@ -22,8 +22,6 @@ package org.flightgear.pilotlog.service;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
-import org.flightgear.pilotlog.service.exceptions.FlightNotFoundException;
-import org.flightgear.pilotlog.service.exceptions.InvalidFlightStatusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

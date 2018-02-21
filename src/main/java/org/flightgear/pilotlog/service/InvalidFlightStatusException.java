@@ -17,22 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.service.exceptions;
+package org.flightgear.pilotlog.service;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception for flights that fail bean validation.
+ * Exception created by the {@link FlightService}.
  *
  * @author Richard Senior
  */
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class InvalidFlightException extends RuntimeException {
+public class InvalidFlightStatusException extends RuntimeException {
 
-    public InvalidFlightException(String message) {
+    public InvalidFlightStatusException(String message) {
         super(message);
+    }
+
+    public InvalidFlightStatusException(String message, Throwable cause) {
+        super(message, cause);
     }
 
 }

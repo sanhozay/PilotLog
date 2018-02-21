@@ -17,27 +17,22 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.service.exceptions;
+package org.flightgear.pilotlog.service;
 
-import org.flightgear.pilotlog.service.FlightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 /**
- * Exception created by the {@link FlightService}.
+ * Exception for flights that fail bean validation.
  *
  * @author Richard Senior
  */
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class FlightNotFoundException extends RuntimeException {
+public class InvalidFlightException extends RuntimeException {
 
-    public FlightNotFoundException(String message) {
+    public InvalidFlightException(String message) {
         super(message);
-    }
-
-    public FlightNotFoundException(String message, Throwable cause) {
-        super(message, cause);
     }
 
 }
