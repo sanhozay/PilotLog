@@ -51,7 +51,7 @@ public class FlightService {
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 
     private final FlightRepository repository;
-    private final PageableUtil pageableUtil;
+    private PageableUtil pageableUtil;
 
     private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
             .withIgnorePaths("id")
@@ -60,9 +60,8 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
 
     @Autowired
-    public FlightService(FlightRepository repository, PageableUtil pageableUtil) {
+    public FlightService(FlightRepository repository) {
         this.repository = repository;
-        this.pageableUtil = pageableUtil;
     }
 
     /**
@@ -263,7 +262,9 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
-        pageable = pageableUtil.adjustPageable(pageable, "id", "aircraft");
+        if (pageableUtil != null) {
+            pageable = pageableUtil.adjustPageable(pageable, "id", "aircraft");
+        }
         if (example != null) {
             return repository.findAll(Example.of(example, matcher), pageable);
         } else {
@@ -278,6 +279,13 @@ public class FlightService {
         } else {
             return repository.findAll();
         }
+    }
+
+    // Accessors
+
+    @Autowired(required = false)
+    public void setPageableUtil(PageableUtil pageableUtil) {
+        this.pageableUtil = pageableUtil;
     }
 
 }

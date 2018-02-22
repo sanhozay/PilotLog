@@ -48,7 +48,8 @@ public class FlightServiceTest {
 
     @Before
     public void setUp() {
-        flightService = new FlightService(flightRepository, pageableUtil);
+        flightService = new FlightService(flightRepository);
+        flightService.setPageableUtil(pageableUtil);
         when(flightRepository.save(any(Flight.class))).thenAnswer((Answer<Flight>)invocation -> {
             Flight flight = (Flight)invocation.getArguments()[0];
             flight.setId(ID_ACTIVE); // Simulate auto-generate id
