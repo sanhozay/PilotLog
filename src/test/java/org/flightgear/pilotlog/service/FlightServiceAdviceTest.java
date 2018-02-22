@@ -57,7 +57,7 @@ public class FlightServiceAdviceTest {
         // When purging flights
         flightServiceAdvice.purge();
         // expect the flight service to purge flights
-        verify(flightService, times(1)).purge();
+        verify(flightService).purge();
     }
 
     @Test
@@ -65,9 +65,9 @@ public class FlightServiceAdviceTest {
         // When computing fields on flights
         flightServiceAdvice.compute(joinPoint);
         // expect the flight service to look for the flight inidcated in the joinpoint
-        verify(flightService, times(1)).findFlightById(0);
+        verify(flightService).findFlightById(0);
         // and the flight service to update computed fields
-        verify(flightService, times(1)).updateComputedFields(any(Flight.class));
+        verify(flightService).updateComputedFields(any(Flight.class));
     }
 
     @Test
@@ -75,9 +75,9 @@ public class FlightServiceAdviceTest {
         // When summarizing flights
         flightServiceAdvice.summarize(joinPoint);
         // expect the flight service to look for the flight inidcated in the joinpoint
-        verify(flightService, times(1)).findFlightById(0);
+        verify(flightService).findFlightById(0);
         // and the flight service to update the summary for an aircraft
-        verify(aircraftService, times(1)).updateSummary(any(String.class));
+        verify(aircraftService).updateSummary(any(String.class));
     }
 
 }

@@ -25,6 +25,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -82,7 +83,7 @@ public class FlightServiceTest {
         // When beginning a new flight
         Flight flight = flightService.beginFlight("G-SHOZ", "707", "EGNM", 1000.0f, 0.0f);
         // expect the repostory to save a flight
-        verify(flightRepository, times(1)).save(any(Flight.class));
+        verify(flightRepository).save(any(Flight.class));
         // and the departure properties to be set correctly
         assertThat(flight.getCallsign()).isEqualTo("G-SHOZ");
         assertThat(flight.getAircraft()).isEqualTo("707");
@@ -100,7 +101,7 @@ public class FlightServiceTest {
         // When ending a flight
         Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 900.0f, 100.0f);
         // expect the repository to look for the flight
-        verify(flightRepository, times(1)).findOne(ID_ACTIVE);
+        verify(flightRepository).findOne(ID_ACTIVE);
         // and the arrival properties to be set correctly
         assertThat(flight.getDestination()).isEqualTo("EGLL");
         assertThat(flight.getEndFuel()).isEqualTo(900.0f);
@@ -116,7 +117,7 @@ public class FlightServiceTest {
         // When attempting to end a missing flight
         Flight flight = flightService.endFlight(ID_MISSING, "EGLL", 900.0f, 100.0f);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_MISSING);
+        verify(flightRepository).findOne(ID_MISSING);
     }
 
     @Test(expected = InvalidFlightStatusException.class)
@@ -124,7 +125,7 @@ public class FlightServiceTest {
         // When attempting to end a completed flight
         Flight flight = flightService.endFlight(ID_COMPLETE, "EGLL", 900.0f, 100.0f);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_COMPLETE);
+        verify(flightRepository).findOne(ID_COMPLETE);
     }
 
     @Test
@@ -132,7 +133,7 @@ public class FlightServiceTest {
         // When ending a flight with the same fuel as it started
         Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 1000.0f, 100.0f);
         // expect the repository to look for the flight
-        verify(flightRepository, times(1)).findOne(ID_ACTIVE);
+        verify(flightRepository).findOne(ID_ACTIVE);
         // and the status to be set to invalid
         assertThat(flight.getStatus()).isEqualTo(FlightStatus.INVALID);
     }
@@ -142,7 +143,7 @@ public class FlightServiceTest {
         // When invalidating a flight
         Flight flight = flightService.invalidateFlight(ID_ACTIVE);
         // expect the repository to look for the flight
-        verify(flightRepository, times(1)).findOne(ID_ACTIVE);
+        verify(flightRepository).findOne(ID_ACTIVE);
         // and the status to be set to invalid
         assertThat(flight.getStatus()).isEqualTo(FlightStatus.INVALID);
     }
@@ -152,7 +153,7 @@ public class FlightServiceTest {
         // When attempting to invalidate a missing flight
         Flight flight = flightService.invalidateFlight(ID_MISSING);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_MISSING);
+        verify(flightRepository).findOne(ID_MISSING);
     }
 
     @Test(expected = InvalidFlightStatusException.class)
@@ -160,7 +161,7 @@ public class FlightServiceTest {
         // When attempting to invalidate a flight that is not active
         Flight flight = flightService.invalidateFlight(ID_COMPLETE);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_COMPLETE);
+        verify(flightRepository).findOne(ID_COMPLETE);
     }
 
     @Test
@@ -168,9 +169,9 @@ public class FlightServiceTest {
         // When attempting to delete a completed flight
         flightService.deleteFlight(ID_COMPLETE);
         // expect the repository to look for the flight
-        verify(flightRepository, times(1)).findOne(ID_COMPLETE);
+        verify(flightRepository).findOne(ID_COMPLETE);
         // and then delete it
-        verify(flightRepository, times(1)).delete(flightRepository.findOne(ID_COMPLETE));
+        verify(flightRepository).delete(flightRepository.findOne(ID_COMPLETE));
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -178,7 +179,7 @@ public class FlightServiceTest {
         // When attempting to delete a missing flight
         flightService.deleteFlight(ID_MISSING);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_MISSING);
+        verify(flightRepository).findOne(ID_MISSING);
     }
 
     @Test(expected = InvalidFlightStatusException.class)
@@ -186,7 +187,7 @@ public class FlightServiceTest {
         // When attempting to delete an active flight
         flightService.deleteFlight(ID_ACTIVE);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_ACTIVE);
+        verify(flightRepository).findOne(ID_ACTIVE);
     }
 
     @Test
@@ -218,7 +219,7 @@ public class FlightServiceTest {
         // When attempting to update a missing flight
         Flight flight = flightService.updateFlight(ID_MISSING, 10000, 900.0f, 100.0f);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_MISSING);
+        verify(flightRepository).findOne(ID_MISSING);
     }
 
     @Test(expected = InvalidFlightStatusException.class)
@@ -226,7 +227,7 @@ public class FlightServiceTest {
         // When attempting to update a completed flight
         Flight flight = flightService.updateFlight(ID_COMPLETE, 10000, 900.0f, 100.0f);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_COMPLETE);
+        verify(flightRepository).findOne(ID_COMPLETE);
     }
 
     @Test
@@ -327,11 +328,11 @@ public class FlightServiceTest {
         // When purging invalid and active flights
         flightService.purge();
         // expect the repository not to search for new and completed flights
-        verify(flightRepository, times(0)).findByStatus(FlightStatus.NEW);
-        verify(flightRepository, times(0)).findByStatus(FlightStatus.COMPLETE);
+        verify(flightRepository, never()).findByStatus(FlightStatus.NEW);
+        verify(flightRepository, never()).findByStatus(FlightStatus.COMPLETE);
         // and to search for active and invalid flights
-        verify(flightRepository, times(1)).findByStatus(FlightStatus.ACTIVE);
-        verify(flightRepository, times(1)).findByStatus(FlightStatus.INVALID);
+        verify(flightRepository).findByStatus(FlightStatus.ACTIVE);
+        verify(flightRepository).findByStatus(FlightStatus.INVALID);
         // and to delete the active and invalid flights
         verify(flightRepository, times(2)).delete(any(Flight.class));
     }
@@ -341,7 +342,7 @@ public class FlightServiceTest {
         // When searching for an existing flight by ID
         Flight flight = flightService.findFlightById(ID_COMPLETE);
         // expect the repository to look for the flight
-        verify(flightRepository, times(1)).findOne(ID_COMPLETE);
+        verify(flightRepository).findOne(ID_COMPLETE);
         // and the flight to be found
         assertThat(flight).isNotNull();
     }
@@ -351,7 +352,7 @@ public class FlightServiceTest {
         // When searching for a missing flight by ID
         Flight flight = flightService.findFlightById(ID_MISSING);
         // expect the repository to look for the flight and throw an exception
-        verify(flightRepository, times(1)).findOne(ID_MISSING);
+        verify(flightRepository).findOne(ID_MISSING);
     }
 
     @Test
@@ -359,7 +360,7 @@ public class FlightServiceTest {
         // When searching for all flights
         List<Flight> flights = flightService.findAllFlights();
         // expect the repository to look for all flights
-        verify(flightRepository, times(1)).findAll();
+        verify(flightRepository).findAll();
         // and that the collection returned from the repository is returned by the service
         assertThat(flights).isEqualTo(flightRepository.findAll());
     }
@@ -371,7 +372,7 @@ public class FlightServiceTest {
         // when searching for all flights by example
         List<Flight> flights = flightService.findFlightsByExample(flight);
         // expect the repository to find flights by example
-        verify(flightRepository, times(1)).findAll(any(Example.class));
+        verify(flightRepository).findAll(any(Example.class));
         // and that the collection returned from the repository is returned by the service
         assertThat(flights).isEqualTo(flightRepository.findAll(any(Example.class)));
     }
@@ -381,7 +382,7 @@ public class FlightServiceTest {
         // When searching for all flights with a null example
         List<Flight> flights = flightService.findFlightsByExample(null);
         // expect the repository to find all flights
-        verify(flightRepository, times(1)).findAll();
+        verify(flightRepository).findAll();
         // and that the collection returned from the repository is returned by the service
         assertThat(flights).isEqualTo(flightRepository.findAll());
     }
@@ -397,9 +398,9 @@ public class FlightServiceTest {
         // when finding pageable flights by example
         Page<Flight> flights = flightService.findFlightsByExample(flight, pageable);
         // expect the repository to search by example and pageable
-        verify(flightRepository, times(1)).findAll(any(Example.class), any(Pageable.class));
+        verify(flightRepository).findAll(any(Example.class), any(Pageable.class));
         // and the pageable utility class to adjust the pageable
-        verify(pageableUtil, times(1)).adjustPageable(pageable, "id", "aircraft");
+        verify(pageableUtil).adjustPageable(pageable, "id", "aircraft");
         // and that the collection returned from the repository is returned by the service
         assertThat(flights).isEqualTo(flightRepository.findAll(any(Example.class), any(Pageable.class)));
     }
@@ -411,9 +412,9 @@ public class FlightServiceTest {
         // when finding pageable flights by example
         Page<Flight> flights = flightService.findFlightsByExample(null, pageable);
         // expect the repository to search by pageable only
-        verify(flightRepository, times(1)).findAll(any(Pageable.class));
+        verify(flightRepository).findAll(any(Pageable.class));
         // and the pageable utility class to adjust the pageable
-        verify(pageableUtil, times(1)).adjustPageable(pageable, "id", "aircraft");
+        verify(pageableUtil).adjustPageable(pageable, "id", "aircraft");
         // and that the collection returned from the repository is returned by the service
         assertThat(flights).isEqualTo(flightRepository.findAll(any(Pageable.class)));
     }

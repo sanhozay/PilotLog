@@ -16,7 +16,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Matchers.any;
-import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
 @RunWith(SpringRunner.class)
@@ -44,7 +44,7 @@ public class AircraftServiceTest {
         // When using the service to find all aircraft
         List<Aircraft> aircraft = aircraftService.findAllAircraft();
         // expect the corresponding repository method to be called once
-        verify(aircraftRepository, times(1)).findAll();
+        verify(aircraftRepository).findAll();
         // and that the collection returned from the repository is returned by the service
         assertThat(aircraft).isEqualTo(aircraftRepository.findAll());
     }
@@ -56,10 +56,10 @@ public class AircraftServiceTest {
         // when a page of aircraft is requested
         Page<Aircraft> aircraft = aircraftService.findAllAircraft(pageable);
         // expect the pageable to be adjusted for stability and case
-        verify(pageableUtil, times(1)).adjustPageable(pageable, "model", "model");
+        verify(pageableUtil).adjustPageable(pageable, "model", "model");
         // and the call to the repository to be an adjusted pageable
-        verify(aircraftRepository, times(0)).findAll(pageable);
-        verify(aircraftRepository, times(1)).findAll(any(Pageable.class));
+        verify(aircraftRepository, never()).findAll(pageable);
+        verify(aircraftRepository).findAll(any(Pageable.class));
         // and that the page returned from the repository is returned by the service
         assertThat(aircraft).isEqualTo(aircraftRepository.findAll(pageable));
     }
@@ -69,9 +69,9 @@ public class AircraftServiceTest {
         // When updating the summary for an aircraft
         aircraftService.updateSummary("707");
         // expect the aircraft summary for that aircraft to be requested from the repository
-        verify(flightRepository, times(1)).aircraftSummaryByModel("707");
+        verify(flightRepository).aircraftSummaryByModel("707");
         // and an aircraft to be saved
-        verify(aircraftRepository, times(1)).save(any(Aircraft.class));
+        verify(aircraftRepository).save(any(Aircraft.class));
     }
 
 }
