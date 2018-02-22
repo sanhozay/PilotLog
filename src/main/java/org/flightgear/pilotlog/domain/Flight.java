@@ -37,6 +37,7 @@ import javax.persistence.Transient;
 import java.io.Serializable;
 import java.time.Duration;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Domain object representing a flight.
@@ -55,7 +56,7 @@ import java.util.Date;
         @Index(columnList = "origin"),
         @Index(columnList = "destination"),
 })
-public class Flight implements Serializable, Comparable<Flight> {
+public class Flight implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -89,30 +90,6 @@ public class Flight implements Serializable, Comparable<Flight> {
         this.origin = origin;
         this.startFuel = startFuel;
         this.startOdometer = startOdometer;
-    }
-
-    /**
-     * Updates computed fields of flight; duration, fuelUsed and fuelRate.
-     */
-    public void updateComputedFields() {
-        if (startTime != null && endTime != null) {
-            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).getSeconds();
-        }
-        if (startFuel != null && endFuel != null) {
-            fuelUsed = startFuel - endFuel;
-        }
-        if (startOdometer != null && endOdometer != null) {
-            distance = endOdometer - startOdometer;
-        }
-        if (fuelUsed != null && duration != null && duration >= 10) {
-            fuelRate = 3600 * fuelUsed / duration;
-        }
-        if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
-            reserve = 3600 * endFuel / fuelRate;
-        }
-        if (distance != null && duration != null && duration >= 10) {
-            groundSpeed = (int)(distance / (duration / 3600.0));
-        }
     }
 
     /**
@@ -282,16 +259,8 @@ public class Flight implements Serializable, Comparable<Flight> {
     // Comparison and equality
 
     @Override
-    public int compareTo(Flight o) {
-        return getStartTime().compareTo(o.getStartTime());
-    }
-
-    @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (startTime == null ? 0 : startTime.hashCode());
-        return result;
+        return Objects.hash(startTime);
     }
 
     @Override
@@ -303,9 +272,9 @@ public class Flight implements Serializable, Comparable<Flight> {
         if (getClass() != obj.getClass())
             return false;
         final Flight other = (Flight)obj;
-        if (startTime == null) {
+        if (startTime == null)
             return other.startTime == null;
-        } else return startTime.equals(other.startTime);
+        return startTime.equals(other.startTime);
     }
 
     @Override

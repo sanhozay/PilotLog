@@ -38,16 +38,6 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      * Finds flights with a given status.
      *
      * @param status the flight status
-     * @param pageable the page context object
-     * @return a set of flights with the given status
-     * @see FlightStatus
-     */
-    Page<Flight> findByStatus(FlightStatus status, Pageable pageable);
-
-    /**
-     * Finds flights with a given status.
-     *
-     * @param status the flight status
      * @return a set of flights with the given status
      * @see FlightStatus
      */
@@ -62,14 +52,16 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     @Query(value = "select new org.flightgear.pilotlog.domain.Aircraft(" +
             "f.aircraft," +
             "max(f.startTime), " +
-            "min(f.distance), max(f.distance), avg(f.distance), " +
-            "min(f.fuelRate), max(f.fuelRate), avg(f.fuelRate), " +
-            "min(f.groundSpeed), max(f.groundSpeed), avg(f.groundSpeed), " +
+            "min(f.distance), max(f.distance), sum(f.distance) / count(f.id), " +
+            "min(f.fuelRate), max(f.fuelRate), sum(f.fuelUsed) * 3600 / sum(f.duration), " +
+            "min(f.groundSpeed), max(f.groundSpeed), sum(f.distance) * 3600 / sum(f.duration), " +
             "sum(f.distance), " +
             "sum(f.duration), " +
             "count(f.id), " +
             "sum(f.fuelUsed)" +
-            ") from Flight f where f.aircraft = :model and f.status = 'COMPLETE'")
+            ") " +
+            "from Flight f group by f.aircraft, f.status " +
+            "having f.aircraft = :model and f.status = 'COMPLETE'")
     Aircraft aircraftSummaryByModel(@Param("model") String model);
 
 }

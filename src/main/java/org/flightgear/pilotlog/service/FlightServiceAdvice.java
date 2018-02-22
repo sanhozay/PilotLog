@@ -25,17 +25,12 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.annotation.Pointcut;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.FlightRepository;
-import org.flightgear.pilotlog.domain.FlightStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.HashSet;
-import java.util.Set;
 
 /**
  * AOP advice for flight service operations.
@@ -48,31 +43,22 @@ public class FlightServiceAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(FlightServiceAdvice.class);
 
-    private FlightRepository flightRepository;
     private AircraftService aircraftService;
+    private FlightService flightService;
 
     @Before("execution (* FlightService.beginFlight(..))")
     @Transactional(propagation = Propagation.REQUIRED)
     public void purge() {
-        final Set<Flight> toDelete = new HashSet<>();
-        if (toDelete.addAll(flightRepository.findByStatus(FlightStatus.INVALID)) ||
-                toDelete.addAll(flightRepository.findByStatus(FlightStatus.ACTIVE)))
-            for (final Flight flight : toDelete) {
-                flightRepository.delete(flight);
-                log.info("Deleted flight {}", flight);
-            }
+        flightService.purge();
+        log.info("Purged invalid and active flights");
     }
 
     @AfterReturning("endFlight() || updateFlight()")
     @Transactional(propagation = Propagation.MANDATORY)
     public void compute(final JoinPoint jp) {
         final int id = (int)jp.getArgs()[0];
-        final Flight flight = flightRepository.findOne(id);
-        flight.updateComputedFields();
-        if (flight.getDuration() == 0 && flight.getStatus() == FlightStatus.COMPLETE) {
-            flight.setStatus(FlightStatus.INVALID);
-            log.warn("Invalidating flight {} because duration is zero", flight.getId());
-        }
+        final Flight flight = flightService.findFlightById(id);
+        flightService.updateComputedFields(flight);
         log.info("Updated computed fields of flight {}", flight);
     }
 
@@ -80,25 +66,25 @@ public class FlightServiceAdvice {
     @Transactional(propagation = Propagation.MANDATORY)
     public void summarize(final JoinPoint jp) {
         final int id = (int)jp.getArgs()[0];
-        final Flight flight = flightRepository.findOne(id);
+        final Flight flight = flightService.findFlightById(id);
         aircraftService.updateSummary(flight.getAircraft());
         log.info("Updated summary with flight {}", flight);
     }
 
     @Pointcut("execution (* FlightService.endFlight(..))")
-    private void endFlight() {}
+    void endFlight() {}
 
     @Pointcut("execution (* FlightService.updateFlight(..))")
-    private void updateFlight() {}
-
-    @Autowired
-    public void setFlightRepository(FlightRepository flightRepository) {
-        this.flightRepository = flightRepository;
-    }
+    void updateFlight() {}
 
     @Autowired
     public void setAircraftService(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
+    }
+
+    @Autowired
+    public void setFlightService(FlightService FlightService) {
+        this.flightService = FlightService;
     }
 
 }

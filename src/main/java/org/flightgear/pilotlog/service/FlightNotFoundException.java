@@ -17,9 +17,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.service.exceptions;
+package org.flightgear.pilotlog.service;
 
-import org.flightgear.pilotlog.service.FlightService;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
@@ -30,13 +29,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  */
 @SuppressWarnings("serial")
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
-public class InvalidFlightStatusException extends RuntimeException {
+public class FlightNotFoundException extends RuntimeException {
 
-    public InvalidFlightStatusException(String message) {
+    public FlightNotFoundException(String message) {
         super(message);
     }
 
-    public InvalidFlightStatusException(String message, Throwable cause) {
+    public FlightNotFoundException(String message, Throwable cause) {
         super(message, cause);
     }
 

@@ -56,7 +56,7 @@ public class ApplicationInit implements CommandLineRunner {
         log.info("Updating computed fields on all flights");
         Set<String> models = new HashSet<>();
         flightService.findAllFlights().forEach(flight -> {
-            flight.updateComputedFields();
+            flightService.updateComputedFields(flight);
             models.add(flight.getAircraft());
         });
         models.forEach(aircraftService::updateSummary);
