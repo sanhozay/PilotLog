@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,9 +13,10 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+@Service
 public class PageableUtil {
 
-    private static final Logger log = LoggerFactory.getLogger(FlightService.class);
+    private static final Logger log = LoggerFactory.getLogger(PageableUtil.class);
 
     /**
      * Adapts a pageable to ensure stable sorting and allows properties to
@@ -35,7 +37,7 @@ public class PageableUtil {
      * @param caseInsensitiveProperties the variadic list of case insensitive properties
      * @return a stable pageable with case insensitive properties as required
      */
-    public static Pageable adjustPageable(
+    public Pageable adjustPageable(
             Pageable pageable,
             String idProperty,
             String... caseInsensitiveProperties

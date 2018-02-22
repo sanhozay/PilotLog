@@ -22,11 +22,17 @@ public class AircraftService {
 
     private final AircraftRepository aircraftRepository;
     private final FlightRepository flightRepository;
+    private final PageableUtil pageableUtil;
 
     @Autowired
-    public AircraftService(AircraftRepository aircraftRepository, FlightRepository flightRepository) {
+    public AircraftService(
+            AircraftRepository aircraftRepository,
+            FlightRepository flightRepository,
+            PageableUtil pageableUtil
+    ) {
         this.aircraftRepository = aircraftRepository;
         this.flightRepository = flightRepository;
+        this.pageableUtil = pageableUtil;
     }
 
     @Transactional(readOnly = true)
@@ -36,7 +42,7 @@ public class AircraftService {
 
     @Transactional(readOnly = true)
     public Page<Aircraft> findAllAircraft(Pageable pageable) {
-        pageable = PageableUtil.adjustPageable(pageable, "model", "model");
+        pageable = pageableUtil.adjustPageable(pageable, "model", "model");
         return aircraftRepository.findAll(pageable);
     }
 
