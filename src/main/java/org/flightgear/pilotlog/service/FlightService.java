@@ -33,8 +33,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Service for working with flights.
@@ -92,8 +95,10 @@ public class FlightService {
      * @return the flight, with arrival fields updated
      */
     public Flight endFlight(int id, String airport, float endFuel, float endOdometer) {
-        final Flight flight = repository.findOne(id);
-        if (flight == null) {
+        final Flight flight;
+        try {
+            flight = findFlightById(id);
+        } catch (FlightNotFoundException e) {
             final String message = String.format("Attempt to end flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
         }
@@ -105,9 +110,9 @@ public class FlightService {
         flight.setEndFuel(endFuel);
         flight.setEndOdometer(endOdometer);
         flight.setEndTime(new Date());
-        if (flight.getEndFuel() > flight.getStartFuel()) {
+        if (flight.getEndFuel() >= flight.getStartFuel()) {
             flight.setStatus(FlightStatus.INVALID);
-            log.warn("Invalidating flight {} because fuel has increased", flight.getId());
+            log.warn("Invalidated flight #{} because fuel has not decreased", flight.getId());
         }
         if (flight.getStatus().equals(FlightStatus.ACTIVE)) {
             flight.setStatus(FlightStatus.COMPLETE);
@@ -123,8 +128,10 @@ public class FlightService {
      * @return the flight with status updated
      */
     public Flight invalidateFlight(int id) {
-        final Flight flight = repository.findOne(id);
-        if (flight == null) {
+        final Flight flight;
+        try {
+            flight = findFlightById(id);
+        } catch (FlightNotFoundException e) {
             final String message = String.format("Attempt to invalidate flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
         }
@@ -143,8 +150,10 @@ public class FlightService {
      * @param id the id of the flight to delete
      */
     public void deleteFlight(int id) {
-        final Flight flight = repository.findOne(id);
-        if (flight == null) {
+        final Flight flight;
+        try {
+            flight = findFlightById(id);
+        } catch (FlightNotFoundException e) {
             final String message = String.format("Attempt to delete flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
         }
@@ -166,8 +175,10 @@ public class FlightService {
      * @return the updated flight
      */
     public Flight updateFlight(int id, float altitude, float fuel, float odometer) {
-        final Flight flight = repository.findOne(id);
-        if (flight == null) {
+        final Flight flight;
+        try {
+            flight = findFlightById(id);
+        } catch (FlightNotFoundException e) {
             final String message = String.format("Attempt to update flight with invalid id %d", id);
             throw new FlightNotFoundException(message);
         }
@@ -186,7 +197,64 @@ public class FlightService {
         return flight;
     }
 
+    /**
+     * Updates computed fields of flight; duration, fuelUsed and fuelRate.
+     *
+     * @param flight the flight to update
+     */
+    public void updateComputedFields(Flight flight) {
+        if (flight.getStartTime() != null && flight.getEndTime() != null) {
+            int duration = (int)Duration.between(
+                    flight.getStartTime().toInstant(),
+                    flight.getEndTime().toInstant()
+            ).getSeconds();
+            if (duration == 0 && flight.isComplete()) {
+                flight.setStatus(FlightStatus.INVALID);
+                log.warn("Invalidating flight {} because duration is zero", flight);
+            }
+            flight.setDuration(duration);
+        }
+        if (flight.getStartFuel() != null && flight.getEndFuel() != null) {
+            flight.setFuelUsed(flight.getStartFuel() - flight.getEndFuel());
+        }
+        if (flight.getStartOdometer() != null && flight.getEndOdometer() != null) {
+            flight.setDistance(flight.getEndOdometer() - flight.getStartOdometer());
+        }
+        if (flight.getFuelUsed() != null && flight.getDuration() != null && flight.getDuration() >= 10) {
+            flight.setFuelRate(3600 * flight.getFuelUsed() / flight.getDuration());
+        }
+        if (flight.getEndFuel() != null && flight.getFuelRate() != null && flight.getFuelRate() > 0.0) {
+            flight.setReserve(3600 * flight.getEndFuel() / flight.getFuelRate());
+        }
+        if (flight.getDistance() != null && flight.getDuration() != null && flight.getDuration() >= 10) {
+            flight.setGroundSpeed((int)(flight.getDistance() / (flight.getDuration() / 3600.0)));
+        }
+    }
+
+    /**
+     * Purges incomplete and invalid flights.
+     */
+    public void purge() {
+        Set<Flight> purgeable = new HashSet<>();
+        purgeable.addAll(repository.findByStatus(FlightStatus.ACTIVE));
+        purgeable.addAll(repository.findByStatus(FlightStatus.INVALID));
+        for (Flight flight : purgeable) {
+            repository.delete(flight);
+            log.info("Deleted flight {}", flight);
+        }
+    }
+
     // Query methods
+
+    @Transactional(readOnly = true)
+    public Flight findFlightById(int id) {
+        Flight flight = repository.findOne(id);
+        if (flight == null) {
+            String message = String.format("Could not find flight by id %d", id);
+            throw new FlightNotFoundException(message);
+        }
+        return flight;
+    }
 
     @Transactional(readOnly = true)
     public List<Flight> findAllFlights() {

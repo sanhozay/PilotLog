@@ -93,30 +93,6 @@ public class Flight implements Serializable {
     }
 
     /**
-     * Updates computed fields of flight; duration, fuelUsed and fuelRate.
-     */
-    public void updateComputedFields() {
-        if (startTime != null && endTime != null) {
-            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).getSeconds();
-        }
-        if (startFuel != null && endFuel != null) {
-            fuelUsed = startFuel - endFuel;
-        }
-        if (startOdometer != null && endOdometer != null) {
-            distance = endOdometer - startOdometer;
-        }
-        if (fuelUsed != null && duration != null && duration >= 10) {
-            fuelRate = 3600 * fuelUsed / duration;
-        }
-        if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
-            reserve = 3600 * endFuel / fuelRate;
-        }
-        if (distance != null && duration != null && duration >= 10) {
-            groundSpeed = (int)(distance / (duration / 3600.0));
-        }
-    }
-
-    /**
      * Convenience function to check if a flight is complete.
      *
      * @return true if the status if COMPLETE
