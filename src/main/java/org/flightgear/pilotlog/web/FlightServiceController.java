@@ -60,8 +60,12 @@ import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 @RequestMapping("/api")
 public class FlightServiceController {
 
+    private final FlightService flightService;
+
     @Autowired
-    private FlightService flightService;
+    public FlightServiceController(FlightService flightService) {
+        this.flightService = flightService;
+    }
 
     // Flightgear endpoints
 

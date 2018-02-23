@@ -49,8 +49,12 @@ import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @RequestMapping("/api")
 public class AircraftServiceController {
 
+    private final AircraftService aircraftService;
+
     @Autowired
-    private AircraftService aircraftService;
+    public AircraftServiceController(AircraftService aircraftService) {
+        this.aircraftService = aircraftService;
+    }
 
     @GetMapping(path = "aircraft/", produces = APPLICATION_JSON_VALUE)
     public TotalsAwarePage<Aircraft> aircraft(
