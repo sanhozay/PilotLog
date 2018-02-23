@@ -6,11 +6,11 @@ import org.flightgear.pilotlog.domain.FlightRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.boot.test.mock.mockito.MockBean;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.List;
 
@@ -19,17 +19,17 @@ import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings({"javadoc", "unchecked"})
 public class AircraftServiceTest {
 
-    @MockBean
+    @Mock
     private AircraftRepository aircraftRepository;
 
-    @MockBean
+    @Mock
     private FlightRepository flightRepository;
 
-    @MockBean
+    @Mock
     private PageableUtil pageableUtil;
 
     private AircraftService aircraftService;

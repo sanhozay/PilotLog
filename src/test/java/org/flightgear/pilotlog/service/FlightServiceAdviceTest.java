@@ -6,29 +6,28 @@ import org.flightgear.pilotlog.domain.FlightStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Date;
 
 import static org.mockito.Matchers.any;
 import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings({"javadoc", "unchecked"})
 public class FlightServiceAdviceTest {
 
-    @MockBean
+    @Mock
     private AircraftService aircraftService;
 
-    @MockBean
+    @Mock
     private FlightService flightService;
 
-    @MockBean
+    @Mock
     private JoinPoint joinPoint;
 
     private FlightServiceAdvice flightServiceAdvice;

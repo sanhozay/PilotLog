@@ -7,13 +7,13 @@ import org.flightgear.pilotlog.domain.FlightStatus;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.Mock;
+import org.mockito.runners.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.Collections;
 import java.util.Date;
@@ -30,7 +30,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@RunWith(SpringRunner.class)
+@RunWith(MockitoJUnitRunner.class)
 @SuppressWarnings({"javadoc", "unchecked"})
 public class FlightServiceTest {
 
@@ -39,10 +39,10 @@ public class FlightServiceTest {
     private static final int ID_COMPLETE = 1;
     private static final int ID_ACTIVE = 100;
 
-    @MockBean
+    @Mock
     private FlightRepository flightRepository;
 
-    @MockBean
+    @Mock
     private PageableUtil pageableUtil;
 
     private FlightService flightService;
