@@ -27,7 +27,10 @@
 </head>
 <body ng-app="application">
     <header>
-        <heading title="Flight Record" url="https://github.com/sanhozay/PilotLog"></heading>
+        <heading title="Flight Record"
+                 url="https://github.com/sanhozay/PilotLog"
+                 version="${projectVersion ?: ''}">
+        </heading>
     </header>
     <content>
         <ng-view></ng-view>

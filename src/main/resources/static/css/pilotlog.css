@@ -38,6 +38,12 @@ heading .compositeTitle a:hover {
     text-decoration: underline;
 }
 
+heading .compositeTitle .version {
+    font-size: 95%;
+    display: inline-block;
+    margin: 0;
+}
+
 heading .menu {
     margin: 0;
     padding: 0;
