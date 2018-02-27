@@ -68,7 +68,9 @@ public class AircraftService {
     @Transactional(propagation = Propagation.MANDATORY)
     public void updateSummary(String model) {
         Aircraft summary = flightRepository.aircraftSummaryByModel(model);
-        aircraftRepository.save(summary);
+        if (summary != null) {
+            aircraftRepository.save(summary);
+        }
     }
 
 }

@@ -34,6 +34,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.verify;
@@ -85,12 +86,28 @@ public class AircraftServiceTest {
 
     @Test
     public void testUpdateSummary() {
-        // When updating the summary for an aircraft
-        aircraftService.updateSummary("707");
+        // Given an aircraft with a non-null summary
+        String aircraft = "707";
+        given(flightRepository.aircraftSummaryByModel(aircraft)).willReturn(new Aircraft());
+        // when updating the summary for an aircraft
+        aircraftService.updateSummary(aircraft);
         // expect the aircraft summary for that aircraft to be requested from the repository
-        verify(flightRepository).aircraftSummaryByModel("707");
+        verify(flightRepository).aircraftSummaryByModel(aircraft);
         // and an aircraft to be saved
         verify(aircraftRepository).save(any(Aircraft.class));
+    }
+
+    @Test
+    public void testUpdateSummaryAircraftNull() {
+        // Given an aircraft with a null summary
+        String aircraft = "Bleriot-XI";
+        given(flightRepository.aircraftSummaryByModel(aircraft)).willReturn(null);
+        // when updating the summary for an aircraft
+        aircraftService.updateSummary(aircraft);
+        // expect the aircraft summary for that aircraft to be requested from the repository
+        verify(flightRepository).aircraftSummaryByModel(aircraft);
+        // but the aircraft repository not to attempt to save the null aircraft
+        verify(aircraftRepository, never()).save(any(Aircraft.class));
     }
 
 }
