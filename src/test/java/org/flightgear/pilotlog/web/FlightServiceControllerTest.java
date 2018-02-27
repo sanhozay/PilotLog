@@ -80,9 +80,7 @@ public class FlightServiceControllerTest {
         float fuel = 20.0f, odometer = 0.0f;
         // When beginning a flight
         Flight flight = controller.departure(callsign, aircraft, airport, fuel, odometer);
-        // expect the service to be called with the correct parameters
-        verify(flightService).beginFlight(callsign, aircraft, airport, fuel, odometer);
-        // and the value returned from the flight service be returned from the method
+        // expect the value returned from the flight service be returned from the method
         assertThat(flight).isEqualTo(flightService.beginFlight(callsign, aircraft, airport, fuel, odometer));
     }
 
@@ -94,9 +92,7 @@ public class FlightServiceControllerTest {
         float fuel = 20.0f, odometer = 0.0f;
         // When ending a flight
         Flight flight = controller.arrival(id, airport, fuel, odometer);
-        // expect the service to be called with the correct parameters
-        verify(flightService).endFlight(id, airport, fuel, odometer);
-        // and the value returned from the flight service be returned from the method
+        // expect the value returned from the flight service be returned from the method
         assertThat(flight).isEqualTo(flightService.endFlight(id, airport, fuel, odometer));
     }
 
@@ -106,9 +102,7 @@ public class FlightServiceControllerTest {
         int id = 100;
         // When invalidating a flight
         Flight flight = controller.invalidate(id);
-        // expect the service to be called with the correct parameters
-        verify(flightService).invalidateFlight(id);
-        // and the value returned from the flight service be returned from the method
+        // expect the value returned from the flight service be returned from the method
         assertThat(flight).isEqualTo(flightService.invalidateFlight(id));
     }
 
@@ -119,17 +113,14 @@ public class FlightServiceControllerTest {
         float altitude = 10000, fuel = 18.0f, odometer = 10.0f;
         // When invalidating a flight
         Flight flight = controller.pirep(id, altitude, fuel, odometer);
-        // expect the service to be called with the correct parameters
-        verify(flightService).updateFlight(id, altitude, fuel, odometer);
-        // and the value returned from the flight service be returned from the method
+        // expect the value returned from the flight service be returned from the method
         assertThat(flight).isEqualTo(flightService.updateFlight(id, altitude, fuel, odometer));
     }
 
     @Test
     public void testFlightsGetRequest() {
-        // Given a pageable instance
+        // Given a pageable instance and an example flight
         Pageable pageable = new PageRequest(0, 10);
-        // and an example flight
         Flight example = new Flight();
         // when getting a page of flights
         TotalsAwarePage<Flight> page = controller.flights(example, pageable);
@@ -149,22 +140,10 @@ public class FlightServiceControllerTest {
     }
 
     @Test
-    public void testDeleteFlightRequest() {
-        // Given a flight ID to delete
-        int id = 10;
-        // when the controller deletes the flight
-        controller.deleteFlight(id);
-        // expect it to call the flight service with the correct parameter
-        verify(flightService).deleteFlight(id);
-    }
-
-    @Test
     public void testFlightsJSON() {
         // When requesting flights as JSON
         List<Flight> flights = controller.flightsJSON();
-        // expect the flight service to find all flights
-        verify(flightService).findAllFlights();
-        // and the method to return that as a value
+        // expect the method to return all flights
         assertThat(flights).isEqualTo(flightService.findAllFlights());
     }
 
@@ -172,9 +151,7 @@ public class FlightServiceControllerTest {
     public void testFlightsXML() {
         // When requesting flights as XML
         List<Flight> flights = controller.flightsXML();
-        // expect the flight service to find all flights
-        verify(flightService).findAllFlights();
-        // and the method to return that as a value
+        // and the method to return all flights
         assertThat(flights).isEqualTo(flightService.findAllFlights());
     }
 
@@ -182,9 +159,7 @@ public class FlightServiceControllerTest {
     public void testFlightsCSV() throws JsonProcessingException {
         // When requesting flights as CSV
         String csv = controller.flightsCSV();
-        // expect the flight service to find all flights
-        verify(flightService).findAllFlights();
-        // and the method to return a CSV string as a value
+        // expect the method to return all flights in CSV format
         assertThat(csv.replaceAll("[\r\n\t ]+", "")).isEqualTo("id,callsign,aircraft,origin,startTime," +
                 "startFuel,startOdometer,destination,endTime,endFuel,endOdometer," +
                 "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve" +
