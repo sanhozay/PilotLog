@@ -22,6 +22,8 @@ package org.flightgear.pilotlog.domain;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 import java.util.Set;
 
@@ -35,20 +37,31 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     /**
      * Finds flights with a given status.
      *
-     * @param status   the flight status
-     * @param pageable the page context object
-     * @return a set of flights with the given status
-     * @see FlightStatus
-     */
-    Page<Flight> findByStatus(FlightStatus status, Pageable pageable);
-
-    /**
-     * Finds flights with a given status.
-     *
      * @param status the flight status
      * @return a set of flights with the given status
      * @see FlightStatus
      */
     Set<Flight> findByStatus(FlightStatus status);
+
+
+    /**
+     * Queries an aircraft summary.
+     *
+     * @return an aircraft summary
+     */
+    @Query(value = "select new org.flightgear.pilotlog.domain.Aircraft(" +
+            "f.aircraft," +
+            "max(f.startTime), " +
+            "min(f.distance), max(f.distance), sum(f.distance) / count(f.id), " +
+            "min(f.fuelRate), max(f.fuelRate), sum(f.fuelUsed) * 3600 / sum(f.duration), " +
+            "min(f.groundSpeed), max(f.groundSpeed), sum(f.distance) * 3600 / sum(f.duration), " +
+            "sum(f.distance), " +
+            "sum(f.duration), " +
+            "count(f.id), " +
+            "sum(f.fuelUsed)" +
+            ") " +
+            "from Flight f group by f.aircraft, f.status " +
+            "having f.aircraft = :model and f.status = 'COMPLETE'")
+    Aircraft aircraftSummaryByModel(@Param("model") String model);
 
 }

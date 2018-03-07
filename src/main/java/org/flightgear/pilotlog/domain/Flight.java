@@ -19,9 +19,9 @@
 
 package org.flightgear.pilotlog.domain;
 
-import java.io.Serializable;
-import java.time.Duration;
-import java.util.Date;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -33,10 +33,11 @@ import javax.persistence.Index;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+import javax.persistence.Transient;
+import java.io.Serializable;
+import java.time.Duration;
+import java.util.Date;
+import java.util.Objects;
 
 /**
  * Domain object representing a flight.
@@ -47,15 +48,15 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 @SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
 @JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer",
-    "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
-    "distance", "groundSpeed", "duration", "status"})
+        "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
+        "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
-    @Index(columnList = "aircraft"),
-    @Index(columnList = "callsign"),
-    @Index(columnList = "origin"),
-    @Index(columnList = "destination"),
+        @Index(columnList = "aircraft"),
+        @Index(columnList = "callsign"),
+        @Index(columnList = "origin"),
+        @Index(columnList = "destination"),
 })
-public class Flight implements Serializable, Comparable<Flight> {
+public class Flight implements Serializable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -92,27 +93,13 @@ public class Flight implements Serializable, Comparable<Flight> {
     }
 
     /**
-     * Updates computed fields of flight; duration, fuelUsed and fuelRate.
+     * Convenience function to check if a flight is complete.
+     *
+     * @return true if the status if COMPLETE
      */
-    public void updateComputedFields() {
-        if (startTime != null && endTime != null) {
-            duration = (int)Duration.between(startTime.toInstant(), endTime.toInstant()).getSeconds();
-        }
-        if (startFuel != null && endFuel != null) {
-            fuelUsed = startFuel - endFuel;
-        }
-        if (startOdometer != null && endOdometer != null) {
-            distance = endOdometer - startOdometer;
-        }
-        if (fuelUsed != null && duration != null && duration >= 10) {
-            fuelRate = 3600 * fuelUsed / duration;
-        }
-        if (endFuel != null && fuelRate != null && fuelRate > 0.0) {
-            reserve = 3600 * endFuel / fuelRate;
-        }
-        if (distance != null && duration != null && duration >= 10) {
-            groundSpeed = (int)(distance / (duration / 3600.0));
-        }
+    @Transient
+    public boolean isComplete() {
+        return status == FlightStatus.COMPLETE;
     }
 
     // Accessors
@@ -272,16 +259,8 @@ public class Flight implements Serializable, Comparable<Flight> {
     // Comparison and equality
 
     @Override
-    public int compareTo(Flight o) {
-        return getStartTime().compareTo(o.getStartTime());
-    }
-
-    @Override
     public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + (startTime == null ? 0 : startTime.hashCode());
-        return result;
+        return Objects.hash(startTime);
     }
 
     @Override
@@ -293,9 +272,9 @@ public class Flight implements Serializable, Comparable<Flight> {
         if (getClass() != obj.getClass())
             return false;
         final Flight other = (Flight)obj;
-        if (startTime == null) {
+        if (startTime == null)
             return other.startTime == null;
-        } else return startTime.equals(other.startTime);
+        return startTime.equals(other.startTime);
     }
 
     @Override
