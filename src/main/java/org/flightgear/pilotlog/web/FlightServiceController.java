@@ -28,6 +28,11 @@ import org.flightgear.pilotlog.domain.TotalsAwarePage;
 import org.flightgear.pilotlog.service.FlightNotFoundException;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.InvalidFlightStatusException;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+import org.geojson.LineString;
+import org.geojson.LngLatAlt;
+import org.geojson.Point;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -45,6 +50,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -137,7 +143,7 @@ public class FlightServiceController {
         flightService.deleteFlight(id);
     }
 
-    @GetMapping(path = "flights.json", produces = {APPLICATION_JSON_VALUE})
+    @GetMapping(path = "flights.json", produces = APPLICATION_JSON_VALUE)
     public List<Flight> flightsJSON() {
         return flightService.findAllFlights();
     }
@@ -152,6 +158,50 @@ public class FlightServiceController {
         final CsvMapper mapper = new CsvMapper();
         final CsvSchema schema = mapper.schemaFor(Flight.class).withHeader();
         return mapper.writer(schema).writeValueAsString(flightService.findAllFlights());
+    }
+
+    @GetMapping(path = "flights/flight/{id}", produces = APPLICATION_JSON_VALUE)
+    public FeatureCollection flightTrack(@PathVariable int id) {
+        Flight flight = flightService.findFlightById(id);
+
+        List<LngLatAlt> points = flight.getTrack().parallelStream().map(p -> new LngLatAlt(
+                p.getCoordinate().getLongitude(),
+                p.getCoordinate().getLatitude(),
+                p.getAltitude()
+        )).collect(Collectors.toList());
+
+        FeatureCollection featureCollection = new FeatureCollection();
+
+        Feature origin = new Feature();
+        origin.setGeometry(new Point(points.get(0)));
+        origin.setProperty("marker-symbol", "circle");
+        origin.setProperty("marker-color", "#800000");
+        origin.setProperty("title", flight.getOrigin());
+        featureCollection.add(origin);
+
+        if (flight.getTrack().size() > 1) {
+            Feature track = new Feature();
+            LngLatAlt[] p = points.toArray(new LngLatAlt[points.size()]);
+            track.setGeometry(new LineString(p));
+            featureCollection.add(track);
+        }
+
+        if (flight.getDestination() != null) {
+            Feature destination = new Feature();
+            destination.setGeometry(new Point(points.get(points.size() - 1)));
+            destination.setProperty("marker-color", "#008000");
+            destination.setProperty("marker-symbol", "circle");
+            destination.setProperty("title", flight.getDestination());
+            featureCollection.add(destination);
+        } else {
+            Feature location = new Feature();
+            location.setGeometry(new Point(points.get(points.size() - 1)));
+            location.setProperty("marker-color", "#000000");
+            location.setProperty("marker-symbol", "airport");
+            featureCollection.add(location);
+        }
+
+        return featureCollection;
     }
 
     private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight>
