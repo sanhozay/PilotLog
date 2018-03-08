@@ -20,23 +20,28 @@
 package org.flightgear.pilotlog.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import java.io.Serializable;
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -77,6 +82,10 @@ public class Flight implements Serializable {
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
+    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @JsonIgnore
+    private List<TrackPoint> track;
+
     // Computed fields
 
     private Integer duration, groundSpeed, altitude;
@@ -100,6 +109,18 @@ public class Flight implements Serializable {
     @Transient
     public boolean isComplete() {
         return status == FlightStatus.COMPLETE;
+    }
+
+    /**
+     * Convenience method to add a track point.
+     *
+     * @param trackPoint the track point to add
+     */
+    public void addTrackPoint(TrackPoint trackPoint) {
+        if (track == null) {
+            track = new ArrayList<>();
+        }
+        track.add(trackPoint);
     }
 
     // Accessors
@@ -254,6 +275,14 @@ public class Flight implements Serializable {
 
     public void setReserve(Float reserve) {
         this.reserve = reserve;
+    }
+
+    public List<TrackPoint> getTrack() {
+        return track;
+    }
+
+    public void setTrack(List<TrackPoint> track) {
+        this.track = track;
     }
 
     // Comparison and equality

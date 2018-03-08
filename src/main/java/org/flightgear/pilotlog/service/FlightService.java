@@ -19,9 +19,11 @@
 
 package org.flightgear.pilotlog.service;
 
+import org.flightgear.pilotlog.domain.Coordinate;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
+import org.flightgear.pilotlog.domain.TrackPoint;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,13 +53,12 @@ public class FlightService {
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 
     private final FlightRepository repository;
-    private PageableUtil pageableUtil;
-
     private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
             .withIgnorePaths("id")
             .withIgnoreCase()
             .withIgnoreNullValues()
             .withStringMatcher(StringMatcher.STARTING);
+    private PageableUtil pageableUtil;
 
     @Autowired
     public FlightService(FlightRepository repository) {
@@ -70,15 +71,24 @@ public class FlightService {
      * @param callsign the callsign or registration
      * @param aircraft the aircraft model
      * @param airport the ICAO code of the departure airport
+     * @param altitude the altitude at departure
      * @param startFuel the amount of fuel at takeoff, in US gallons
      * @param startOdometer the odometer reading at the start of the flight
+     * @param latitude the latitude at the start of the flight
+     * @param longitude the longitude at the start of the flight
      * @return a new flight, with supplied fields and id field initialized
      */
-    public Flight beginFlight(String callsign, String aircraft, String airport,
-                              float startFuel, float startOdometer) {
+    public Flight beginFlight(String callsign, String aircraft, String airport, float altitude,
+                              float startFuel, float startOdometer, float latitude, float longitude) {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
+
+        Coordinate coordinate = new Coordinate(latitude, longitude);
+        TrackPoint trackPoint = new TrackPoint(altitude, startFuel, startOdometer, coordinate);
+        trackPoint.setTimestamp(new Date());
+        flight.addTrackPoint(trackPoint);
+
         flight = repository.save(flight);
         log.info("Started new flight {}", flight);
         return flight;
@@ -89,11 +99,15 @@ public class FlightService {
      *
      * @param id the id of the flight that is to be ended
      * @param airport the ICAO code of the destination airport
+     * @param altitude the altitude at arrival
      * @param endFuel the amount of fuel at landing, in US gallons
      * @param endOdometer the odometer reading at the end of the flight
+     * @param latitude the latitude at the start of the flight
+     * @param longitude the longitude at the start of the flight
      * @return the flight, with arrival fields updated
      */
-    public Flight endFlight(int id, String airport, float endFuel, float endOdometer) {
+    public Flight endFlight(int id, String airport, float altitude, float endFuel,
+                            float endOdometer, float latitude, float longitude) {
         final Flight flight;
         try {
             flight = findFlightById(id);
@@ -116,6 +130,12 @@ public class FlightService {
         if (flight.getStatus().equals(FlightStatus.ACTIVE)) {
             flight.setStatus(FlightStatus.COMPLETE);
         }
+
+        Coordinate coordinate = new Coordinate(latitude, longitude);
+        TrackPoint trackPoint = new TrackPoint(altitude, endFuel, endOdometer, coordinate);
+        trackPoint.setTimestamp(new Date());
+        flight.addTrackPoint(trackPoint);
+
         log.info("Ended flight {}", flight);
         return flight;
     }
@@ -171,9 +191,12 @@ public class FlightService {
      * @param altitude the current altitude
      * @param fuel the current fuel level
      * @param odometer the current odometer
+     * @param latitude the latitude at the start of the flight
+     * @param longitude the longitude at the start of the flight
      * @return the updated flight
      */
-    public Flight updateFlight(int id, float altitude, float fuel, float odometer) {
+    public Flight updateFlight(int id, float altitude, float fuel,
+                               float odometer, float latitude, float longitude) {
         final Flight flight;
         try {
             flight = findFlightById(id);
@@ -193,6 +216,12 @@ public class FlightService {
         flight.setEndFuel(fuel);
         flight.setEndOdometer(odometer);
         flight.setEndTime(new Date());
+
+        Coordinate coordinate = new Coordinate(latitude, longitude);
+        TrackPoint trackPoint = new TrackPoint(altitude, fuel, odometer, coordinate);
+        trackPoint.setTimestamp(new Date());
+        flight.addTrackPoint(trackPoint);
+
         return flight;
     }
 

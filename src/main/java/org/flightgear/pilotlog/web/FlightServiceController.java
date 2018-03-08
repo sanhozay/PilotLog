@@ -25,8 +25,8 @@ import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.Total;
 import org.flightgear.pilotlog.domain.TotalsAwarePage;
-import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.FlightNotFoundException;
+import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.InvalidFlightStatusException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -74,19 +74,30 @@ public class FlightServiceController {
             @RequestParam("callsign") String callsign,
             @RequestParam("aircraft") String aircraft,
             @RequestParam("airport") String airport,
+            @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float startFuel,
-            @RequestParam("odometer") float startOdometer) {
-        return flightService.beginFlight(callsign, aircraft, airport, startFuel, startOdometer);
+            @RequestParam("odometer") float startOdometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude) {
+        return flightService.beginFlight(
+                callsign, aircraft, airport, altitude, startFuel,
+                startOdometer, latitude, longitude
+        );
     }
 
     @GetMapping(path = "arrival", produces = TEXT_XML_VALUE)
     public Flight arrival(
             @RequestParam("id") int id,
             @RequestParam("airport") String airport,
+            @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float endFuel,
-            @RequestParam("odometer") float endOdometer)
+            @RequestParam("odometer") float endOdometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return flightService.endFlight(id, airport, endFuel, endOdometer);
+        return flightService.endFlight(
+                id, airport, altitude, endFuel, endOdometer, latitude, longitude
+        );
     }
 
     @GetMapping(path = "invalidate", produces = TEXT_XML_VALUE)
@@ -100,9 +111,11 @@ public class FlightServiceController {
             @RequestParam("id") int id,
             @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float fuel,
-            @RequestParam("odometer") float odometer)
+            @RequestParam("odometer") float odometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return flightService.updateFlight(id, altitude, fuel, odometer);
+        return flightService.updateFlight(id, altitude, fuel, odometer, latitude, longitude);
     }
 
     // Additional endpoints
@@ -141,7 +154,8 @@ public class FlightServiceController {
         return mapper.writer(schema).writeValueAsString(flightService.findAllFlights());
     }
 
-    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {
+    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight>
+            matches) {
         int pageTotal = page.getContent().parallelStream()
                 .filter(Flight::isComplete)
                 .mapToInt(function)

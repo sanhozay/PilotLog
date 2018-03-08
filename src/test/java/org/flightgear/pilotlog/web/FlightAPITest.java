@@ -66,12 +66,17 @@ public class FlightAPITest {
 
     @Before
     public void setUp() {
-        when(flightService.beginFlight(anyString(), anyString(), anyString(), anyFloat(), anyFloat()))
-                .thenReturn(flight);
-        when(flightService.endFlight(anyInt(), anyString(), anyFloat(), anyFloat()))
-                .thenReturn(flight);
-        when(flightService.updateFlight(anyInt(), anyFloat(), anyFloat(), anyFloat()))
-                .thenReturn(flight);
+        when(flightService.beginFlight(
+                anyString(), anyString(), anyString(),
+                anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat())
+        ).thenReturn(flight);
+        when(flightService.endFlight(
+                anyInt(), anyString(),
+                anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat())
+        ).thenReturn(flight);
+        when(flightService.updateFlight(
+                anyInt(), anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat())
+        ).thenReturn(flight);
         when(flightService.invalidateFlight(anyInt()))
                 .thenReturn(flight);
         when(flightService.findFlightsByExample(any(Flight.class)))
@@ -84,14 +89,18 @@ public class FlightAPITest {
     public void testDeparture() throws Exception {
         // Given some flight parameters
         String callsign = "G-SHOZ", aircraft = "pup100", airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 1000.0f;
+        float latitude = 51.0f, longitude = -2.2f;
         // and a departure request
         RequestBuilder request = get("/api/departure")
                 .param("callsign", callsign)
                 .param("aircraft", aircraft)
                 .param("airport", airport)
+                .param("altitude", Float.toString(altitude))
                 .param("fuel", Float.toString(fuel))
-                .param("odometer", Float.toString(odometer));
+                .param("odometer", Float.toString(odometer))
+                .param("latitude", Float.toString(latitude))
+                .param("longitude", Float.toString(longitude));
         // when the request is peformed, expect the response to be XML containing an ID
         String idElement = String.format("<id>%d</id>", flight.getId());
         mvc.perform(request)
@@ -99,7 +108,9 @@ public class FlightAPITest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
                 .andExpect(content().string(containsString(idElement)));
         // and the flight service to be called with the relevant parameters
-        verify(flightService).beginFlight(callsign, aircraft, airport, fuel, odometer);
+        verify(flightService).beginFlight(
+                callsign, aircraft, airport, altitude, fuel, odometer, latitude, longitude
+        );
     }
 
     @Test
@@ -107,13 +118,17 @@ public class FlightAPITest {
         // Given some flight parameters
         int id = flight.getId();
         String airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 500.0f;
+        float latitude = 54.2f, longitude = -1.8f;
         // and an arrival request
         RequestBuilder request = get("/api/arrival")
                 .param("id", Integer.toString(id))
                 .param("airport", airport)
+                .param("altitude", Float.toString(altitude))
                 .param("fuel", Float.toString(fuel))
-                .param("odometer", Float.toString(odometer));
+                .param("odometer", Float.toString(odometer))
+                .param("latitude", Float.toString(latitude))
+                .param("longitude", Float.toString(longitude));
         // when the request is peformed, expect the response to be XML containing an ID
         String idElement = String.format("<id>%d</id>", flight.getId());
         mvc.perform(request)
@@ -121,7 +136,7 @@ public class FlightAPITest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
                 .andExpect(content().string(containsString(idElement)));
         // and the flight service to be called with the relevant parameters
-        verify(flightService).endFlight(id, airport, fuel, odometer);
+        verify(flightService).endFlight(id, airport, altitude, fuel, odometer, latitude, longitude);
     }
 
     @Test
@@ -146,12 +161,15 @@ public class FlightAPITest {
         // Given some flight parameters
         int id = flight.getId();
         float fuel = 18.0f, odometer = 10.1f, altitude = 10000;
+        float latitude = -30.0f, longitude = -78.2f;
         // and an invalidate request
         RequestBuilder request = get("/api/pirep")
                 .param("id", Integer.toString(id))
                 .param("altitude", Float.toString(altitude))
                 .param("fuel", Float.toString(fuel))
-                .param("odometer", Float.toString(odometer));
+                .param("odometer", Float.toString(odometer))
+                .param("latitude", Float.toString(latitude))
+                .param("longitude", Float.toString(longitude));
         // when the request is peformed, expect the response to be XML containing an ID
         String idElement = String.format("<id>%d</id>", flight.getId());
         mvc.perform(request)
@@ -159,7 +177,7 @@ public class FlightAPITest {
                 .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML))
                 .andExpect(content().string(containsString(idElement)));
         // and the flight service to be called with the relevant parameters
-        verify(flightService).updateFlight(id, altitude, fuel, odometer);
+        verify(flightService).updateFlight(id, altitude, fuel, odometer, latitude, longitude);
     }
 
     @Test

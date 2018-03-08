@@ -61,8 +61,10 @@ public class FlightServiceControllerTest {
         flight.setStatus(FlightStatus.COMPLETE);
         flight.setDuration(3600);
 
-        when(flightService.beginFlight(anyString(), anyString(), anyString(), anyFloat(), anyFloat()))
-                .thenReturn(new Flight());
+        when(flightService.beginFlight(
+                anyString(), anyString(), anyString(),
+                anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat())
+        ).thenReturn(new Flight());
 
         when(flightService.findFlightsByExample(any(Flight.class)))
                 .thenReturn(Collections.singletonList(flight));
@@ -77,11 +79,16 @@ public class FlightServiceControllerTest {
     public void testDeparture() {
         // Given some flight parameters
         String callsign = "G-SHOZ", aircraft = "pup100", airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 100.0f;
+        float latitude = 51.0f, longitude = 1.0f;
         // When beginning a flight
-        Flight flight = controller.departure(callsign, aircraft, airport, fuel, odometer);
+        Flight flight = controller.departure(
+                callsign, aircraft, airport, altitude, fuel, odometer, latitude, longitude
+        );
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.beginFlight(callsign, aircraft, airport, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.beginFlight(
+                callsign, aircraft, airport, altitude, fuel, odometer, latitude, longitude
+        ));
     }
 
     @Test
@@ -89,11 +96,14 @@ public class FlightServiceControllerTest {
         // Given some flight parameters
         int id = 100;
         String airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 100.0f;
+        float latitude = 51.0f, longitude = 1.0f;
         // When ending a flight
-        Flight flight = controller.arrival(id, airport, fuel, odometer);
+        Flight flight = controller.arrival(id, airport, altitude, fuel, odometer, latitude, longitude);
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.endFlight(id, airport, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.endFlight(
+                id, airport, altitude, fuel, odometer, latitude, longitude
+        ));
     }
 
     @Test
@@ -111,10 +121,13 @@ public class FlightServiceControllerTest {
         // Given some flight parameters
         int id = 100;
         float altitude = 10000, fuel = 18.0f, odometer = 10.0f;
+        float latitude = 51.0f, longitude = 1.0f;
         // When invalidating a flight
-        Flight flight = controller.pirep(id, altitude, fuel, odometer);
+        Flight flight = controller.pirep(id, altitude, fuel, odometer, latitude, longitude);
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.updateFlight(id, altitude, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.updateFlight(
+                id, altitude, fuel, odometer, latitude, longitude
+        ));
     }
 
     @Test

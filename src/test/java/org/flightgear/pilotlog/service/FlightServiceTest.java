@@ -23,6 +23,7 @@ import org.assertj.core.data.Offset;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
+import org.flightgear.pilotlog.domain.TrackPoint;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -100,7 +101,10 @@ public class FlightServiceTest {
     @Test
     public void testBeginFlight() {
         // When beginning a new flight
-        Flight flight = flightService.beginFlight("G-SHOZ", "707", "EGNM", 1000.0f, 0.0f);
+        Flight flight = flightService.beginFlight(
+                "G-SHOZ", "707", "EGNM", 640.0f, 1000.0f, 0.0f, 53.0f, -1.0f
+        );
+        long now = new Date().getTime();
         // expect the repostory to save a flight
         verify(flightRepository).save(any(Flight.class));
         // and the departure properties to be set correctly
@@ -109,22 +113,41 @@ public class FlightServiceTest {
         assertThat(flight.getOrigin()).isEqualTo("EGNM");
         assertThat(flight.getStartFuel()).isEqualTo(1000.0f);
         assertThat(flight.getStartOdometer()).isEqualTo(0.0f);
+        // and the flight to contain a track point for the origin
+        assertThat(flight.getTrack().size()).isEqualTo(1);
+        TrackPoint trackPoint = flight.getTrack().get(0);
+        assertThat(trackPoint.getAltitude()).isEqualTo(640.0f);
+        assertThat(trackPoint.getCoordinate().getLatitude()).isEqualTo(53.0f);
+        assertThat(trackPoint.getCoordinate().getLongitude()).isEqualTo(-1.0f);
+        assertThat(trackPoint.getFuel()).isEqualTo(1000.0f);
+        assertThat(trackPoint.getOdometer()).isEqualTo(0.0f);
+        assertThat(trackPoint.getTimestamp().getTime()).isCloseTo(now, Offset.offset(500L));
         // and the status to be active
         assertThat(flight.getStatus()).isEqualTo(FlightStatus.ACTIVE);
         // and the start date to be the current date and time
-        assertThat(flight.getStartTime().getTime()).isCloseTo(new Date().getTime(), Offset.offset(500L));
+        assertThat(flight.getStartTime().getTime()).isCloseTo(now, Offset.offset(500L));
     }
 
     @Test
     public void testEndFlight() {
         // When ending a flight
-        Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 900.0f, 100.0f);
+        Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 200.0f, 900.0f, 100.0f, 51.0f, -0.2f);
+        long now = new Date().getTime();
         // expect the repository to look for the flight
         verify(flightRepository).findOne(ID_ACTIVE);
         // and the arrival properties to be set correctly
         assertThat(flight.getDestination()).isEqualTo("EGLL");
         assertThat(flight.getEndFuel()).isEqualTo(900.0f);
         assertThat(flight.getEndOdometer()).isEqualTo(100.0f);
+        // and the flight to contain a track point for the destination
+        assertThat(flight.getTrack().size()).isGreaterThan(0);
+        TrackPoint trackPoint = flight.getTrack().get(flight.getTrack().size() - 1);
+        assertThat(trackPoint.getAltitude()).isEqualTo(200.0f);
+        assertThat(trackPoint.getCoordinate().getLatitude()).isEqualTo(51.0f);
+        assertThat(trackPoint.getCoordinate().getLongitude()).isEqualTo(-0.2f);
+        assertThat(trackPoint.getFuel()).isEqualTo(900.0f);
+        assertThat(trackPoint.getOdometer()).isEqualTo(100.0f);
+        assertThat(trackPoint.getTimestamp().getTime()).isCloseTo(now, Offset.offset(500L));
         // and the status to be set to complete
         assertThat(flight.getStatus()).isEqualTo(FlightStatus.COMPLETE);
         // and the end date to be the current date and time
@@ -134,7 +157,7 @@ public class FlightServiceTest {
     @Test(expected = FlightNotFoundException.class)
     public void testEndFlightMissing() {
         // When attempting to end a missing flight
-        Flight flight = flightService.endFlight(ID_MISSING, "EGLL", 900.0f, 100.0f);
+        Flight flight = flightService.endFlight(ID_MISSING, "EGLL", 0.0f, 900.0f, 100.0f, 51.0f, -0.2f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_MISSING);
     }
@@ -142,7 +165,7 @@ public class FlightServiceTest {
     @Test(expected = InvalidFlightStatusException.class)
     public void testEndFlightNotActive() {
         // When attempting to end a completed flight
-        Flight flight = flightService.endFlight(ID_COMPLETE, "EGLL", 900.0f, 100.0f);
+        Flight flight = flightService.endFlight(ID_COMPLETE, "EGLL", 0.0f, 900.0f, 100.0f, 51.0f, -0.2f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_COMPLETE);
     }
@@ -150,7 +173,7 @@ public class FlightServiceTest {
     @Test
     public void testEndFlightFuelFreeze() {
         // When ending a flight with the same fuel as it started
-        Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 1000.0f, 100.0f);
+        Flight flight = flightService.endFlight(ID_ACTIVE, "EGLL", 0.0f, 1000.0f, 100.0f, 51.0f, -0.2f);
         // expect the repository to look for the flight
         verify(flightRepository).findOne(ID_ACTIVE);
         // and the status to be set to invalid
@@ -212,11 +235,21 @@ public class FlightServiceTest {
     @Test
     public void testUpdateFlight() {
         // When updating a flight with an lower altitude than cruise, fuel and odometer
-        Flight flight = flightService.updateFlight(ID_ACTIVE, 5000, 900.0f, 100.0f);
+        Flight flight = flightService.updateFlight(ID_ACTIVE, 5000.0f, 900.0f, 100.0f, 53.0f, 1.0f);
+        long now = new Date().getTime();
         // expect the repository to look for the flight
         verify(flightRepository, times(ID_COMPLETE)).findOne(ID_ACTIVE);
         // and that the altitude is unchanged
         assertThat(flight.getAltitude()).isEqualTo(10000);
+        // and the flight to contain a track point for the pilot report
+        assertThat(flight.getTrack().size()).isGreaterThan(0);
+        TrackPoint trackPoint = flight.getTrack().get(flight.getTrack().size() - 1);
+        assertThat(trackPoint.getAltitude()).isEqualTo(5000.0f);
+        assertThat(trackPoint.getCoordinate().getLatitude()).isEqualTo(53.0f);
+        assertThat(trackPoint.getCoordinate().getLongitude()).isEqualTo(1.0f);
+        assertThat(trackPoint.getFuel()).isEqualTo(900.0f);
+        assertThat(trackPoint.getOdometer()).isEqualTo(100.0f);
+        assertThat(trackPoint.getTimestamp().getTime()).isCloseTo(now, Offset.offset(500L));
         // and that the fuel, odometer and end time are set correctly
         assertThat(flight.getEndFuel()).isEqualTo(900.0f);
         assertThat(flight.getEndOdometer()).isEqualTo(100.0f);
@@ -226,9 +259,13 @@ public class FlightServiceTest {
     @Test
     public void testUpdateFlightHigherAltitude() {
         // When updating a flight with an higher altitude than cruise
-        Flight flight = flightService.updateFlight(ID_ACTIVE, 15000, 900.0f, 100.0f);
+        Flight flight = flightService.updateFlight(ID_ACTIVE, 15000, 900.0f, 100.0f, 51.0f, 1.0f);
         // expect the repository to look for the flight
         verify(flightRepository, times(ID_COMPLETE)).findOne(ID_ACTIVE);
+        // and the flight to contain a track point with the real altitude
+        assertThat(flight.getTrack().size()).isGreaterThan(0);
+        TrackPoint trackPoint = flight.getTrack().get(flight.getTrack().size() - 1);
+        assertThat(trackPoint.getAltitude()).isEqualTo(15000.0f);
         // and that the altitude is updated to the new altitude
         assertThat(flight.getAltitude()).isEqualTo(15000);
     }
@@ -236,7 +273,7 @@ public class FlightServiceTest {
     @Test(expected = FlightNotFoundException.class)
     public void testUpdateFlightMissing() {
         // When attempting to update a missing flight
-        Flight flight = flightService.updateFlight(ID_MISSING, 10000, 900.0f, 100.0f);
+        Flight flight = flightService.updateFlight(ID_MISSING, 10000, 900.0f, 100.0f, 51.0f, 1.0f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_MISSING);
     }
@@ -244,7 +281,7 @@ public class FlightServiceTest {
     @Test(expected = InvalidFlightStatusException.class)
     public void testUpdateFlightNotActive() {
         // When attempting to update a completed flight
-        Flight flight = flightService.updateFlight(ID_COMPLETE, 10000, 900.0f, 100.0f);
+        Flight flight = flightService.updateFlight(ID_COMPLETE, 10000, 900.0f, 100.0f, 51.0f, 1.0f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_COMPLETE);
     }
