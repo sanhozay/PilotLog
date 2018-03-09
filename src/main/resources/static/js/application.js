@@ -4,5 +4,6 @@ angular.module("application").config(function ($locationProvider, $routeProvider
     $routeProvider
         .when("/", {template: "<flightrecord></flightrecord>"})
         .when("/aircraft", {template: "<aircraft></aircraft>"})
+        .when("/track/:id", {template: '<track></track>'})
         .otherwise("/");
 });

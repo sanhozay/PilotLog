@@ -113,11 +113,15 @@ search form .buttons {
 
 /* Views */
 
-flights, summary {
+flights, summary, #map {
     margin-top: 2em;
     width: 100%;
     clear: both;
     min-width: 800px;
+}
+
+#map {
+    height: 600px;
 }
 
 /* Tables */
