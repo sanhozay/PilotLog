@@ -46,6 +46,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,6 +164,7 @@ public class FlightServiceController {
 
     @GetMapping(path = "flights/flight/{id}", produces = APPLICATION_JSON_VALUE)
     public FeatureCollection flightTrack(@PathVariable int id) {
+
         Flight flight = flightService.findFlightById(id);
 
         List<LngLatAlt> points = flight.getTrack().parallelStream().map(p -> new LngLatAlt(
@@ -172,11 +175,12 @@ public class FlightServiceController {
 
         FeatureCollection featureCollection = new FeatureCollection();
 
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+
         Feature origin = new Feature();
         origin.setGeometry(new Point(points.get(0)));
-        origin.setProperty("marker-symbol", "circle");
-        origin.setProperty("marker-color", "#800000");
-        origin.setProperty("title", flight.getOrigin());
+        origin.setProperty("icao", flight.getOrigin());
+        origin.setProperty("date", dateFormat.format(flight.getStartTime()));
         featureCollection.add(origin);
 
         if (flight.getTrack().size() > 1) {
@@ -189,16 +193,9 @@ public class FlightServiceController {
         if (flight.getDestination() != null) {
             Feature destination = new Feature();
             destination.setGeometry(new Point(points.get(points.size() - 1)));
-            destination.setProperty("marker-color", "#008000");
-            destination.setProperty("marker-symbol", "circle");
-            destination.setProperty("title", flight.getDestination());
+            destination.setProperty("icao", flight.getDestination());
+            destination.setProperty("date", dateFormat.format(flight.getEndTime()));
             featureCollection.add(destination);
-        } else {
-            Feature location = new Feature();
-            location.setGeometry(new Point(points.get(points.size() - 1)));
-            location.setProperty("marker-color", "#000000");
-            location.setProperty("marker-symbol", "airport");
-            featureCollection.add(location);
         }
 
         return featureCollection;

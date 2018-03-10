@@ -18,13 +18,13 @@ angular.module("flightrecord").component("track", {
                 .then(function(response) {
                     L.geoJSON(response.data, {
                         style: function(feature) {
-                            return {color: "#008040"};
+                            return {color: "#000000"};
                         }
                     }).bindPopup(function(layer) {
-                        if (layer.feature.properties.title) {
-                            return layer.feature.properties.title;
+                        if (layer.feature.properties.icao) {
+                            return layer.feature.properties.icao +
+                                "<br/> " + layer.feature.properties.date;
                         }
-                        return "";
                     }).addTo(map);
                     var track = response.data.features[1];
                     var points = track.geometry.coordinates;
