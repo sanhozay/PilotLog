@@ -10,6 +10,7 @@ angular.module("flightrecord").component("track", {
             L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
+            L.control.scale().addTo(map);
             ctrl.refresh();
         }
         ctrl.refresh = function() {
@@ -18,7 +19,7 @@ angular.module("flightrecord").component("track", {
                 .then(function(response) {
                     L.geoJSON(response.data, {
                         style: function(feature) {
-                            return {color: "#000000"};
+                            return {color: "#0080a0"};
                         }
                     }).bindPopup(function(layer) {
                         if (layer.feature.properties.icao) {
