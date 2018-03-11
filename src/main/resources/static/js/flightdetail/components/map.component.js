@@ -1,4 +1,4 @@
-angular.module("flightrecord").component("track", {
+angular.module("flightdetail").component("map", {
     bindings: {
         id: "<"
     },
@@ -14,7 +14,7 @@ angular.module("flightrecord").component("track", {
             ctrl.refresh();
         }
         ctrl.refresh = function() {
-            var url = "/api/flights/flight/" + $routeParams.id;
+            var url = "/api/flights/flight/" + ctrl.id;
             $http.get(url)
                 .then(function(response) {
                     L.geoJSON(response.data, {
@@ -40,9 +40,8 @@ angular.module("flightrecord").component("track", {
                         if (lon > tr[1]) tr[1] = lon
                     }
                     map.fitBounds([bl, tr]);
-                    console.log(response.data)
                 });
         }
     },
-    templateUrl: "js/flightrecord/components/track.template.html"
+    templateUrl: "js/flightdetail/components/map.template.html"
 });

@@ -51,7 +51,6 @@ angular.module("aircraft").component("aircraft", {
             $http.get(url)
                 .then(function(response) {
                     ctrl.data = response.data
-                    console.log(response.data)
                     if (ctrl.pageable.pageNumber > ctrl.totalPages) {
                         ctrl.refreshPage(ctrl.totalPages)
                     }
