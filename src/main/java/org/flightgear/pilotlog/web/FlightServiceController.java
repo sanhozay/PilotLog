@@ -47,7 +47,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -163,18 +162,20 @@ public class FlightServiceController {
     }
 
     @GetMapping(path = "flights/flight/{id}", produces = APPLICATION_JSON_VALUE)
+    public Flight flight(@PathVariable int id) {
+        return flightService.findFlightById(id);
+    }
+
+    @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
     public FeatureCollection flightTrack(@PathVariable int id) {
-
         Flight flight = flightService.findFlightById(id);
-
-        List<LngLatAlt> points = flight.getTrack().parallelStream().map(p -> new LngLatAlt(
-                p.getCoordinate().getLongitude(),
-                p.getCoordinate().getLatitude(),
-                p.getAltitude()
+        List<LngLatAlt> points = flight.getTrack().parallelStream().map(trackPoint -> new LngLatAlt(
+                trackPoint.getCoordinate().getLongitude(),
+                trackPoint.getCoordinate().getLatitude(),
+                trackPoint.getAltitude()
         )).collect(Collectors.toList());
 
         FeatureCollection featureCollection = new FeatureCollection();
-
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
         Feature origin = new Feature();
@@ -201,8 +202,7 @@ public class FlightServiceController {
         return featureCollection;
     }
 
-    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight>
-            matches) {
+    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {
         int pageTotal = page.getContent().parallelStream()
                 .filter(Flight::isComplete)
                 .mapToInt(function)

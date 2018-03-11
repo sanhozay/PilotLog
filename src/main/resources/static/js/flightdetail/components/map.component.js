@@ -14,7 +14,7 @@ angular.module("flightdetail").component("map", {
             ctrl.refresh();
         }
         ctrl.refresh = function() {
-            var url = "/api/flights/flight/" + ctrl.id;
+            var url = "/api/flights/flight/" + ctrl.id + "/track";
             $http.get(url)
                 .then(function(response) {
                     L.geoJSON(response.data, {
