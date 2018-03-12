@@ -291,3 +291,14 @@ status p {
     padding: 0;
     color: Gray;
 }
+
+/* Chartist overrides */
+
+.ct-series-a .ct-line {
+    stroke: DarkBlue;
+    stroke-width: 3px;
+}
+
+.ct-series-a .ct-point {
+    display: none;
+}

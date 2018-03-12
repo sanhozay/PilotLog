@@ -19,7 +19,7 @@ angular.module("flightdetail").component("map", {
                 .then(function(response) {
                     L.geoJSON(response.data, {
                         style: function(feature) {
-                            return {color: "#0080a0"};
+                            return {color: "DarkBlue"};
                         }
                     }).bindPopup(function(layer) {
                         if (layer.feature.properties.icao) {
