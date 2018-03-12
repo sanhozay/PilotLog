@@ -12,7 +12,6 @@ angular.module("flightdetail").component("detail", {
             $http.get(url)
                 .then(function(response) {
                     ctrl.flight = response.data;
-                    console.log(ctrl.flight);
                 });
         }
     },
