@@ -1,1 +1,1 @@
-angular.module("flightdetail", []);
+angular.module("flightdetail", ["core"]);

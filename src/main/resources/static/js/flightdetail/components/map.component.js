@@ -1,8 +1,8 @@
 angular.module("flightdetail").component("map", {
     bindings: {
-        id: "<"
+        flightId: "<"
     },
-    controller: function($http, $routeParams) {
+    controller: function($http) {
         var ctrl = this
         var map;
         ctrl.$onInit = function() {
@@ -14,7 +14,7 @@ angular.module("flightdetail").component("map", {
             ctrl.refresh();
         }
         ctrl.refresh = function() {
-            var url = "/api/flights/flight/" + ctrl.id + "/track";
+            var url = "/api/flights/flight/" + ctrl.flightId + "/track";
             $http.get(url)
                 .then(function(response) {
                     L.geoJSON(response.data, {
