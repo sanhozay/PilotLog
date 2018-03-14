@@ -4,13 +4,8 @@ angular.module("flightdetail").component("chart", {
     },
     controller: function($http) {
         var ctrl = this;
-        var chart;
         ctrl.$onInit = function() {
             ctrl.refresh();
-            var options = {
-                width: "600px", height: "400px"
-            };
-            chart = new Chartist.Line(".ct-chart", {}, options);
         }
         ctrl.refresh = function() {
             var url = "/api/flights/flight/" + ctrl.flightId + "/track";
@@ -26,7 +21,7 @@ angular.module("flightdetail").component("chart", {
                     var data = {
                         series: [altitudes]
                     };
-                    chart.update(data);
+                    var chart = new Chartist.Line(".ct-chart", data, {});
                 });
         }
     },

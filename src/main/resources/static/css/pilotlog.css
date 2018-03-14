@@ -13,7 +13,7 @@ heading img {
     width: 135px;
     height: 155px;
     margin-right: 10px;
-    margin-bottom: 1em;
+    margin-bottom: 10px;
 }
 
 heading .compositeTitle {
@@ -113,16 +113,11 @@ search form .buttons {
 
 /* Views */
 
-flights, summary, #map {
+flights, summary {
     margin-top: 2em;
     width: 100%;
     clear: both;
     min-width: 800px;
-}
-
-#map {
-    width: 800px;
-    height: 600px;
 }
 
 /* Tables */
@@ -131,8 +126,11 @@ table {
     border: solid #333333 4px;
     padding: 1ex;
     border-collapse: collapse;
-    width: 100%;
+}
+
+table.log {
     clear: both;
+    width: 100%;
 }
 
 table caption {
