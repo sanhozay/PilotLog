@@ -1,4 +1,4 @@
-angular.module("flightdetail").component("chart", {
+angular.module("flightdetail").component("altitude", {
     bindings: {
         flightId: "<"
     },
@@ -25,5 +25,5 @@ angular.module("flightdetail").component("chart", {
                 });
         }
     },
-    templateUrl: "js/flightdetail/components/chart.template.html"
+    templateUrl: "js/flightdetail/components/altitude.template.html"
 });

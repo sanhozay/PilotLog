@@ -1,29 +1,27 @@
-<form novalidate>
-    <fieldset>
-        <legend>Find Flights</legend>
-        <div class="term">
-            <label for="aircraft">Aircraft</label>
-            <input type="text" id="aircraft" autocomplete="off"
-                   ng-model="$ctrl.parent.search.form.aircraft"/>
-        </div>
-        <div class="term">
-            <label for="callsign">Registration</label>
-            <input type="text" id="callsign" autocomplete="off"
-                   ng-model="$ctrl.parent.search.form.callsign"/>
-        </div>
-        <div class="term">
-            <label for="origin">Departure</label>
-            <input type="text" id="origin" autocomplete="off"
-                   ng-model="$ctrl.parent.search.form.origin"/>
-        </div>
-        <div class="term">
-            <label for="destination">Arrival</label>
-            <input type="text" id="destination" autocomplete="off"
-                   ng-model="$ctrl.parent.search.form.destination"/>
-        </div>
-        <div class="buttons">
-            <input class="button" type="submit" value="Search" ng-click="$ctrl.search()"/>
-            <input class="button" type="button" value="Clear" ng-click="$ctrl.clear()"/>
-        </div>
-    </fieldset>
-</form>
+<div class="search">
+    <form novalidate>
+        <fieldset>
+            <legend>Find Flights</legend>
+            <div class="term">
+                <label for="aircraft">Aircraft</label>
+                <input type="text" id="aircraft" autocomplete="off" ng-model="$ctrl.parent.search.form.aircraft"/>
+            </div>
+            <div class="term">
+                <label for="callsign">Registration</label>
+                <input type="text" id="callsign" autocomplete="off" ng-model="$ctrl.parent.search.form.callsign"/>
+            </div>
+            <div class="term">
+                <label for="origin">Departure</label>
+                <input type="text" id="origin" autocomplete="off" ng-model="$ctrl.parent.search.form.origin"/>
+            </div>
+            <div class="term">
+                <label for="destination">Arrival</label>
+                <input type="text" id="destination" autocomplete="off" ng-model="$ctrl.parent.search.form.destination"/>
+            </div>
+            <div class="buttons">
+                <input class="button" type="submit" value="Search" ng-click="$ctrl.search()"/>
+                <input class="button" type="button" value="Clear" ng-click="$ctrl.clear()"/>
+            </div>
+        </fieldset>
+    </form>
+</div>

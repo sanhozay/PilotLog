@@ -1,4 +1,4 @@
-angular.module("aircraft").component("aircraft", {
+angular.module("aircraftsummary").component("aircraftsummary", {
     controller: function($http, $interval, $cookies) {
         var ctrl = this
         var cookie = "pilotlog.page.size"
@@ -57,5 +57,5 @@ angular.module("aircraft").component("aircraft", {
                 })
         }
     },
-    templateUrl: "js/aircraft/components/aircraft.template.html"
+    templateUrl: "js/aircraftsummary/aircraftsummary.template.html"
 });

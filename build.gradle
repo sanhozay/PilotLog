@@ -26,12 +26,6 @@ dependencies {
     )
 }
 
-processResources {
-    filesMatching('static/index.html') {
-        expand projectVersion: version
-    }
-}
-
 jar {
     manifest {
         attributes(

@@ -1,4 +1,4 @@
-angular.module("aircraft").component("summary", {
+angular.module("aircraftsummary").component("aircraft", {
     bindings: {
         content: "<",
         totals: "<",
@@ -10,7 +10,7 @@ angular.module("aircraft").component("summary", {
             ctrl.onClickHeading({property: property})
         }
     },
-    templateUrl: "js/aircraft/components/summary.template.html"
+    templateUrl: "js/aircraftsummary/components/aircraft.template.html"
 });
 
 
