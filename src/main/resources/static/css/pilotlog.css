@@ -6,6 +6,48 @@ body {
     min-width: 800px;
 }
 
+.altitude {
+    background-color: #f0fff0;
+    box-sizing: border-box;
+    clear: right;
+    float: right;
+    height: calc(100vh - 20px - 200px - 200px);
+    min-height: 200px;
+    padding: 10px;
+    width: 50%;
+}
+
+.altitude h1 {
+    font-size: large;
+    color: #DarkGray;
+}
+
+.ct-chart {
+    height: 100%;
+    margin: 10px;
+}
+
+.flight {
+    background-color: #fff0f0;
+    box-sizing: border-box;
+    clear: both;
+    float: right;
+    height: 200px;
+    padding: 10px;
+    width: 50%;
+}
+
+.flight table {
+    font-size: 50%;
+    width: 100%;
+}
+
+.flight th {
+    font-family: sans-serif;
+    color: black;
+    text-align: left;
+}
+
 /* Heading */
 
 heading img {
@@ -111,25 +153,13 @@ search form .buttons {
     float: right;
 }
 
-/* Views */
-
-flights, summary {
-    margin-top: 2em;
-    width: 100%;
-    clear: both;
-    min-width: 800px;
-}
-
 /* Tables */
 
 table {
-    border: solid #333333 4px;
-    padding: 1ex;
     border-collapse: collapse;
-}
-
-table.log {
+    border: solid #333333 4px;
     clear: both;
+    padding: 1ex;
     width: 100%;
 }
 
@@ -294,7 +324,7 @@ status p {
 
 .ct-series-a .ct-line {
     stroke: DarkBlue;
-    stroke-width: 3px;
+    stroke-width: 2px;
 }
 
 .ct-series-a .ct-point {

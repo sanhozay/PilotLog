@@ -14,14 +14,25 @@ angular.module("flightdetail").component("altitude", {
                     var track = response.data.features[1];
                     var points = track.geometry.coordinates;
                     var altitudes = [];
-                    for (var i = 0; i < points.length; ++i) {
+                    var minutes = [];
+                    for (var i = 0; i < points.length; i += 6) {
                         var altitude = points[i][2];
                         altitudes.push(altitude);
+                        minutes.push(i / 6);
                     }
                     var data = {
+                        labels: minutes,
                         series: [altitudes]
                     };
-                    var chart = new Chartist.Line(".ct-chart", data, {});
+                    var options = {
+                        axisX: {
+                            type: Chartist.AutoScaleAxis,
+                            onlyInteger: true,
+                            scaleMinSpace: 40,
+                            showGrid: false,
+                        }
+                    };
+                    var chart = new Chartist.Line(".ct-chart", data, options);
                 });
         }
     },
