@@ -15,7 +15,9 @@ spring:
   datasource:
     url: jdbc:h2:file:~/.h2/pilotlog-dev
     platform: dev
-  jpa.hibernate.ddl-auto: create
+  jpa:
+    hibernate.ddl-auto: create
+    show_sql: true
 logging.level:
   org.flightgear.pilotlog: info
 management:
