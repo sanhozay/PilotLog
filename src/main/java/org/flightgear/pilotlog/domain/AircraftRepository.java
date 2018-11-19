@@ -26,4 +26,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
  *
  * @author Richard Senior
  */
-public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {}
+public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
+
+    Aircraft findAircraftByModel(String model);
+
+}

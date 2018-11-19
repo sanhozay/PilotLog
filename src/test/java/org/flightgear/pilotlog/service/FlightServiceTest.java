@@ -20,6 +20,7 @@
 package org.flightgear.pilotlog.service;
 
 import org.assertj.core.data.Offset;
+import org.flightgear.pilotlog.domain.Aircraft;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
@@ -63,13 +64,16 @@ public class FlightServiceTest {
     private FlightRepository flightRepository;
 
     @Mock
+    private AircraftService aircraftService;
+
+    @Mock
     private PageableUtil pageableUtil;
 
     private FlightService flightService;
 
     @Before
     public void setUp() {
-        flightService = new FlightService(flightRepository);
+        flightService = new FlightService(flightRepository, aircraftService);
         flightService.setPageableUtil(pageableUtil);
         when(flightRepository.save(any(Flight.class))).thenAnswer((Answer<Flight>)invocation -> {
             Flight flight = (Flight)invocation.getArguments()[0];
@@ -214,6 +218,8 @@ public class FlightServiceTest {
         verify(flightRepository).findOne(ID_COMPLETE);
         // and then delete it
         verify(flightRepository).delete(flightRepository.findOne(ID_COMPLETE));
+        // and update the summary for the aircraft
+        verify(aircraftService).updateSummary(any(String.class));
     }
 
     @Test(expected = FlightNotFoundException.class)

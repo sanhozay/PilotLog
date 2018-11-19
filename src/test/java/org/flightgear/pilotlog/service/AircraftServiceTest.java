@@ -108,6 +108,8 @@ public class AircraftServiceTest {
         verify(flightRepository).aircraftSummaryByModel(aircraft);
         // but the aircraft repository not to attempt to save the null aircraft
         verify(aircraftRepository, never()).save(any(Aircraft.class));
+        // it should delete the summary instead
+        verify(aircraftRepository).delete(any(Aircraft.class));
     }
 
 }

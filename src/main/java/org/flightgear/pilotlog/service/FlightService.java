@@ -53,6 +53,8 @@ public class FlightService {
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 
     private final FlightRepository repository;
+    private final AircraftService aircraftService;
+
     private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
             .withIgnorePaths("id")
             .withIgnoreCase()
@@ -61,8 +63,9 @@ public class FlightService {
     private PageableUtil pageableUtil;
 
     @Autowired
-    public FlightService(FlightRepository repository) {
+    public FlightService(FlightRepository repository, AircraftService aircraftService) {
         this.repository = repository;
+        this.aircraftService = aircraftService;
     }
 
     /**
@@ -181,6 +184,7 @@ public class FlightService {
             throw new InvalidFlightStatusException(message);
         }
         repository.delete(flight);
+        aircraftService.updateSummary(flight.getAircraft());
         log.info("Deleted flight {}", flight);
     }
 

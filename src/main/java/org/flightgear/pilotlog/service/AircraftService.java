@@ -68,7 +68,10 @@ public class AircraftService {
     @Transactional(propagation = Propagation.MANDATORY)
     public void updateSummary(String model) {
         Aircraft summary = flightRepository.aircraftSummaryByModel(model);
-        if (summary != null) {
+        if (summary == null) {
+            Aircraft aircraft = aircraftRepository.findAircraftByModel(model);
+            aircraftRepository.delete(aircraft);
+        } else {
             aircraftRepository.save(summary);
         }
     }
