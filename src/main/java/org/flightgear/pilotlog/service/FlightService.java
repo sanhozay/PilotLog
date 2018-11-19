@@ -47,7 +47,6 @@ import java.util.Set;
  * @author Richard Senior
  */
 @Service
-@Transactional
 public class FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
@@ -62,7 +61,6 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
     private PageableUtil pageableUtil;
 
-    @Autowired
     public FlightService(FlightRepository repository, AircraftService aircraftService) {
         this.repository = repository;
         this.aircraftService = aircraftService;
@@ -81,6 +79,7 @@ public class FlightService {
      * @param longitude the longitude at the start of the flight
      * @return a new flight, with supplied fields and id field initialized
      */
+    @Transactional
     public Flight beginFlight(String callsign, String aircraft, String airport, float altitude,
                               float startFuel, float startOdometer, float latitude, float longitude) {
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
@@ -109,6 +108,7 @@ public class FlightService {
      * @param longitude the longitude at the start of the flight
      * @return the flight, with arrival fields updated
      */
+    @Transactional
     public Flight endFlight(int id, String airport, float altitude, float endFuel,
                             float endOdometer, float latitude, float longitude) {
         final Flight flight;
@@ -149,6 +149,7 @@ public class FlightService {
      * @param id the id of the flight to invalidate
      * @return the flight with status updated
      */
+    @Transactional
     public Flight invalidateFlight(int id) {
         final Flight flight;
         try {
@@ -171,6 +172,7 @@ public class FlightService {
      *
      * @param id the id of the flight to delete
      */
+    @Transactional
     public void deleteFlight(int id) {
         final Flight flight;
         try {
@@ -199,6 +201,7 @@ public class FlightService {
      * @param longitude the longitude at the start of the flight
      * @return the updated flight
      */
+    @Transactional
     public Flight updateFlight(int id, float altitude, float fuel,
                                float odometer, float latitude, float longitude) {
         final Flight flight;
@@ -234,6 +237,7 @@ public class FlightService {
      *
      * @param flight the flight to update
      */
+    @Transactional
     public void updateComputedFields(Flight flight) {
         if (flight.getStartTime() != null && flight.getEndTime() != null) {
             int duration = (int)Duration.between(
@@ -266,6 +270,7 @@ public class FlightService {
     /**
      * Purges incomplete and invalid flights.
      */
+    @Transactional
     public void purge() {
         Set<Flight> purgeable = new HashSet<>();
         purgeable.addAll(repository.findByStatus(FlightStatus.ACTIVE));

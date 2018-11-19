@@ -51,7 +51,6 @@ public class AircraftServiceController {
 
     private final AircraftService aircraftService;
 
-    @Autowired
     public AircraftServiceController(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
     }

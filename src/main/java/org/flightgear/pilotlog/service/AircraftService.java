@@ -24,17 +24,14 @@ import org.flightgear.pilotlog.domain.AircraftRepository;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 @Service
-@Transactional
 public class AircraftService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
@@ -43,7 +40,6 @@ public class AircraftService {
     private final FlightRepository flightRepository;
     private final PageableUtil pageableUtil;
 
-    @Autowired
     public AircraftService(
             AircraftRepository aircraftRepository,
             FlightRepository flightRepository,
@@ -54,6 +50,19 @@ public class AircraftService {
         this.pageableUtil = pageableUtil;
     }
 
+    @Transactional
+    public void updateSummary(String model) {
+        Aircraft summary = flightRepository.aircraftSummaryByModel(model);
+        if (summary == null) {
+            Aircraft aircraft = aircraftRepository.findAircraftByModel(model);
+            aircraftRepository.delete(aircraft);
+        } else {
+            aircraftRepository.save(summary);
+        }
+    }
+
+    // Query methods
+
     @Transactional(readOnly = true)
     public List<Aircraft> findAllAircraft() {
         return aircraftRepository.findAll();
@@ -63,17 +72,6 @@ public class AircraftService {
     public Page<Aircraft> findAllAircraft(Pageable pageable) {
         pageable = pageableUtil.adjustPageable(pageable, "model", "model");
         return aircraftRepository.findAll(pageable);
-    }
-
-    @Transactional(propagation = Propagation.MANDATORY)
-    public void updateSummary(String model) {
-        Aircraft summary = flightRepository.aircraftSummaryByModel(model);
-        if (summary == null) {
-            Aircraft aircraft = aircraftRepository.findAircraftByModel(model);
-            aircraftRepository.delete(aircraft);
-        } else {
-            aircraftRepository.save(summary);
-        }
     }
 
 }

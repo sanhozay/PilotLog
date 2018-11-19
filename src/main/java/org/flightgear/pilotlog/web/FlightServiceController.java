@@ -69,7 +69,6 @@ public class FlightServiceController {
 
     private final FlightService flightService;
 
-    @Autowired
     public FlightServiceController(FlightService flightService) {
         this.flightService = flightService;
     }

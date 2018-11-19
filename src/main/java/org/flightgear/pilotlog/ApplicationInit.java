@@ -23,7 +23,6 @@ import org.flightgear.pilotlog.service.AircraftService;
 import org.flightgear.pilotlog.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,7 +43,6 @@ public class ApplicationInit implements CommandLineRunner {
     private final AircraftService aircraftService;
     private final FlightService flightService;
 
-    @Autowired
     public ApplicationInit(AircraftService aircraftService, FlightService flightService) {
         this.aircraftService = aircraftService;
         this.flightService = flightService;
