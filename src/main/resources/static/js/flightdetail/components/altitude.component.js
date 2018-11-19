@@ -2,12 +2,21 @@ angular.module("flightdetail").component("altitude", {
     bindings: {
         flightId: "<"
     },
-    controller: function($http) {
+    controller: function($http, $interval) {
         var ctrl = this;
+        var complete = false;
+        var autoRefresh;
         ctrl.$onInit = function() {
             ctrl.refresh();
+            autoRefresh = $interval(ctrl.refresh, 1000)
+        }
+        ctrl.$onDestroy = function() {
+            $interval.cancel(autoRefresh);
         }
         ctrl.refresh = function() {
+            if (complete) {
+                return;
+            }
             var url = "/api/flights/flight/" + ctrl.flightId + "/track";
             $http.get(url)
                 .then(function(response) {
@@ -22,21 +31,25 @@ angular.module("flightdetail").component("altitude", {
                     }
                     var ctx = document.getElementById("altitude").getContext("2d");
                     var chart = new Chart(ctx, {
-                        // The type of chart we want to create
                         type: "line",
-
-                        // The data for our dataset
                         data: {
                             labels: minutes,
                             datasets: [{
                                 label: "Altitude (ft)",
-                                borderColor: "rgb(0, 0, 128)",
-                                fill: false,
+                                borderColor: "rgb(180, 64, 64)",
+                                backgroundColor: "rgb(255, 240, 240)",
+                                fill: true,
                                 pointRadius: 0,
                                 data: altitudes
                             }]
                         },
                         options: {
+                            animation: {
+                                duration: 0
+                            },
+                            legend: {
+                                display: false
+                            },
                             scales: {
                                 xAxes: [{
                                     gridLines: {
@@ -54,7 +67,14 @@ angular.module("flightdetail").component("altitude", {
                             }
                         }
                     });
-                });
+                }
+            );
+            url = "api/flights/flight/" + ctrl.flightId;
+            $http.get(url)
+                .then(function(response) {
+                    complete = response.data.complete;
+                }
+            );
         }
     },
     templateUrl: "js/flightdetail/components/altitude.template.html"

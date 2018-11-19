@@ -7,19 +7,18 @@ body {
 }
 
 .altitude {
-    background-color: #f0fff0;
     box-sizing: border-box;
     clear: right;
     float: right;
-    height: calc(100vh - 20px - 200px - 200px);
+    height: calc(100vh - 20px - 200px - 280px);
     min-height: 200px;
     padding: 10px;
     width: 50%;
 }
 
 .altitude h1 {
-    font-size: large;
-    color: #DarkGray;
+    font-size: 100%;
+    color: #666666;
 }
 
 .ct-chart {
@@ -28,17 +27,16 @@ body {
 }
 
 .flight {
-    background-color: #fff0f0;
     box-sizing: border-box;
     clear: both;
     float: right;
-    height: 200px;
+    height: 280px;
     padding: 10px;
     width: 50%;
 }
 
 .flight table {
-    font-size: 50%;
+    font-size: 100%;
     width: 100%;
 }
 
@@ -46,6 +44,17 @@ body {
     font-family: sans-serif;
     color: black;
     text-align: left;
+}
+
+.map {
+    box-sizing: border-box;
+    clear: left;
+    padding: 10px;
+    width: 50%;
+}
+
+#map {
+    height: calc(100vh - 20px - 20px - 200px);
 }
 
 /* Heading */

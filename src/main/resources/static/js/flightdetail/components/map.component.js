@@ -2,22 +2,35 @@ angular.module("flightdetail").component("map", {
     bindings: {
         flightId: "<"
     },
-    controller: function($http) {
+    controller: function($http, $interval) {
         var ctrl = this
+        var complete = false;
         var map;
+        var line;
+        var autoRefresh;
         ctrl.$onInit = function() {
             map = L.map('map').fitWorld();
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors'
+            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
             L.control.scale().addTo(map);
             ctrl.refresh();
+            autoRefresh = $interval(ctrl.refresh, 1000)
+        }
+        ctrl.$onDestroy = function() {
+            $interval.cancel(autoRefresh);
         }
         ctrl.refresh = function() {
+            if (complete) {
+                return;
+            }
             var url = "/api/flights/flight/" + ctrl.flightId + "/track";
             $http.get(url)
                 .then(function(response) {
-                    L.geoJSON(response.data, {
+                    if (line) {
+                        line.clearLayers();
+                    }
+                    line = L.geoJSON(response.data, {
                         style: function(feature) {
                             return {color: "DarkBlue"};
                         }
@@ -26,7 +39,8 @@ angular.module("flightdetail").component("map", {
                             return layer.feature.properties.icao +
                                 "<br/> " + layer.feature.properties.date;
                         }
-                    }).addTo(map);
+                    });
+                    line.addTo(map);
                     var track = response.data.features[1];
                     var points = track.geometry.coordinates;
                     var bl = [180, 180];
@@ -40,7 +54,14 @@ angular.module("flightdetail").component("map", {
                         if (lon > tr[1]) tr[1] = lon
                     }
                     map.fitBounds([bl, tr]);
-                });
+                }
+            );
+            url = "api/flights/flight/" + ctrl.flightId;
+            $http.get(url)
+                .then(function(response) {
+                    complete = response.data.complete;
+                }
+            );
         }
     },
     templateUrl: "js/flightdetail/components/map.template.html"
