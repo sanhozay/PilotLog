@@ -34,6 +34,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -83,6 +84,7 @@ public class Flight implements Serializable {
     private FlightStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OrderBy("timestamp")
     @JsonIgnore
     private List<TrackPoint> track;
 
