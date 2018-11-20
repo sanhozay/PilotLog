@@ -84,7 +84,7 @@ public class Flight implements Serializable {
     private FlightStatus status;
 
     @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
-    @OrderBy("timestamp")
+    @OrderBy("odometer")
     @JsonIgnore
     private List<TrackPoint> track;
 
