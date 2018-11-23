@@ -33,7 +33,6 @@ import org.geojson.FeatureCollection;
 import org.geojson.LineString;
 import org.geojson.LngLatAlt;
 import org.geojson.Point;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -119,9 +118,10 @@ public class FlightServiceController {
             @RequestParam("fuel") float fuel,
             @RequestParam("odometer") float odometer,
             @RequestParam("latitude") float latitude,
-            @RequestParam("longitude") float longitude)
+            @RequestParam("longitude") float longitude,
+            @RequestParam("heading") float heading)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return flightService.updateFlight(id, altitude, fuel, odometer, latitude, longitude);
+        return flightService.updateFlight(id, altitude, fuel, odometer, latitude, longitude, heading);
     }
 
     // Additional endpoints
@@ -175,6 +175,10 @@ public class FlightServiceController {
         )).collect(Collectors.toList());
 
         FeatureCollection featureCollection = new FeatureCollection();
+        if (points.size() == 0) {
+            return featureCollection;
+        }
+
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
         Feature origin = new Feature();

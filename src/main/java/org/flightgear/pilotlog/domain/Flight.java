@@ -53,7 +53,7 @@ import java.util.Objects;
 @Entity
 @SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
-@JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer",
+@JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer", "heading",
         "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
         "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
@@ -91,7 +91,7 @@ public class Flight implements Serializable {
     // Computed fields
 
     private Integer duration, groundSpeed, altitude;
-    private Float fuelUsed, fuelRate, reserve, distance;
+    private Float fuelUsed, fuelRate, reserve, distance, heading;
 
     public Flight() {}
 
@@ -285,6 +285,14 @@ public class Flight implements Serializable {
 
     public void setTrack(List<TrackPoint> track) {
         this.track = track;
+    }
+
+    public Float getHeading() {
+        return heading;
+    }
+
+    public void setHeading(Float heading) {
+        this.heading = heading;
     }
 
     // Comparison and equality

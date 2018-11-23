@@ -107,6 +107,7 @@ var pirep = func {
         url ~= "&odometer="~getprop("instrumentation/gps/odometer");
         url ~= "&latitude="~getprop("position/latitude-deg");
         url ~= "&longitude="~getprop("position/longitude-deg");
+        url ~= "&heading="~getprop("orientation/heading-deg");
         request(url);
     }
 }

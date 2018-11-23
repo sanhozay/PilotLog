@@ -45,6 +45,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("javadoc")
 public class FlightServiceControllerTest {
 
     @Mock
@@ -122,11 +123,12 @@ public class FlightServiceControllerTest {
         int id = 100;
         float altitude = 10000, fuel = 18.0f, odometer = 10.0f;
         float latitude = 51.0f, longitude = 1.0f;
+        float heading = 180.0f;
         // When invalidating a flight
-        Flight flight = controller.pirep(id, altitude, fuel, odometer, latitude, longitude);
+        Flight flight = controller.pirep(id, altitude, fuel, odometer, latitude, longitude, heading);
         // expect the value returned from the flight service be returned from the method
         assertThat(flight).isEqualTo(flightService.updateFlight(
-                id, altitude, fuel, odometer, latitude, longitude
+                id, altitude, fuel, odometer, latitude, longitude, heading
         ));
     }
 
@@ -174,9 +176,9 @@ public class FlightServiceControllerTest {
         String csv = controller.flightsCSV();
         // expect the method to return all flights in CSV format
         assertThat(csv.replaceAll("[\r\n\t ]+", "")).isEqualTo("id,callsign,aircraft,origin,startTime," +
-                "startFuel,startOdometer,destination,endTime,endFuel,endOdometer," +
+                "startFuel,startOdometer,heading,destination,endTime,endFuel,endOdometer," +
                 "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve" +
-                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,3600,COMPLETE,,true,");
+                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,");
     }
 
 }

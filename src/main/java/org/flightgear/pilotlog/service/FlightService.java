@@ -197,13 +197,14 @@ public class FlightService {
      * @param altitude the current altitude
      * @param fuel the current fuel level
      * @param odometer the current odometer
-     * @param latitude the latitude at the start of the flight
-     * @param longitude the longitude at the start of the flight
+     * @param latitude the current latitude
+     * @param longitude the current longitude
+     * @param heading the current heading
      * @return the updated flight
      */
     @Transactional
     public Flight updateFlight(int id, float altitude, float fuel,
-                               float odometer, float latitude, float longitude) {
+                               float odometer, float latitude, float longitude, float heading) {
         final Flight flight;
         try {
             flight = findFlightById(id);
@@ -223,6 +224,7 @@ public class FlightService {
         flight.setEndFuel(fuel);
         flight.setEndOdometer(odometer);
         flight.setEndTime(new Date());
+        flight.setHeading(heading);
 
         Coordinate coordinate = new Coordinate(latitude, longitude);
         TrackPoint trackPoint = new TrackPoint(altitude, fuel, odometer, coordinate);

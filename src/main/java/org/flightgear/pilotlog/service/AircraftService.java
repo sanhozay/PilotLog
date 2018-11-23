@@ -55,7 +55,9 @@ public class AircraftService {
         Aircraft summary = flightRepository.aircraftSummaryByModel(model);
         if (summary == null) {
             Aircraft aircraft = aircraftRepository.findAircraftByModel(model);
-            aircraftRepository.delete(aircraft);
+            if (aircraft != null) {
+                aircraftRepository.delete(aircraft);
+            }
         } else {
             aircraftRepository.save(summary);
         }

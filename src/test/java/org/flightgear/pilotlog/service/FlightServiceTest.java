@@ -241,7 +241,7 @@ public class FlightServiceTest {
     @Test
     public void testUpdateFlight() {
         // When updating a flight with an lower altitude than cruise, fuel and odometer
-        Flight flight = flightService.updateFlight(ID_ACTIVE, 5000.0f, 900.0f, 100.0f, 53.0f, 1.0f);
+        Flight flight = flightService.updateFlight(ID_ACTIVE, 5000.0f, 900.0f, 100.0f, 53.0f, 1.0f, 0.0f);
         long now = new Date().getTime();
         // expect the repository to look for the flight
         verify(flightRepository, times(ID_COMPLETE)).findOne(ID_ACTIVE);
@@ -265,7 +265,7 @@ public class FlightServiceTest {
     @Test
     public void testUpdateFlightHigherAltitude() {
         // When updating a flight with an higher altitude than cruise
-        Flight flight = flightService.updateFlight(ID_ACTIVE, 15000, 900.0f, 100.0f, 51.0f, 1.0f);
+        Flight flight = flightService.updateFlight(ID_ACTIVE, 15000, 900.0f, 100.0f, 51.0f, 1.0f, 0.0f);
         // expect the repository to look for the flight
         verify(flightRepository, times(ID_COMPLETE)).findOne(ID_ACTIVE);
         // and the flight to contain a track point with the real altitude
@@ -279,7 +279,7 @@ public class FlightServiceTest {
     @Test(expected = FlightNotFoundException.class)
     public void testUpdateFlightMissing() {
         // When attempting to update a missing flight
-        Flight flight = flightService.updateFlight(ID_MISSING, 10000, 900.0f, 100.0f, 51.0f, 1.0f);
+        Flight flight = flightService.updateFlight(ID_MISSING, 10000, 900.0f, 100.0f, 51.0f, 1.0f, 0.0f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_MISSING);
     }
@@ -287,7 +287,7 @@ public class FlightServiceTest {
     @Test(expected = InvalidFlightStatusException.class)
     public void testUpdateFlightNotActive() {
         // When attempting to update a completed flight
-        Flight flight = flightService.updateFlight(ID_COMPLETE, 10000, 900.0f, 100.0f, 51.0f, 1.0f);
+        Flight flight = flightService.updateFlight(ID_COMPLETE, 10000, 900.0f, 100.0f, 51.0f, 1.0f, 0.0f);
         // expect the repository to look for the flight and throw an exception
         verify(flightRepository).findOne(ID_COMPLETE);
     }

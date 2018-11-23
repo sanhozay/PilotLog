@@ -4,22 +4,53 @@ angular.module("flightdetail").component("map", {
     },
     controller: function($http, $interval) {
         var ctrl = this
-        var complete = false;
-        var map;
-        var line;
+
         var autoRefresh;
+        var complete = false;
+        var line, map, marker;
+        var mode = "FIT";
+
+        var plane = L.icon({
+            iconUrl: '../../../../../images/plane.png',
+            iconSize: [40, 40],
+            iconAnchor: [20, 20]
+        });
+
         ctrl.$onInit = function() {
             map = L.map('map').fitWorld();
             L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
             }).addTo(map);
             L.control.scale().addTo(map);
+
+            var command = L.control({position: 'topright'});
+            command.onAdd = function (map) {
+                var div = L.DomUtil.create('div', 'command');
+                div.innerHTML = '<form>' +
+                    '<input name="mode" type="radio" value="FIT" checked="true"/>&nbsp;Overview&nbsp;' +
+                    '<input name="mode" type="radio" value="FOLLOW"/>&nbsp;Follow&nbsp;' +
+                    '<input name="mode" type="radio" value="MANUAL"/>&nbsp;Manual' +
+                    '</form>';
+                return div;
+            }
+            command.addTo(map);
+            document.querySelectorAll('input[name="mode"]').forEach(function(b) {
+                b.addEventListener ("click", ctrl.modeChanged, false)
+            });
+
             ctrl.refresh();
             autoRefresh = $interval(ctrl.refresh, 1000)
         }
+
         ctrl.$onDestroy = function() {
             $interval.cancel(autoRefresh);
         }
+
+        ctrl.modeChanged = function() {
+            mode = document.querySelector('input[name="mode"]:checked').value;
+            ctrl.refresh();
+        }
+
         ctrl.refresh = function() {
             if (complete) {
                 return;
@@ -32,7 +63,7 @@ angular.module("flightdetail").component("map", {
                     }
                     line = L.geoJSON(response.data, {
                         style: function(feature) {
-                            return {color: "DarkBlue"};
+                            return {color: "RoyalBlue"};
                         }
                     }).bindPopup(function(layer) {
                         if (layer.feature.properties.icao) {
@@ -41,25 +72,49 @@ angular.module("flightdetail").component("map", {
                         }
                     });
                     line.addTo(map);
+
                     var track = response.data.features[1];
                     var points = track.geometry.coordinates;
-                    var bl = [180, 180];
-                    var tr = [-180, -180];
-                    for (var i = 0; i < points.length; ++i) {
-                        var lon = points[i][0];
-                        var lat = points[i][1];
-                        if (lat < bl[0]) bl[0] = lat
-                        if (lat > tr[0]) tr[0] = lat
-                        if (lon < bl[1]) bl[1] = lon
-                        if (lon > tr[1]) tr[1] = lon
+                    var p = points[points.length - 1];
+                    var coordinate = new L.LatLng(p[1], p[0]);
+
+                    if (complete) {
+                        if (marker) {
+                            map.removeLayer(marker);
+                        }
+                    } else if (heading) {
+                        if (marker) {
+                            marker.setLatLng(coordinate);
+                            marker.setRotationAngle(heading);
+                        } else {
+                            marker = L.marker(coordinate, {icon: plane, rotationAngle: heading});
+                            marker.addTo(map);
+                        }
                     }
-                    map.fitBounds([bl, tr]);
+
+                    if (mode == "FOLLOW") {
+                        map.panTo(coordinate);
+                    } else if (mode == "FIT") {
+                        var bl = [180, 180];
+                        var tr = [-180, -180];
+                        for (var i = 0; i < points.length; ++i) {
+                            var lon = points[i][0];
+                            var lat = points[i][1];
+                            if (lat < bl[0]) bl[0] = lat;
+                            if (lat > tr[0]) tr[0] = lat;
+                            if (lon < bl[1]) bl[1] = lon;
+                            if (lon > tr[1]) tr[1] = lon;
+                        }
+                        map.fitBounds([bl, tr], {padding: [20, 20]});
+                    }
                 }
             );
+
             url = "api/flights/flight/" + ctrl.flightId;
             $http.get(url)
                 .then(function(response) {
                     complete = response.data.complete;
+                    heading = response.data.heading;
                 }
             );
         }
