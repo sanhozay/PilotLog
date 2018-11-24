@@ -83,7 +83,7 @@ public class Flight implements Serializable {
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
-    @OneToMany(cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
     @OrderBy("odometer")
     @JsonIgnore
     private List<TrackPoint> track;
@@ -122,6 +122,7 @@ public class Flight implements Serializable {
         if (track == null) {
             track = new ArrayList<>();
         }
+        trackPoint.setFlight(this);
         track.add(trackPoint);
     }
 

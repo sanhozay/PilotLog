@@ -24,6 +24,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
@@ -51,6 +52,9 @@ public class TrackPoint implements Serializable {
 
     private float altitude, fuel, odometer;
 
+    @ManyToOne(optional = false)
+    private Flight flight;
+
     @SuppressWarnings("WeakerAccess")
     public TrackPoint() {}
 
@@ -69,6 +73,14 @@ public class TrackPoint implements Serializable {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public Flight getFlight() {
+        return flight;
+    }
+
+    public void setFlight(Flight flight) {
+        this.flight = flight;
     }
 
     public Date getTimestamp() {
