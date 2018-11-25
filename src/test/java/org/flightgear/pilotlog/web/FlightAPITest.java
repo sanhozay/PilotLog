@@ -249,7 +249,7 @@ public class FlightAPITest {
         // when the request is performed, expect status OK and an XML response
         mvc.perform(request)
                 .andExpect(status().isOk())
-                .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_XML));
+                .andExpect(content().contentTypeCompatibleWith(MediaType.TEXT_XML));
         // and the flight service to be asked for all flights
         verify(flightService).findAllFlights();
     }

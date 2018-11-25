@@ -23,7 +23,6 @@ import org.flightgear.pilotlog.domain.Aircraft;
 import org.flightgear.pilotlog.domain.Total;
 import org.flightgear.pilotlog.domain.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AircraftService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;

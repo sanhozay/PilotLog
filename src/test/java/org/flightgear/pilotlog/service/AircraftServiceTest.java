@@ -30,6 +30,7 @@ import org.mockito.runners.MockitoJUnitRunner;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 
 import java.util.List;
 
@@ -72,7 +73,10 @@ public class AircraftServiceTest {
     @Test
     public void testFindAllAircraftPaged() {
         // Given a pageable
-        Pageable pageable = new PageRequest(0, 10);
+        Pageable pageable = PageRequest.of(0, 10);
+        // and a pageable util that adjusts for stability
+        given(pageableUtil.adjustPageable(pageable, "model", "model"))
+            .willReturn(PageRequest.of(0, 10, Sort.by("model", "id")));
         // when a page of aircraft is requested
         Page<Aircraft> aircraft = aircraftService.findAllAircraft(pageable);
         // expect the pageable to be adjusted for stability and case

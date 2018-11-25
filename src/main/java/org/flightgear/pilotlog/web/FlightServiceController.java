@@ -189,7 +189,7 @@ public class FlightServiceController {
 
         if (flight.getTrack().size() > 1) {
             Feature track = new Feature();
-            LngLatAlt[] p = points.toArray(new LngLatAlt[points.size()]);
+            LngLatAlt[] p = points.toArray(new LngLatAlt[0]);
             track.setGeometry(new LineString(p));
             featureCollection.add(track);
         }

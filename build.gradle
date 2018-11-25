@@ -1,6 +1,7 @@
 plugins {
     id 'java'
-    id "org.springframework.boot" version "1.5.10.RELEASE"
+    id "org.springframework.boot" version "2.1.0.RELEASE"
+    id "io.spring.dependency-management" version "1.0.6.RELEASE"
 }
 
 repositories {
@@ -36,7 +37,7 @@ jar {
     }
 }
 
-springBoot {
-    executable = true
+bootJar {
+    launchScript()
 }
 

@@ -39,6 +39,7 @@ import java.time.Duration;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -287,12 +288,12 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Flight findFlightById(int id) {
-        Flight flight = repository.findOne(id);
-        if (flight == null) {
+        Optional<Flight> optional = repository.findById(id);
+        if (!optional.isPresent()) {
             String message = String.format("Could not find flight by id %d", id);
             throw new FlightNotFoundException(message);
         }
-        return flight;
+        return optional.get();
     }
 
     @Transactional(readOnly = true)
