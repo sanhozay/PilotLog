@@ -48,6 +48,7 @@ import java.util.Set;
  * @author Richard Senior
  */
 @Service
+@SuppressWarnings("WeakerAccess")
 public class FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);

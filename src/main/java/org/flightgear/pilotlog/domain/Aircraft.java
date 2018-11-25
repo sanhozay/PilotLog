@@ -47,6 +47,7 @@ import java.util.Objects;
         @Index(columnList = "totalDuration"),
         @Index(columnList = "totalFlights")
 })
+@SuppressWarnings("WeakerAccess")
 public class Aircraft implements Serializable {
 
     @Id

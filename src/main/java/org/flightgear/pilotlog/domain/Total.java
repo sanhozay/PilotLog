@@ -25,7 +25,7 @@ package org.flightgear.pilotlog.domain;
  * @param <T> the numeric type of the total
  * @author Richard Senior
  */
-@SuppressWarnings("unchecked")
+@SuppressWarnings({"unchecked", "WeakerAccess"})
 public class Total<T extends Number> {
 
     private final T total;

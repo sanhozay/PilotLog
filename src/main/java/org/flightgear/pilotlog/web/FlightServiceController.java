@@ -64,6 +64,7 @@ import static org.springframework.http.MediaType.TEXT_XML_VALUE;
  */
 @RestController
 @RequestMapping("/api")
+@SuppressWarnings("WeakerAccess")
 public class FlightServiceController {
 
     private final FlightService flightService;

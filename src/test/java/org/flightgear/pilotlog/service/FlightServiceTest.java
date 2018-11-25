@@ -28,7 +28,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.mockito.stubbing.Answer;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Page;
@@ -44,9 +44,9 @@ import java.util.Random;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -218,10 +218,12 @@ public class FlightServiceTest {
         // expect the repository to look for the flight
         verify(flightRepository).findById(ID_COMPLETE);
         // and then delete it
-        Flight flight = flightRepository.findById(ID_COMPLETE).orElse(null);
-        verify(flightRepository).delete(flight);
-        // and update the summary for the aircraft
-        verify(aircraftService).updateSummary(flight.getAircraft());
+        Optional<Flight> optional = flightRepository.findById(ID_COMPLETE);
+        if (optional.isPresent()) {
+            verify(flightRepository).delete(optional.get());
+            // and update the summary for the aircraft
+            verify(aircraftService).updateSummary(optional.get().getAircraft());
+        }
     }
 
     @Test(expected = FlightNotFoundException.class)

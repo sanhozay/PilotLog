@@ -33,7 +33,7 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class PageableUtil {
+class PageableUtil {
 
     private static final Logger log = LoggerFactory.getLogger(PageableUtil.class);
 
@@ -56,7 +56,7 @@ public class PageableUtil {
      * @param caseInsensitiveProperties the variadic list of case insensitive properties
      * @return a stable pageable with case insensitive properties as required
      */
-    public Pageable adjustPageable(
+    Pageable adjustPageable(
             Pageable pageable,
             String idProperty,
             String... caseInsensitiveProperties

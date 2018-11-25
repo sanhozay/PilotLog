@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
  */
 @Aspect
 @Component
+@SuppressWarnings("WeakerAccess")
 public class FlightServiceAdvice {
 
     private static final Logger log = LoggerFactory.getLogger(FlightServiceAdvice.class);
