@@ -84,6 +84,9 @@ public class FlightService {
     @Transactional
     public Flight beginFlight(String callsign, String aircraft, String airport, float altitude,
                               float startFuel, float startOdometer, float latitude, float longitude) {
+
+        purgeIncompleteFlights();
+
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
@@ -94,6 +97,7 @@ public class FlightService {
         flight.addTrackPoint(trackPoint);
 
         flight = repository.save(flight);
+
         log.info("Started new flight {}", flight);
         return flight;
     }
@@ -136,10 +140,14 @@ public class FlightService {
             flight.setStatus(FlightStatus.COMPLETE);
         }
 
+
         Coordinate coordinate = new Coordinate(latitude, longitude);
         TrackPoint trackPoint = new TrackPoint(altitude, endFuel, endOdometer, coordinate);
         trackPoint.setTimestamp(new Date());
         flight.addTrackPoint(trackPoint);
+
+        updateComputedFields(flight);
+        aircraftService.updateSummary(flight.getAircraft());
 
         log.info("Ended flight {}", flight);
         return flight;
@@ -233,6 +241,8 @@ public class FlightService {
         trackPoint.setTimestamp(new Date());
         flight.addTrackPoint(trackPoint);
 
+        updateComputedFields(flight);
+
         return flight;
     }
 
@@ -275,7 +285,7 @@ public class FlightService {
      * Purges incomplete and invalid flights.
      */
     @Transactional
-    public void purge() {
+    public void purgeIncompleteFlights() {
         Set<Flight> purgeable = new HashSet<>();
         purgeable.addAll(repository.findByStatus(FlightStatus.ACTIVE));
         purgeable.addAll(repository.findByStatus(FlightStatus.INVALID));

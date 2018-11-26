@@ -48,6 +48,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.never;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -74,7 +75,7 @@ public class FlightServiceTest {
 
     @Before
     public void setUp() {
-        flightService = new FlightService(flightRepository, aircraftService);
+        flightService = spy(new FlightService(flightRepository, aircraftService));
         flightService.setPageableUtil(pageableUtil);
         when(flightRepository.save(any(Flight.class))).thenAnswer((Answer<Flight>)invocation -> {
             Flight flight = (Flight)invocation.getArguments()[0];
@@ -110,6 +111,8 @@ public class FlightServiceTest {
                 "G-SHOZ", "707", "EGNM", 640.0f, 1000.0f, 0.0f, 53.0f, -1.0f
         );
         long now = new Date().getTime();
+        // expect old flights to be purged
+        verify(flightService).purgeIncompleteFlights();
         // expect the repostory to save a flight
         verify(flightRepository).save(any(Flight.class));
         // and the departure properties to be set correctly
@@ -157,6 +160,10 @@ public class FlightServiceTest {
         assertThat(flight.getStatus()).isEqualTo(FlightStatus.COMPLETE);
         // and the end date to be the current date and time
         assertThat(flight.getEndTime().getTime()).isCloseTo(new Date().getTime(), Offset.offset(500L));
+        // and the flight service to update completed flights
+        verify(flightService).updateComputedFields(flight);
+        // and the aircraft service to update the summary for the aircraft
+        verify(aircraftService).updateSummary(flight.getAircraft());
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -219,11 +226,10 @@ public class FlightServiceTest {
         verify(flightRepository).findById(ID_COMPLETE);
         // and then delete it
         Optional<Flight> optional = flightRepository.findById(ID_COMPLETE);
-        if (optional.isPresent()) {
-            verify(flightRepository).delete(optional.get());
-            // and update the summary for the aircraft
-            verify(aircraftService).updateSummary(optional.get().getAircraft());
-        }
+        assertThat(optional.isPresent());
+        verify(flightRepository).delete(optional.get());
+        // and update the summary for the aircraft
+        verify(aircraftService).updateSummary(optional.get().getAircraft());
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -264,6 +270,8 @@ public class FlightServiceTest {
         assertThat(flight.getEndFuel()).isEqualTo(900.0f);
         assertThat(flight.getEndOdometer()).isEqualTo(100.0f);
         assertThat(flight.getEndTime().getTime()).isCloseTo(new Date().getTime(), Offset.offset(500L));
+        // and the flight service to update completed flights
+        verify(flightService).updateComputedFields(flight);
     }
 
     @Test
@@ -278,6 +286,8 @@ public class FlightServiceTest {
         assertThat(trackPoint.getAltitude()).isEqualTo(15000.0f);
         // and that the altitude is updated to the new altitude
         assertThat(flight.getAltitude()).isEqualTo(15000);
+        // and the flight service to update completed flights
+        verify(flightService).updateComputedFields(flight);
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -392,7 +402,7 @@ public class FlightServiceTest {
     @Test
     public void testPurge() {
         // When purging invalid and active flights
-        flightService.purge();
+        flightService.purgeIncompleteFlights();
         // expect the repository not to search for new and completed flights
         verify(flightRepository, never()).findByStatus(FlightStatus.NEW);
         verify(flightRepository, never()).findByStatus(FlightStatus.COMPLETE);

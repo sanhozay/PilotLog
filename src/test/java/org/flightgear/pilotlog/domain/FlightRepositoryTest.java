@@ -41,7 +41,7 @@ import static org.flightgear.pilotlog.domain.FlightStatus.NEW;
 @SuppressWarnings("javadoc")
 public class FlightRepositoryTest {
 
-    private static final int HOUR = 3600;
+    static final int HOUR = 3600;
 
     @Autowired
     private TestEntityManager entityManager;
@@ -59,6 +59,7 @@ public class FlightRepositoryTest {
     public void testSummaryWithOneActiveFlight() {
         // Given a database with a single active flight
         Flight flight = new FlightBuilder("707", "EGNM").status(ACTIVE).build();
+        entityManager.persist(flight);
         // expect the aircraft summary for the aircraft to be null
         assertThat(flightRepository.aircraftSummaryByModel(flight.getAircraft())).isNull();
     }
@@ -67,6 +68,7 @@ public class FlightRepositoryTest {
     public void testSummaryWithOneInvalidFlight() {
         // Given a database with a single invalid flight
         Flight flight = new FlightBuilder("707", "EGNM").status(INVALID).build();
+        entityManager.persist(flight);
         // expect the aircraft summary for the aircraft to be null
         assertThat(flightRepository.aircraftSummaryByModel(flight.getAircraft())).isNull();
     }
@@ -75,6 +77,7 @@ public class FlightRepositoryTest {
     public void testSummaryWithOneCompleteFlight() {
         // Given a database with a single completed flight
         Flight flight = new FlightBuilder("707", "EGNM").complete("EGLL", HOUR, 100.0f, 200.0f).build();
+        entityManager.persist(flight);
         // expect the aircraft summary to be calculated correctly
         Aircraft summary = flightRepository.aircraftSummaryByModel("707");
         assertThat(summary.getModel()).isEqualTo("707");
@@ -102,6 +105,12 @@ public class FlightRepositoryTest {
         // and two tu154b flights, one of which is still active
         Flight flight3 = new FlightBuilder("tu154b", "EGLL").complete("EGPF", HOUR, 100.0f, 100.0f).build();
         Flight flight4 = new FlightBuilder("tu154b", "EGPF").status(ACTIVE).build();
+
+        // Save these flights
+        entityManager.persist(flight1);
+        entityManager.persist(flight2);
+        entityManager.persist(flight3);
+        entityManager.persist(flight4);
 
         // expect the 707 summary to reflect both 707 flights
         Aircraft summary707 = flightRepository.aircraftSummaryByModel("707");
@@ -140,77 +149,4 @@ public class FlightRepositoryTest {
         assertThat(summaryTu154.getTotalDuration()).isEqualTo(3600L);
     }
 
-    private class FlightBuilder {
-
-        private String aircraft, origin, destination;
-        private FlightStatus status;
-        private Integer duration;
-        private Float fuelUsed, distance;
-
-        FlightBuilder(String aircraft, String origin) {
-            this.aircraft = aircraft;
-            this.origin = origin;
-            this.status = NEW;
-        }
-
-        FlightBuilder complete(String destination, int duration, float fuel, float distance) {
-            return status(COMPLETE).destination(destination).duration(duration).fuel(fuel).distance(distance);
-        }
-
-        FlightBuilder destination(String destination) {
-            this.destination = destination;
-            return this;
-        }
-
-        FlightBuilder distance(float distance) {
-            this.distance = distance;
-            return this;
-        }
-
-        FlightBuilder duration(int duration) {
-            this.duration = duration;
-            return this;
-        }
-
-        FlightBuilder fuel(float fuelUsed) {
-            this.fuelUsed = fuelUsed;
-            return this;
-        }
-
-        FlightBuilder status(FlightStatus status) {
-            this.status = status;
-            return this;
-        }
-
-        Flight build() {
-            Flight flight = new Flight("G-SHOZ", aircraft, origin, 1000.0f, 0.0f);
-            flight.setStartTime(new Date(0L));
-            flight.setStatus(status);
-            flight.setAltitude(10000);
-            if (distance != null) {
-                flight.setEndOdometer(flight.getStartOdometer() + distance);
-                flight.setDistance(distance);
-            }
-            if (duration != null) {
-                flight.setEndTime(new Date((long)duration));
-                flight.setDuration(duration);
-            }
-            if (fuelUsed != null) {
-                flight.setEndFuel(flight.getStartFuel() - fuelUsed);
-                flight.setFuelUsed(fuelUsed);
-            }
-            if (distance != null && duration != null) {
-                flight.setGroundSpeed((int)(HOUR * distance / duration));
-            }
-            if (fuelUsed != null && duration != null) {
-                flight.setFuelRate(fuelUsed * HOUR / duration);
-                flight.setReserve(flight.getEndFuel() / flight.getFuelRate());
-            }
-            flight.setDestination(destination);
-            return entityManager.persist(flight);
-        }
-
-    }
-
 }
-
