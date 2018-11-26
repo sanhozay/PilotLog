@@ -48,6 +48,7 @@ angular.module("flightdetail").component("map", {
 
         ctrl.modeChanged = function() {
             mode = document.querySelector('input[name="mode"]:checked').value;
+            complete = false;
             ctrl.refresh();
         }
 
