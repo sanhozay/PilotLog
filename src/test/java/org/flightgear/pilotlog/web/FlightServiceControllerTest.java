@@ -177,8 +177,8 @@ public class FlightServiceControllerTest {
         // expect the method to return all flights in CSV format
         assertThat(csv.replaceAll("[\r\n\t ]+", "")).isEqualTo("id,callsign,aircraft,origin,startTime," +
                 "startFuel,startOdometer,heading,destination,endTime,endFuel,endOdometer," +
-                "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve" +
-                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,");
+                "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve,tracked" +
+                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,,false");
     }
 
 }

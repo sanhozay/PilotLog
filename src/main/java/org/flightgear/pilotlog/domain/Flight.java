@@ -112,6 +112,11 @@ public class Flight implements Serializable {
         return status == FlightStatus.COMPLETE;
     }
 
+    @Transient
+    public boolean isTracked() {
+        return track != null && track.size() > 0;
+    }
+
     /**
      * Convenience method to add a track point.
      *

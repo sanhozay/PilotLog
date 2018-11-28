@@ -36,18 +36,9 @@
         </tbody>
         <tbody ng-hide="$ctrl.content.length == 0">
             <tr ng-repeat="flight in $ctrl.content" class="ng-class: flight.status">
-                <td>
-                    <!--
-                        <a ng-show="flight.status == 'COMPLETE'" ng-click="$ctrl.clickColumn(flight, 'startTime')">
-                        {{flight.startTime | date:'dd/MM/yy'}}
-                        </a>
-                        <span ng-hide="flight.status == 'COMPLETE'">
-                        {{flight.startTime | date:'dd/MM/yy'}}
-                        </span>
-                    -->
-                    <a href="/#!/flight/{{flight.id}}">
-                        {{flight.startTime | date:'dd/MM/yy'}}
-                    </a>
+                <td ng-hide="flight.tracked">{{flight.startTime | date:'dd/MM/yy'}}</td>
+                <td ng-show="flight.tracked">
+                    <a href="/#!/flight/{{flight.id}}">{{flight.startTime | date:'dd/MM/yy'}}</a>
                 </td>
                 <td>
                     <a ng-click="$ctrl.clickColumn(flight, 'aircraft')">
