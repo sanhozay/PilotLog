@@ -21,12 +21,14 @@ package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Airport;
 import org.flightgear.pilotlog.domain.AirportRepository;
+import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -51,18 +53,34 @@ public class AirportService {
         for (String icao : airports) {
             int departures = flightRepository.countByOrigin(icao);
             int arrivals = flightRepository.countByDestination(icao);
+
+            Date last = null;
+            if (departures > 0) {
+                Flight f = flightRepository.findFirstByOriginOrderByStartTimeDesc(icao);
+                if (f != null) {
+                    last = f.getStartTime();
+                }
+            }
+            if (arrivals > 0) {
+                Flight f = flightRepository.findFirstByDestinationOrderByStartTimeDesc(icao);
+                if (f != null && (last == null || f.getStartTime().compareTo(last) > 0)) {
+                    last = f.getStartTime();
+                }
+            }
+
             Optional<Airport> optional = airportRepository.findById(icao);
             if (optional.isPresent()) {
                 Airport airport = optional.get();
                 airport.setArrivals(arrivals);
                 airport.setDepartures(departures);
+                airport.setLast(last);
                 if (airport.getMovements() == 0) {
                     airportRepository.delete(airport);
                 } else {
                     airportRepository.save(airport);
                 }
             } else {
-                Airport airport = new Airport(icao, arrivals, departures);
+                Airport airport = new Airport(icao, arrivals, departures, last);
                 airportRepository.save(airport);
             }
         }

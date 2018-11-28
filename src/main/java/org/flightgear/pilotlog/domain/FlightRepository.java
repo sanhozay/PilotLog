@@ -23,6 +23,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Date;
 import java.util.Set;
 
 /**
@@ -75,5 +76,21 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      * @return the number of flights with the airport as the destination
      */
     int countByDestination(String icao);
+
+    /**
+     * Gets the most recent departure from an airport
+     *
+     * @param icao the airport code
+     * @return the most recent flight, or null if not found
+     */
+    Flight findFirstByOriginOrderByStartTimeDesc(String icao);
+
+    /**
+     * Gets the most recent arrival at an airport
+     *
+     * @param icao the airport code
+     * @return the most recent flight, or null if not found
+     */
+    Flight findFirstByDestinationOrderByStartTimeDesc(String icao);
 
 }

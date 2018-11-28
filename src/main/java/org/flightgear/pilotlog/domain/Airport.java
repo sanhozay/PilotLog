@@ -19,11 +19,16 @@
 
 package org.flightgear.pilotlog.domain;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
 import java.io.Serializable;
+import java.util.Date;
 import java.util.Objects;
 
 /**
@@ -46,13 +51,18 @@ public  class Airport implements Serializable  {
     private int departures;
     private int movements;
 
+    @Temporal(TemporalType.TIMESTAMP)
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    private Date last;
+
     public Airport() {}
 
-    public Airport(String icao, int arrivals, int departures) {
+    public Airport(String icao, int arrivals, int departures, Date last) {
         this.icao = icao;
         this.arrivals = arrivals;
         this.departures = departures;
         this.movements = arrivals + departures;
+        this.last = last;
     }
 
     // Equals and hashcode
@@ -104,6 +114,14 @@ public  class Airport implements Serializable  {
 
     public void setMovements(int movements) {
         this.movements = movements;
+    }
+
+    public Date getLast() {
+        return last;
+    }
+
+    public void setLast(Date last) {
+        this.last = last;
     }
 
 }

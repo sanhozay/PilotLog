@@ -21,23 +21,25 @@
     <table class="log">
         <thead>
             <tr class="main">
-                <th colspan="1">Airport</th>
+                <th colspan="2">Airport</th>
                 <th colspan="3">Aircraft Movements</th>
             </tr>
             <tr>
-                <th style=""><a ng-click="$ctrl.clickHeading('icao')">ICAO</a></th>
-                <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('departures')">Dep</a></th>
-                <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('arrivals')">Arr</a></th>
-                <th style="width: 6ex"><a ng-click="$ctrl.clickHeading('movements')">Tot</a></th>
+                <th style="width: 10ex"><a ng-click="$ctrl.clickHeading('last')">Recent</a></th>
+                <th style="width: 20ex"><a ng-click="$ctrl.clickHeading('icao')">ICAO</a></th>
+                <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('departures')">Dep</a></th>
+                <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('arrivals')">Arr</a></th>
+                <th style="width:  6ex"><a ng-click="$ctrl.clickHeading('movements')">Tot</a></th>
             </tr>
         </thead>
         <tbody ng-show="$ctrl.content.length == 0">
             <tr>
-                <td colspan="4">No flights</td>
+                <td colspan="5">No flights</td>
             </tr>
         </tbody>
         <tbody ng-show="$ctrl.content.length > 0">
             <tr ng-repeat="airport in $ctrl.content" class="COMPLETE">
+                <td>{{airport.last | date:'dd/MM/yy'}}</td>
                 <td>{{airport.icao}}</td>
                 <td>{{airport.departures}}</td>
                 <td>{{airport.arrivals}}</td>
@@ -46,19 +48,19 @@
         </tbody>
         <tfoot>
             <tr>
-                <td colspan="1" class="footerTitle">Page Total</td>
+                <td colspan="2" class="footerTitle">Page Total</td>
                 <td class="written">{{$ctrl.totals.departures.pageTotal}}</td>
                 <td class="written">{{$ctrl.totals.arrivals.pageTotal}}</td>
                 <td class="written">{{$ctrl.totals.movements.pageTotal}}</td>
             </tr>
             <tr>
-                <td colspan="1" class="footerTitle">Other Total</td>
+                <td colspan="2" class="footerTitle">Other Total</td>
                 <td class="written">{{$ctrl.totals.departures.otherTotal}}</td>
                 <td class="written">{{$ctrl.totals.arrivals.otherTotal}}</td>
                 <td class="written">{{$ctrl.totals.movements.otherTotal}}</td>
             </tr>
             <tr>
-                <td colspan="1" class="footerTitle">GRAND TOTAL</td>
+                <td colspan="2" class="footerTitle">GRAND TOTAL</td>
                 <td class="written">{{$ctrl.totals.departures.total}}</td>
                 <td class="written">{{$ctrl.totals.arrivals.total}}</td>
                 <td class="written">{{$ctrl.totals.movements.total}}</td>
