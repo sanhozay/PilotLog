@@ -20,6 +20,7 @@
 package org.flightgear.pilotlog;
 
 import org.flightgear.pilotlog.service.AircraftService;
+import org.flightgear.pilotlog.service.AirportService;
 import org.flightgear.pilotlog.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,10 +42,16 @@ public class ApplicationInit implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(ApplicationInit.class);
 
     private final AircraftService aircraftService;
+    private final AirportService airportService;
     private final FlightService flightService;
 
-    public ApplicationInit(AircraftService aircraftService, FlightService flightService) {
+    public ApplicationInit(
+        AircraftService aircraftService,
+        AirportService airportService,
+        FlightService flightService
+    ) {
         this.aircraftService = aircraftService;
+        this.airportService = airportService;
         this.flightService = flightService;
     }
 
@@ -55,6 +62,7 @@ public class ApplicationInit implements CommandLineRunner {
         Set<String> models = new HashSet<>();
         flightService.findAllFlights().forEach(flight -> {
             flightService.updateComputedFields(flight);
+            airportService.updateSummary(flight.getOrigin(), flight.getDestination());
             models.add(flight.getAircraft());
         });
         models.forEach(aircraftService::updateSummary);

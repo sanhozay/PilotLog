@@ -173,6 +173,10 @@ table {
     width: 100%;
 }
 
+.airports table {
+    width: 33%;
+}
+
 table caption {
     text-align: left;
     font-style: italic;

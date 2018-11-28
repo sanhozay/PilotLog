@@ -44,9 +44,10 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     /**
      * Queries an aircraft summary.
      *
+     * @param model the aircraft model, e.g. "707"
      * @return an aircraft summary
      */
-    @Query(value = "select new org.flightgear.pilotlog.domain.Aircraft(" +
+    @Query("select new org.flightgear.pilotlog.domain.Aircraft(" +
             "f.aircraft," +
             "max(f.startTime), " +
             "min(f.distance), max(f.distance), sum(f.distance) / count(f.id), " +
@@ -60,5 +61,19 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
             "from Flight f group by f.aircraft, f.status " +
             "having f.aircraft = :model and f.status = 'COMPLETE'")
     Aircraft aircraftSummaryByModel(@Param("model") String model);
+
+    /**
+     * Counts flights with a given origin airport
+     * @param icao the origin airport
+     * @return the number of flights with the airport as the origin
+     */
+    int countByOrigin(String icao);
+
+    /**
+     * Counts flights with a given destination airport
+     * @param icao the destination airport
+     * @return the number of flights with the airport as the destination
+     */
+    int countByDestination(String icao);
 
 }

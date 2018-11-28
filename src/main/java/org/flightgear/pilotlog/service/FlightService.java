@@ -55,6 +55,7 @@ public class FlightService {
 
     private final FlightRepository repository;
     private final AircraftService aircraftService;
+    private final AirportService airportService;
 
     private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
             .withIgnorePaths("id")
@@ -63,9 +64,13 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
     private PageableUtil pageableUtil;
 
-    public FlightService(FlightRepository repository, AircraftService aircraftService) {
+    public FlightService(FlightRepository repository,
+        AircraftService aircraftService,
+        AirportService airportService
+    ) {
         this.repository = repository;
         this.aircraftService = aircraftService;
+        this.airportService = airportService;
     }
 
     /**
@@ -148,6 +153,7 @@ public class FlightService {
 
         updateComputedFields(flight);
         aircraftService.updateSummary(flight.getAircraft());
+        airportService.updateSummary(flight.getOrigin(), flight.getDestination());
 
         log.info("Ended flight {}", flight);
         return flight;
@@ -196,7 +202,10 @@ public class FlightService {
             throw new InvalidFlightStatusException(message);
         }
         repository.delete(flight);
+
         aircraftService.updateSummary(flight.getAircraft());
+        airportService.updateSummary(flight.getOrigin(), flight.getDestination());
+
         log.info("Deleted flight {}", flight);
     }
 

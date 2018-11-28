@@ -69,13 +69,16 @@ public class FlightServiceTest {
     private AircraftService aircraftService;
 
     @Mock
+    private AirportService airportService;
+
+    @Mock
     private PageableUtil pageableUtil;
 
     private FlightService flightService;
 
     @Before
     public void setUp() {
-        flightService = spy(new FlightService(flightRepository, aircraftService));
+        flightService = spy(new FlightService(flightRepository, aircraftService, airportService));
         flightService.setPageableUtil(pageableUtil);
         when(flightRepository.save(any(Flight.class))).thenAnswer((Answer<Flight>)invocation -> {
             Flight flight = (Flight)invocation.getArguments()[0];
@@ -164,6 +167,7 @@ public class FlightServiceTest {
         verify(flightService).updateComputedFields(flight);
         // and the aircraft service to update the summary for the aircraft
         verify(aircraftService).updateSummary(flight.getAircraft());
+        verify(airportService).updateSummary(flight.getOrigin(), flight.getDestination());
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -230,6 +234,7 @@ public class FlightServiceTest {
         verify(flightRepository).delete(optional.get());
         // and update the summary for the aircraft
         verify(aircraftService).updateSummary(optional.get().getAircraft());
+        verify(airportService).updateSummary(optional.get().getOrigin(), optional.get().getDestination());
     }
 
     @Test(expected = FlightNotFoundException.class)
