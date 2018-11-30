@@ -25,6 +25,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
@@ -41,7 +42,8 @@ import java.util.Objects;
 public class TrackPoint implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "trackPoint")
+    @SequenceGenerator(name = "trackPoint", sequenceName = "track_point_sequence", allocationSize = 1)
     private long id;
 
     @Temporal(TemporalType.TIMESTAMP)

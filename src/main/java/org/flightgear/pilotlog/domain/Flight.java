@@ -34,6 +34,7 @@ import javax.persistence.Id;
 import javax.persistence.Index;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -64,7 +65,8 @@ import java.util.Objects;
 public class Flight implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flight")
+    @SequenceGenerator(name = "flight", sequenceName = "flight_sequence", allocationSize = 1)
     private int id;
 
     private String callsign, aircraft, origin, destination;
