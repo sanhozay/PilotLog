@@ -167,7 +167,8 @@ public class FlightServiceTest {
         verify(flightService).updateComputedFields(flight);
         // and the aircraft service to update the summary for the aircraft
         verify(aircraftService).updateSummary(flight.getAircraft());
-        verify(airportService).updateSummary(flight.getOrigin(), flight.getDestination());
+        verify(airportService).updateSummary(flight.getOrigin());
+        verify(airportService).updateSummary(flight.getDestination());
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -234,7 +235,8 @@ public class FlightServiceTest {
         verify(flightRepository).delete(optional.get());
         // and update the summary for the aircraft
         verify(aircraftService).updateSummary(optional.get().getAircraft());
-        verify(airportService).updateSummary(optional.get().getOrigin(), optional.get().getDestination());
+        verify(airportService).updateSummary(optional.get().getOrigin());
+        verify(airportService).updateSummary(optional.get().getDestination());
     }
 
     @Test(expected = FlightNotFoundException.class)
