@@ -49,40 +49,38 @@ public class AirportService {
     }
 
     @Transactional
-    public void updateSummary(String... airports) {
-        for (String icao : airports) {
-            int departures = flightRepository.countByOrigin(icao);
-            int arrivals = flightRepository.countByDestination(icao);
+    public void updateSummary(String icao) {
+        int departures = flightRepository.countByOrigin(icao);
+        int arrivals = flightRepository.countByDestination(icao);
 
-            Date last = null;
-            if (departures > 0) {
-                Flight f = flightRepository.findFirstByOriginOrderByStartTimeDesc(icao);
-                if (f != null) {
-                    last = f.getStartTime();
-                }
+        Date last = null;
+        if (departures > 0) {
+            Flight f = flightRepository.findFirstByOriginOrderByStartTimeDesc(icao);
+            if (f != null) {
+                last = f.getStartTime();
             }
-            if (arrivals > 0) {
-                Flight f = flightRepository.findFirstByDestinationOrderByStartTimeDesc(icao);
-                if (f != null && (last == null || f.getStartTime().compareTo(last) > 0)) {
-                    last = f.getStartTime();
-                }
+        }
+        if (arrivals > 0) {
+            Flight f = flightRepository.findFirstByDestinationOrderByStartTimeDesc(icao);
+            if (f != null && (last == null || f.getStartTime().compareTo(last) > 0)) {
+                last = f.getStartTime();
             }
+        }
 
-            Optional<Airport> optional = airportRepository.findById(icao);
-            if (optional.isPresent()) {
-                Airport airport = optional.get();
-                airport.setArrivals(arrivals);
-                airport.setDepartures(departures);
-                airport.setLast(last);
-                if (airport.getMovements() == 0) {
-                    airportRepository.delete(airport);
-                } else {
-                    airportRepository.save(airport);
-                }
+        Optional<Airport> optional = airportRepository.findById(icao);
+        if (optional.isPresent()) {
+            Airport airport = optional.get();
+            airport.setArrivals(arrivals);
+            airport.setDepartures(departures);
+            airport.setLast(last);
+            if (airport.getMovements() == 0) {
+                airportRepository.delete(airport);
             } else {
-                Airport airport = new Airport(icao, arrivals, departures, last);
                 airportRepository.save(airport);
             }
+        } else {
+            Airport airport = new Airport(icao, arrivals, departures, last);
+            airportRepository.save(airport);
         }
     }
 

@@ -153,7 +153,8 @@ public class FlightService {
 
         updateComputedFields(flight);
         aircraftService.updateSummary(flight.getAircraft());
-        airportService.updateSummary(flight.getOrigin(), flight.getDestination());
+        airportService.updateSummary(flight.getOrigin());
+        airportService.updateSummary(flight.getDestination());
 
         log.info("Ended flight {}", flight);
         return flight;
@@ -204,7 +205,8 @@ public class FlightService {
         repository.delete(flight);
 
         aircraftService.updateSummary(flight.getAircraft());
-        airportService.updateSummary(flight.getOrigin(), flight.getDestination());
+        airportService.updateSummary(flight.getOrigin());
+        airportService.updateSummary(flight.getDestination());
 
         log.info("Deleted flight {}", flight);
     }
