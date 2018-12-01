@@ -3,6 +3,7 @@ angular.module("airportsummary").component("airportsummary", {
         var ctrl = this
         var cookie = "pilotlog.page.size"
         var nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
+        var autoRefresh = null
         ctrl.$onInit = function() {
             if (!$cookies.get(cookie)) {
                 $cookies.put(cookie, 10, {expires: nextYear})
@@ -13,7 +14,10 @@ angular.module("airportsummary").component("airportsummary", {
             }
             ctrl.search = {form: {}, example: {}}
             ctrl.refreshPage(1)
-            $interval(ctrl.refresh, 5000)
+            autoRefresh = $interval(ctrl.refresh, 5000)
+        }
+        ctrl.$onDestroy = function() {
+            $interval.cancel(autoRefresh);
         }
         ctrl.adjustPageSize = function(pageSize) {
             ctrl.pageable.size = pageSize
