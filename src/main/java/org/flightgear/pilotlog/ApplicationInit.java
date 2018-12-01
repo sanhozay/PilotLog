@@ -58,15 +58,19 @@ public class ApplicationInit implements CommandLineRunner {
     @Override
     @Transactional
     public void run(String... args) {
-        log.info("Updating computed fields and airport movements for all flights");
-        Set<String> models = new HashSet<>();
-        flightService.findAllFlights().forEach(flight -> {
+        log.info("Updating computed fields on completed flights");
+        Set<String> aircraft = new HashSet<>();
+        Set<String> airports = new HashSet<>();
+        flightService.findCompletedFlights().forEach(flight -> {
             flightService.updateComputedFields(flight);
-            airportService.updateSummary(flight.getOrigin(), flight.getDestination());
-            models.add(flight.getAircraft());
+            aircraft.add(flight.getAircraft());
+            airports.add(flight.getOrigin());
+            airports.add(flight.getDestination());
         });
-        log.info("Updating aircraft summaries for all flights");
-        models.forEach(aircraftService::updateSummary);
+        log.info("Updating aircraft summaries");
+        aircraft.forEach(aircraftService::updateSummary);
+        log.info("Updating airport summaries");
+        airports.forEach(airportService::updateSummary);
     }
 
 }

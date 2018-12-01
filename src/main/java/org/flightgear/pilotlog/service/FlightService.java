@@ -322,6 +322,11 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
+    public Set<Flight> findCompletedFlights() {
+        return repository.findByStatus(FlightStatus.COMPLETE);
+    }
+
+    @Transactional(readOnly = true)
     public Page<Flight> findFlightsByExample(Flight example, Pageable pageable) {
         if (pageableUtil != null) {
             pageable = pageableUtil.adjustPageable(pageable, "id", "aircraft");
