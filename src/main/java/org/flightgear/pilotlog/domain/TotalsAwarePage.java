@@ -25,6 +25,11 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Extension of PageImpl to incorrporate totals.
+ *
+ * @param <T> the type
+ */
 public class TotalsAwarePage<T> extends PageImpl<T> {
 
     private final Map<String, Total> totals;

@@ -31,6 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Aircraft service.
+ *
+ * @author Richard Senior
+ */
 @Service
 public class AircraftService {
 

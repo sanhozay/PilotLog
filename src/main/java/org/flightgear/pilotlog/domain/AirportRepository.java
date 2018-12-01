@@ -21,4 +21,5 @@ package org.flightgear.pilotlog.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+@SuppressWarnings("javadoc")
 public interface AirportRepository extends JpaRepository<Airport, String> {}
