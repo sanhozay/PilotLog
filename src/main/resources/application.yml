@@ -1,14 +1,12 @@
 spring:
   profiles.active: production
-logging:
-  config: classpath:logback.xml
 ---
 spring:
   profiles: test
   datasource.url: jdbc:h2:mem:test
   jpa.hibernate.ddl-auto: create
 logging.level:
-  org.flightgear.pilotlog: info
+  root: info
 ---
 spring:
   profiles: development
@@ -19,16 +17,16 @@ spring:
     hibernate.ddl-auto: create
     show_sql: true
 logging.level:
-  org.flightgear.pilotlog: info
-management:
-  security.enabled: false
+  root: debug
 ---
 spring:
   profiles: production
   datasource.url: jdbc:h2:file:~/.h2/pilotlog
-  jpa.hibernate.ddl-auto: update
-logging.level:
-  org.flightgear.pilotlog: info
-management:
-  security.enabled: true
+  jpa:
+    hibernate.ddl-auto: update
+    show_sql: false
+logging:
+  file: ${HOME}/.h2/pilotlog.log
+  level:
+    root: info
 
