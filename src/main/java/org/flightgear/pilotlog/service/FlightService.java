@@ -325,13 +325,23 @@ public class FlightService {
     }
 
     @Transactional(readOnly = true)
+    public Flight findFlightByIdWithTrack(int id) {
+        Optional<Flight> optional = repository.findByIdWithTrack(id);
+        if (!optional.isPresent()) {
+            String message = String.format("Could not find flight by id %d", id);
+            throw new FlightNotFoundException(message);
+        }
+        return optional.get();
+    }
+
+    @Transactional(readOnly = true)
     public List<Flight> findAllFlights() {
         return repository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Set<Flight> findCompletedFlights() {
-        return repository.findByStatus(FlightStatus.COMPLETE);
+    public Set<Flight> findByStatusWithTrack(FlightStatus status) {
+        return repository.findByStatusWithTrack(status);
     }
 
     @Transactional(readOnly = true)

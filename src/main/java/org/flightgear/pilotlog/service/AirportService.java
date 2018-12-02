@@ -28,7 +28,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,36 +54,28 @@ public class AirportService {
 
     @Transactional
     public void updateSummary(String icao) {
-        int departures = flightRepository.countByOrigin(icao);
-        int arrivals = flightRepository.countByDestination(icao);
+        List<Flight> movements = flightRepository.findCompletedByOriginOrDestinationOrderByStartTimeDesc(icao);
 
-        Date last = null;
-        if (departures > 0) {
-            Flight f = flightRepository.findFirstByOriginOrderByStartTimeDesc(icao);
-            if (f != null) {
-                last = f.getStartTime();
-            }
-        }
-        if (arrivals > 0) {
-            Flight f = flightRepository.findFirstByDestinationOrderByStartTimeDesc(icao);
-            if (f != null && (last == null || f.getStartTime().compareTo(last) > 0)) {
-                last = f.getStartTime();
-            }
-        }
+        int departures = (int)movements.parallelStream()
+            .filter(flight -> flight.getOrigin().equals(icao)).count();
+
+        int arrivals = (int)movements.parallelStream()
+            .filter(flight -> flight.getDestination() != null)
+            .filter(flight -> flight.getDestination().equals(icao)).count();
 
         Optional<Airport> optional = airportRepository.findById(icao);
         if (optional.isPresent()) {
             Airport airport = optional.get();
-            airport.setArrivals(arrivals);
-            airport.setDepartures(departures);
-            airport.setLast(last);
-            if (airport.getMovements() == 0) {
+            if (movements.size() == 0) {
                 airportRepository.delete(airport);
             } else {
+                airport.setArrivals(arrivals);
+                airport.setDepartures(departures);
+                airport.setLast(movements.get(0).getStartTime());
                 airportRepository.save(airport);
             }
-        } else {
-            Airport airport = new Airport(icao, arrivals, departures, last);
+        } else if (movements.size() > 0) {
+            Airport airport = new Airport(icao, arrivals, departures, movements.get(0).getStartTime());
             airportRepository.save(airport);
         }
     }

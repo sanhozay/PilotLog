@@ -167,18 +167,18 @@ public class FlightServiceController {
 
     @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
     public FeatureCollection flightTrack(@PathVariable int id) {
-        Flight flight = flightService.findFlightById(id);
+        Flight flight = flightService.findFlightByIdWithTrack(id);
+        if (!flight.isTracked()) {
+            return new FeatureCollection();
+        }
+
         List<LngLatAlt> points = flight.getTrack().parallelStream().map(trackPoint -> new LngLatAlt(
-                trackPoint.getCoordinate().getLongitude(),
-                trackPoint.getCoordinate().getLatitude(),
-                trackPoint.getAltitude()
+            trackPoint.getCoordinate().getLongitude(),
+            trackPoint.getCoordinate().getLatitude(),
+            trackPoint.getAltitude()
         )).collect(Collectors.toList());
 
         FeatureCollection featureCollection = new FeatureCollection();
-        if (points.size() == 0) {
-            return featureCollection;
-        }
-
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
         Feature origin = new Feature();

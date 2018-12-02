@@ -57,10 +57,11 @@ import java.util.Objects;
         "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
         "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
-        @Index(columnList = "aircraft"),
-        @Index(columnList = "callsign"),
-        @Index(columnList = "origin"),
-        @Index(columnList = "destination"),
+    @Index(columnList = "aircraft"),
+    @Index(columnList = "callsign"),
+    @Index(columnList = "origin"),
+    @Index(columnList = "destination"),
+    @Index(columnList = "startTime"),
 })
 public class Flight implements Serializable {
 

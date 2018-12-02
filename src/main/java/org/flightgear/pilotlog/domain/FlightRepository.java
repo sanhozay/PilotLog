@@ -23,6 +23,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,6 +36,15 @@ import java.util.Set;
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
 
     /**
+     * Find a flight by primary key, including the track
+     *
+     * @param id the flight id
+     * @return the flight, with track
+     */
+    @Query("select f from Flight f left join fetch f.track t where f.id = :id")
+    Optional<Flight> findByIdWithTrack(@Param("id") Integer id);
+
+    /**
      * Finds flights with a given status.
      *
      * @param status the flight status
@@ -41,6 +52,16 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      * @see FlightStatus
      */
     Set<Flight> findByStatus(FlightStatus status);
+
+    /**
+     * Finds flights with a given status, including the flight track
+     *
+     * @param status the flight status
+     * @return a set of flights with the given status
+     * @see FlightStatus
+     */
+    @Query("select f from Flight f left join fetch f.track t where f.status = :status")
+    Set<Flight> findByStatusWithTrack(@Param("status") FlightStatus status);
 
     /**
      * Queries an aircraft summary.
@@ -64,34 +85,14 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     Aircraft aircraftSummaryByModel(@Param("model") String model);
 
     /**
-     * Counts flights with a given origin airport
-     * @param icao the origin airport
-     * @return the number of flights with the airport as the origin
-     */
-    int countByOrigin(String icao);
-
-    /**
-     * Counts flights with a given destination airport
-     * @param icao the destination airport
-     * @return the number of flights with the airport as the destination
-     */
-    int countByDestination(String icao);
-
-    /**
-     * Gets the most recent departure from an airport
+     * Finds completed flights with a movement at an airport
      *
-     * @param icao the airport code
-     * @return the most recent flight, or null if not found
+     * @return completed flights starting or finishing at a given airport
      */
-    Flight findFirstByOriginOrderByStartTimeDesc(String icao);
-
-    /**
-     * Gets the most recent arrival at an airport
-     *
-     * @param icao the airport code
-     * @return the most recent flight, or null if not found
-     */
-    Flight findFirstByDestinationOrderByStartTimeDesc(String icao);
+    @Query("from Flight where (origin = :icao or destination = :icao) " +
+        "and status = org.flightgear.pilotlog.domain.FlightStatus.COMPLETE " +
+        "order by startTime desc")
+    List<Flight> findCompletedByOriginOrDestinationOrderByStartTimeDesc(@Param("icao") String icao);
 
     /**
      * Gets the total duration of all completed flights
