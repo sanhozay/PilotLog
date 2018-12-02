@@ -202,11 +202,8 @@ public class FlightAPITest {
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        // and flights to be requested from the flights service to calculate totals
-        ArgumentCaptor<Flight> example = ArgumentCaptor.forClass(Flight.class);
-        verify(flightService).findFlightsByExample(example.capture());
-        assertThat(example.getValue().getOrigin()).isEqualTo(origin);
         // and a page of flights to be requested from the flights service to provide content
+        ArgumentCaptor<Flight> example = ArgumentCaptor.forClass(Flight.class);
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
         verify(flightService).findFlightsByExample(example.capture(), pageable.capture());
         assertThat(example.getValue().getOrigin()).isEqualTo(origin);

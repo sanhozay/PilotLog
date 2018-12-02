@@ -93,6 +93,7 @@ public class Flight implements Serializable {
 
     private Integer duration, groundSpeed, altitude;
     private Float fuelUsed, fuelRate, reserve, distance, heading;
+    private Boolean tracked;
 
     public Flight() {}
 
@@ -114,11 +115,6 @@ public class Flight implements Serializable {
         return status == FlightStatus.COMPLETE;
     }
 
-    @Transient
-    public boolean isTracked() {
-        return track != null && track.size() > 0;
-    }
-
     /**
      * Convenience method to add a track point.
      *
@@ -130,6 +126,7 @@ public class Flight implements Serializable {
         }
         trackPoint.setFlight(this);
         track.add(trackPoint);
+        tracked = true;
     }
 
     // Accessors
@@ -302,25 +299,34 @@ public class Flight implements Serializable {
         this.heading = heading;
     }
 
+    public Boolean isTracked() {
+        return tracked;
+    }
+
+    public void setTracked(Boolean tracked) {
+        this.tracked = tracked;
+    }
+
     // Comparison and equality
 
     @Override
-    public int hashCode() {
-        return Objects.hash(startTime);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight)o;
+        return Objects.equals(callsign, flight.callsign) &&
+            Objects.equals(aircraft, flight.aircraft) &&
+            Objects.equals(origin, flight.origin) &&
+            Objects.equals(startTime, flight.startTime) &&
+            Objects.equals(startFuel, flight.startFuel) &&
+            Objects.equals(startOdometer, flight.startOdometer) &&
+            status == flight.status &&
+            Objects.equals(altitude, flight.altitude);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Flight other = (Flight)obj;
-        if (startTime == null)
-            return other.startTime == null;
-        return startTime.equals(other.startTime);
+    public int hashCode() {
+        return Objects.hash(callsign, aircraft, origin, startTime, startFuel, startOdometer, status, altitude);
     }
 
     @Override

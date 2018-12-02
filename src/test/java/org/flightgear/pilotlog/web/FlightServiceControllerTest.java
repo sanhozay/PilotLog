@@ -74,6 +74,8 @@ public class FlightServiceControllerTest {
                 .thenReturn(new PageImpl<>(Collections.singletonList(flight)));
 
         when(flightService.findAllFlights()).thenReturn(Collections.singletonList(flight));
+
+        when(flightService.getTotalDuration()).thenReturn(flight.getDuration());
     }
 
     @Test
@@ -139,8 +141,8 @@ public class FlightServiceControllerTest {
         Flight example = new Flight();
         // when getting a page of flights
         TotalsAwarePage<Flight> page = controller.flights(example, pageable);
-        // expect all flights to be requested from the flights service
-        verify(flightService).findFlightsByExample(example);
+        // expect total duration to be requested from the flight service
+        verify(flightService).getTotalDuration();
         // and a page of flights to be requested from the flights service
         verify(flightService).findFlightsByExample(example, pageable);
         // and the resulting page to have the correct content
@@ -178,7 +180,7 @@ public class FlightServiceControllerTest {
         assertThat(csv.replaceAll("[\r\n\t ]+", "")).isEqualTo("id,callsign,aircraft,origin,startTime," +
                 "startFuel,startOdometer,heading,destination,endTime,endFuel,endOdometer," +
                 "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve,tracked" +
-                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,,false");
+                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,,");
     }
 
 }

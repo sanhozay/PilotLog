@@ -63,6 +63,7 @@ public class ApplicationInit implements CommandLineRunner {
         Set<String> airports = new HashSet<>();
         flightService.findCompletedFlights().forEach(flight -> {
             flightService.updateComputedFields(flight);
+            flightService.updateTrackedStatus(flight);
             aircraft.add(flight.getAircraft());
             airports.add(flight.getOrigin());
             airports.add(flight.getDestination());

@@ -93,4 +93,12 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
      */
     Flight findFirstByDestinationOrderByStartTimeDesc(String icao);
 
+    /**
+     * Gets the total duration of all completed flights
+     *
+     * @return the total duration of completed flights
+     */
+    @Query("select sum(duration) from Flight where status = org.flightgear.pilotlog.domain.FlightStatus.COMPLETE")
+    int getTotalDuration();
+
 }

@@ -58,7 +58,7 @@ public class FlightService {
     private final AirportService airportService;
 
     private final ExampleMatcher matcher = ExampleMatcher.matchingAll()
-            .withIgnorePaths("id")
+            .withIgnorePaths("id", "tracked")
             .withIgnoreCase()
             .withIgnoreNullValues()
             .withStringMatcher(StringMatcher.STARTING);
@@ -292,6 +292,12 @@ public class FlightService {
         }
     }
 
+    @Transactional
+    public void updateTrackedStatus(Flight flight) {
+        flight.setTracked(flight.getTrack() != null && !flight.getTrack().isEmpty());
+        repository.save(flight);
+    }
+
     /**
      * Purges incomplete and invalid flights.
      */
@@ -347,6 +353,11 @@ public class FlightService {
         } else {
             return repository.findAll();
         }
+    }
+
+    @Transactional(readOnly = true)
+    public int getTotalDuration() {
+        return repository.getTotalDuration();
     }
 
     // Accessors
