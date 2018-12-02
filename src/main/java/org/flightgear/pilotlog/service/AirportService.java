@@ -102,4 +102,20 @@ public class AirportService {
         return airportRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public int getTotalDepartures() {
+        return airportRepository.getTotalDepartures();
+    }
+
+    @Transactional(readOnly = true)
+    public int getTotalArrivals() {
+        return airportRepository.getTotalArrivals();
+    }
+
+    @Transactional(readOnly = true)
+    public int getTotalMovements() {
+        return airportRepository.getTotalMovements();
+    }
+
+
 }

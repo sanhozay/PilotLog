@@ -20,6 +20,33 @@
 package org.flightgear.pilotlog.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 @SuppressWarnings("javadoc")
-public interface AirportRepository extends JpaRepository<Airport, String> {}
+public interface AirportRepository extends JpaRepository<Airport, String> {
+
+    /**
+     * Gets the total number of departures
+     *
+     * @return the total departures
+     */
+    @Query("select sum(departures) from Airport")
+    int getTotalDepartures();
+
+    /**
+     * Gets the total number of arrivals
+     *
+     * @return the total arrivals
+     */
+    @Query("select sum(arrivals) from Airport")
+    int getTotalArrivals();
+
+    /**
+     * Gets the total number of movements
+     *
+     * @return the total movements
+     */
+    @Query("select sum(movements) from Airport")
+    int getTotalMovements();
+
+}

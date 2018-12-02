@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
@@ -58,30 +57,23 @@ public class AircraftServiceController {
     public TotalsAwarePage<Aircraft> aircraft(
             @PageableDefault(sort = "totalFlights", direction = DESC) Pageable pageable
     ) {
-        List<Aircraft> all = aircraftService.findAllAircraft();
         Page<Aircraft> page = aircraftService.findAllAircraft(pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("distance", totalOf(Aircraft::getTotalDistance, all, page));
-        totals.put("duration", totalOf(Aircraft::getTotalDuration, all, page));
-        totals.put("flights", totalOf(Aircraft::getTotalFlights, all, page));
-        totals.put("fuel", totalOf(Aircraft::getTotalFuel, all, page));
+        totals.put("distance", totalOf(Aircraft::getTotalDistance, page, aircraftService.getTotalDistance()));
+        totals.put("duration", totalOf(Aircraft::getTotalDuration, page, aircraftService.getTotalDuration()));
+        totals.put("flights", totalOf(Aircraft::getTotalFlights, page, aircraftService.getTotalFlights()));
+        totals.put("fuel", totalOf(Aircraft::getTotalFuel, page, aircraftService.getTotalFuel()));
         return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
-    private Total<Long> totalOf(ToLongFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
-        long grandTotal = all.parallelStream()
-                .mapToLong(function)
-                .sum();
+    private Total<Long> totalOf(ToLongFunction<Aircraft> function, Page<Aircraft> page, Long grandTotal) {
         long pageTotal = page.getContent().parallelStream()
                 .mapToLong(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }
 
-    private Total<Double> totalOf(ToDoubleFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
-        double grandTotal = all.parallelStream()
-                .mapToDouble(function)
-                .sum();
+    private Total<Double> totalOf(ToDoubleFunction<Aircraft> function, Page<Aircraft> page, Double grandTotal) {
         double pageTotal = page.getContent().parallelStream()
                 .mapToDouble(function)
                 .sum();

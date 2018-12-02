@@ -31,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
@@ -57,20 +56,16 @@ public class AirportServiceController {
     public TotalsAwarePage<Airport> airports(
             @PageableDefault(sort = "movements", direction = DESC) Pageable pageable
     ) {
-        List<Airport> all = airportService.findAllAirports();
         Page<Airport> page = airportService.findAllAirports(pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("arrivals", totalOf(Airport::getArrivals, all, page));
-        totals.put("departures", totalOf(Airport::getDepartures, all, page));
-        totals.put("movements", totalOf(Airport::getMovements, all, page));
+        totals.put("arrivals", totalOf(Airport::getArrivals, page, airportService.getTotalArrivals()));
+        totals.put("departures", totalOf(Airport::getDepartures, page, airportService.getTotalDepartures()));
+        totals.put("movements", totalOf(Airport::getMovements, page, airportService.getTotalMovements()));
         return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
-    private Total<Integer> totalOf(ToIntFunction<Airport> function, List<Airport> matches, Page<Airport> page) {
+    private Total<Integer> totalOf(ToIntFunction<Airport> function, Page<Airport> page, Integer grandTotal) {
         int pageTotal = page.getContent().parallelStream()
-                .mapToInt(function)
-                .sum();
-        int grandTotal = matches.parallelStream()
                 .mapToInt(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);

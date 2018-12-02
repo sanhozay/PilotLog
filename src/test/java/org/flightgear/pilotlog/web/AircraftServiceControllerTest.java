@@ -65,6 +65,11 @@ public class AircraftServiceControllerTest {
                 .thenReturn(content);
         when(aircraftService.findAllAircraft(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(content));
+
+        when(aircraftService.getTotalDistance()).thenReturn(aircraft.getTotalDistance());
+        when(aircraftService.getTotalDuration()).thenReturn(aircraft.getTotalDuration());
+        when(aircraftService.getTotalFuel()).thenReturn(aircraft.getTotalFuel());
+        when(aircraftService.getTotalFlights()).thenReturn(aircraft.getTotalFlights());
     }
 
     @Test
@@ -73,8 +78,11 @@ public class AircraftServiceControllerTest {
         Pageable pageable = PageRequest.of(0, 10);
         // when getting an aircraft summary
         TotalsAwarePage<Aircraft> page = controller.aircraft(pageable);
-        // expect all aircraft to be requested from the aircraft service
-        verify(aircraftService).findAllAircraft();
+        // and totals to be requested for distance, fuel, flights and duration
+        verify(aircraftService).getTotalDistance();
+        verify(aircraftService).getTotalFuel();
+        verify(aircraftService).getTotalFlights();
+        verify(aircraftService).getTotalDuration();
         // and a page of aircraft to be requested from the aircraft service
         verify(aircraftService).findAllAircraft(pageable);
         // and the resulting page to have the correct content

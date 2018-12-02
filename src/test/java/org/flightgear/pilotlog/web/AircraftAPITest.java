@@ -80,8 +80,6 @@ public class AircraftAPITest {
         mvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
-        // and all aircraft to be requested from the aircraft service to calculate totals
-        verify(aircraftService).findAllAircraft();
         // and a page of aircraft to be requested from the aircraft service to provide content
         ArgumentCaptor<Pageable> pageable = ArgumentCaptor.forClass(Pageable.class);
         verify(aircraftService).findAllAircraft(pageable.capture());

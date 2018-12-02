@@ -81,4 +81,24 @@ public class AircraftService {
         return aircraftRepository.findAll(pageable);
     }
 
+    @Transactional(readOnly = true)
+    public double getTotalDistance() {
+        return aircraftRepository.getTotalDistance();
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalDuration() {
+        return aircraftRepository.getTotalDuration();
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalFlights() {
+        return aircraftRepository.getTotalFlights();
+    }
+
+    @Transactional(readOnly = true)
+    public double getTotalFuel() {
+        return aircraftRepository.getTotalFuel();
+    }
+
 }

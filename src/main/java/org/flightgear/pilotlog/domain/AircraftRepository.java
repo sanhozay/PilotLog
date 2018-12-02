@@ -20,6 +20,7 @@
 package org.flightgear.pilotlog.domain;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * Repository of aircraft summaries.
@@ -29,5 +30,37 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
 
     Aircraft findAircraftByModel(String model);
+
+    /**
+     * Gets the total distance
+     *
+     * @return the total distance
+     */
+    @Query("select sum(totalDistance) from Aircraft")
+    int getTotalDistance();
+
+    /**
+     * Gets the total duration
+     *
+     * @return the total duration
+     */
+    @Query("select sum(totalDuration) from Aircraft")
+    int getTotalDuration();
+
+    /**
+     * Gets the total flights
+     *
+     * @return the total flights
+     */
+    @Query("select sum(totalFlights) from Aircraft")
+    int getTotalFlights();
+
+    /**
+     * Gets the total fuel
+     *
+     * @return the total fuel
+     */
+    @Query("select sum(totalFuel) from Aircraft")
+    int getTotalFuel();
 
 }
