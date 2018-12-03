@@ -20,8 +20,8 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.AircraftRepository;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.integration.AircraftRepository;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;

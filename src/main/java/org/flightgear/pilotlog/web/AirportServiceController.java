@@ -20,8 +20,8 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Airport;
-import org.flightgear.pilotlog.domain.Total;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AirportService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

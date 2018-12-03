@@ -21,9 +21,10 @@ package org.flightgear.pilotlog.service;
 
 import org.assertj.core.data.Offset;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.domain.TrackPoint;
+import org.flightgear.pilotlog.integration.TrackPointRepository;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -66,6 +67,9 @@ public class FlightServiceTest {
     private FlightRepository flightRepository;
 
     @Mock
+    private TrackPointRepository trackPointRepository;
+
+    @Mock
     private AircraftService aircraftService;
 
     @Mock
@@ -78,7 +82,7 @@ public class FlightServiceTest {
 
     @Before
     public void setUp() {
-        flightService = spy(new FlightService(flightRepository, aircraftService, airportService));
+        flightService = spy(new FlightService(flightRepository, trackPointRepository, aircraftService, airportService));
         flightService.setPageableUtil(pageableUtil);
         when(flightRepository.save(any(Flight.class))).thenAnswer((Answer<Flight>)invocation -> {
             Flight flight = (Flight)invocation.getArguments()[0];

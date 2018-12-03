@@ -20,7 +20,7 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AircraftService;
 import org.junit.Before;
 import org.junit.Test;

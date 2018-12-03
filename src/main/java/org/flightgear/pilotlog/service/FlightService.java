@@ -21,9 +21,11 @@ package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Coordinate;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.dto.TrackPointDTO;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.domain.TrackPoint;
+import org.flightgear.pilotlog.integration.TrackPointRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,7 +55,8 @@ public class FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
 
-    private final FlightRepository repository;
+    private final FlightRepository flightRepository;
+    private final TrackPointRepository trackPointRepository;
     private final AircraftService aircraftService;
     private final AirportService airportService;
 
@@ -64,11 +67,13 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
     private PageableUtil pageableUtil;
 
-    public FlightService(FlightRepository repository,
+    public FlightService(FlightRepository flightRepository,
+        TrackPointRepository trackPointRepository,
         AircraftService aircraftService,
         AirportService airportService
     ) {
-        this.repository = repository;
+        this.flightRepository = flightRepository;
+        this.trackPointRepository = trackPointRepository;
         this.aircraftService = aircraftService;
         this.airportService = airportService;
     }
@@ -101,7 +106,7 @@ public class FlightService {
         trackPoint.setTimestamp(new Date());
         flight.addTrackPoint(trackPoint);
 
-        flight = repository.save(flight);
+        flight = flightRepository.save(flight);
 
         log.info("Started new flight {}", flight);
         return flight;
@@ -202,7 +207,7 @@ public class FlightService {
             final String message = String.format("Attempt to delete incomplete flight %s", flight);
             throw new InvalidFlightStatusException(message);
         }
-        repository.delete(flight);
+        flightRepository.delete(flight);
 
         aircraftService.updateSummary(flight.getAircraft());
         airportService.updateSummary(flight.getOrigin());
@@ -295,7 +300,7 @@ public class FlightService {
     @Transactional
     public void updateTrackedStatus(Flight flight) {
         flight.setTracked(flight.getTrack() != null && !flight.getTrack().isEmpty());
-        repository.save(flight);
+        flightRepository.save(flight);
     }
 
     /**
@@ -304,10 +309,10 @@ public class FlightService {
     @Transactional
     public void purgeIncompleteFlights() {
         Set<Flight> purgeable = new HashSet<>();
-        purgeable.addAll(repository.findByStatus(FlightStatus.ACTIVE));
-        purgeable.addAll(repository.findByStatus(FlightStatus.INVALID));
+        purgeable.addAll(flightRepository.findByStatus(FlightStatus.ACTIVE));
+        purgeable.addAll(flightRepository.findByStatus(FlightStatus.INVALID));
         for (Flight flight : purgeable) {
-            repository.delete(flight);
+            flightRepository.delete(flight);
             log.info("Deleted flight {}", flight);
         }
     }
@@ -316,17 +321,7 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public Flight findFlightById(int id) {
-        Optional<Flight> optional = repository.findById(id);
-        if (!optional.isPresent()) {
-            String message = String.format("Could not find flight by id %d", id);
-            throw new FlightNotFoundException(message);
-        }
-        return optional.get();
-    }
-
-    @Transactional(readOnly = true)
-    public Flight findFlightByIdWithTrack(int id) {
-        Optional<Flight> optional = repository.findByIdWithTrack(id);
+        Optional<Flight> optional = flightRepository.findById(id);
         if (!optional.isPresent()) {
             String message = String.format("Could not find flight by id %d", id);
             throw new FlightNotFoundException(message);
@@ -336,12 +331,12 @@ public class FlightService {
 
     @Transactional(readOnly = true)
     public List<Flight> findAllFlights() {
-        return repository.findAll();
+        return flightRepository.findAll();
     }
 
     @Transactional(readOnly = true)
     public Set<Flight> findByStatusWithTrack(FlightStatus status) {
-        return repository.findByStatusWithTrack(status);
+        return flightRepository.findByStatusWithTrack(status);
     }
 
     @Transactional(readOnly = true)
@@ -350,24 +345,29 @@ public class FlightService {
             pageable = pageableUtil.adjustPageable(pageable, "id", "aircraft");
         }
         if (example != null) {
-            return repository.findAll(Example.of(example, matcher), pageable);
+            return flightRepository.findAll(Example.of(example, matcher), pageable);
         } else {
-            return repository.findAll(pageable);
+            return flightRepository.findAll(pageable);
         }
     }
 
     @Transactional(readOnly = true)
     public List<Flight> findFlightsByExample(Flight example) {
         if (example != null) {
-            return repository.findAll(Example.of(example, matcher));
+            return flightRepository.findAll(Example.of(example, matcher));
         } else {
-            return repository.findAll();
+            return flightRepository.findAll();
         }
     }
 
     @Transactional(readOnly = true)
     public int getTotalDuration() {
-        return repository.getTotalDuration();
+        return flightRepository.getTotalDuration();
+    }
+
+    @Transactional(readOnly = true)
+    public List<TrackPointDTO> getTrackForFlightWithId(int id) {
+        return trackPointRepository.findByFlightIdOrderByOdometer(id);
     }
 
     // Accessors

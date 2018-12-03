@@ -17,14 +17,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.domain;
+package org.flightgear.pilotlog.integration;
 
+import org.flightgear.pilotlog.domain.Aircraft;
+import org.flightgear.pilotlog.domain.Flight;
+import org.flightgear.pilotlog.domain.FlightStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -34,15 +36,6 @@ import java.util.Set;
  */
 @SuppressWarnings("javadoc")
 public interface FlightRepository extends JpaRepository<Flight, Integer> {
-
-    /**
-     * Find a flight by primary key, including the track
-     *
-     * @param id the flight id
-     * @return the flight, with track
-     */
-    @Query("select f from Flight f left join fetch f.track t where f.id = :id")
-    Optional<Flight> findByIdWithTrack(@Param("id") Integer id);
 
     /**
      * Finds flights with a given status.

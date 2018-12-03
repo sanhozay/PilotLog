@@ -20,9 +20,9 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Airport;
-import org.flightgear.pilotlog.domain.AirportRepository;
+import org.flightgear.pilotlog.integration.AirportRepository;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;

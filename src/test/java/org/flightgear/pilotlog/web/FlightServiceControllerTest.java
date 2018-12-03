@@ -22,7 +22,7 @@ package org.flightgear.pilotlog.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightStatus;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.FlightService;
 import org.junit.Before;
 import org.junit.Test;

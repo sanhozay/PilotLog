@@ -17,7 +17,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.domain;
+package org.flightgear.pilotlog.dto;
 
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;

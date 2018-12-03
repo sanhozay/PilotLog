@@ -19,6 +19,8 @@
 
 package org.flightgear.pilotlog.domain;
 
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;

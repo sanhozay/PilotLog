@@ -20,8 +20,8 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.AircraftRepository;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.integration.AircraftRepository;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.data.domain.Page;

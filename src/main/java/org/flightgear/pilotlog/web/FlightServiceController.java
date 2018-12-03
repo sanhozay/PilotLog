@@ -23,8 +23,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.Total;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TrackPointDTO;
 import org.flightgear.pilotlog.service.FlightNotFoundException;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.InvalidFlightStatusException;
@@ -167,12 +168,14 @@ public class FlightServiceController {
 
     @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
     public FeatureCollection flightTrack(@PathVariable int id) {
-        Flight flight = flightService.findFlightByIdWithTrack(id);
+
+        Flight flight = flightService.findFlightById(id);
         if (!flight.isTracked()) {
             return new FeatureCollection();
         }
 
-        List<LngLatAlt> points = flight.getTrack().parallelStream().map(trackPoint -> new LngLatAlt(
+        List<TrackPointDTO> trackPoints = flightService.getTrackForFlightWithId(id);
+        List<LngLatAlt> points = trackPoints.parallelStream().map(trackPoint -> new LngLatAlt(
             trackPoint.getCoordinate().getLongitude(),
             trackPoint.getCoordinate().getLatitude(),
             trackPoint.getAltitude()
@@ -187,7 +190,7 @@ public class FlightServiceController {
         origin.setProperty("date", dateFormat.format(flight.getStartTime()));
         featureCollection.add(origin);
 
-        if (flight.getTrack().size() > 1) {
+        if (points.size() > 1) {
             Feature track = new Feature();
             LngLatAlt[] p = points.toArray(new LngLatAlt[0]);
             track.setGeometry(new LineString(p));

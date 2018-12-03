@@ -19,6 +19,7 @@
 
 package org.flightgear.pilotlog.domain;
 
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,13 +28,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.Date;
-
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.flightgear.pilotlog.domain.FlightStatus.ACTIVE;
-import static org.flightgear.pilotlog.domain.FlightStatus.COMPLETE;
 import static org.flightgear.pilotlog.domain.FlightStatus.INVALID;
-import static org.flightgear.pilotlog.domain.FlightStatus.NEW;
 
 @ActiveProfiles("test")
 @DataJpaTest
