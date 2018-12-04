@@ -25,6 +25,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
 
+/**
+ * Repository for direct access to track points.
+ *
+ * @author Richard Senior
+ */
 public interface TrackPointRepository extends JpaRepository<TrackPoint, Long> {
 
     List<TrackPointDTO> findByFlightIdOrderByOdometer(int id);

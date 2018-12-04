@@ -23,6 +23,11 @@ import org.flightgear.pilotlog.domain.Coordinate;
 
 import java.io.Serializable;
 
+/**
+ * Bean to hold data from the airport information data file.
+ *
+ * @author Richard Senior
+ */
 public class AirportInfo implements Serializable {
 
     private String icao;

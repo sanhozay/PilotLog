@@ -38,7 +38,7 @@ import org.springframework.stereotype.Component;
 @Profile("profiling")
 public class LoggingAdvice {
 
-    Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
+    private final Logger log = LoggerFactory.getLogger(LoggingAdvice.class);
 
     @Pointcut("execution(* org.flightgear.pilotlog.service.*Service.*(..))")
     public void serviceMethods() {}
