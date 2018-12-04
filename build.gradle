@@ -8,10 +8,10 @@ repositories {
     mavenCentral()
 }
 
-version = '1.1.0'
+version = '1.2.0-RC'
 
 dependencies {
-    compile(
+    implementation(
         'org.springframework.boot:spring-boot-starter-web',
         'org.springframework.boot:spring-boot-starter-data-jpa',
         'org.springframework.boot:spring-boot-devtools',
@@ -21,7 +21,7 @@ dependencies {
         'de.grundid.opendatalab:geojson-jackson:1.8',
         'com.h2database:h2',
     )
-    testCompile (
+    testImplementation (
         'org.springframework.boot:spring-boot-starter-test',
         'net.sf.beanrunner:beanrunner:1.0.0',
     )

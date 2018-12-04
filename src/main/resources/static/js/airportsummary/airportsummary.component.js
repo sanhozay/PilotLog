@@ -29,7 +29,7 @@ angular.module("airportsummary").component("airportsummary", {
                 var direction = ctrl.pageable.sort.direction
                 ctrl.pageable.sort.direction = direction == "ASC" ? "DESC" : "ASC"
             } else {
-                if (property == "icao") {
+                if (property == "icao" || property == "name") {
                     ctrl.pageable.sort.direction = "ASC"
                 } else {
                     ctrl.pageable.sort.direction = "DESC"

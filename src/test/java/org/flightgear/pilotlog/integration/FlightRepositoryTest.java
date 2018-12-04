@@ -17,9 +17,10 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.domain;
+package org.flightgear.pilotlog.integration;
 
-import org.flightgear.pilotlog.integration.FlightRepository;
+import org.flightgear.pilotlog.domain.Aircraft;
+import org.flightgear.pilotlog.domain.Flight;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
