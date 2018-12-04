@@ -20,13 +20,12 @@
 package org.flightgear.pilotlog.integration;
 
 import org.flightgear.pilotlog.dto.AirportInfo;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.stereotype.Component;
 
+import java.io.BufferedReader;
 import java.io.IOException;
-import java.net.URISyntaxException;
-import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -38,17 +37,19 @@ import java.util.Map;
 @Component
 public class AirportInfoRepository {
 
-    private static final String AIRPORT_DATABASE = "airports.dat";
+    private static final String AIRPORT_DATABASE = "/airports.dat";
 
     private final Map<String, AirportInfo> airportInfo = new HashMap<>();
 
-    public AirportInfoRepository() throws IOException, URISyntaxException {
-        URL url = getClass().getClassLoader().getResource(AIRPORT_DATABASE);
-        if (url != null) {
-            Files.readAllLines(Paths.get(url.toURI())).parallelStream().forEach(tuple -> {
-                AirportInfo info = new AirportInfo(tuple);
+    public AirportInfoRepository() throws IOException {
+        ClassPathResource data = new ClassPathResource(AIRPORT_DATABASE);
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(data.getInputStream()))) {
+            String line = in.readLine();
+            while (line != null) {
+                AirportInfo info = new AirportInfo(line);
                 airportInfo.put(info.getIcao(), info);
-            });
+                line = in.readLine();
+            }
         }
     }
 
