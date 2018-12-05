@@ -133,9 +133,10 @@ public class FlightServiceController {
             @RequestBody(required = false) Flight example,
             @PageableDefault(sort = "startTime", direction = DESC) Pageable pageable
     ) {
+        List<Flight> matches = flightService.findFlightsByExample(example);
         Page<Flight> page = flightService.findFlightsByExample(example, pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("duration", totalOf(Flight::getDuration, page, flightService.getTotalDuration()));
+        totals.put("duration", totalOf(Flight::getDuration, page, matches));
         return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
@@ -208,8 +209,12 @@ public class FlightServiceController {
         return featureCollection;
     }
 
-    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, Integer grandTotal) {
+    private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {
         int pageTotal = page.getContent().parallelStream()
+                .filter(Flight::isComplete)
+                .mapToInt(function)
+                .sum();
+        int grandTotal = matches.parallelStream()
                 .filter(Flight::isComplete)
                 .mapToInt(function)
                 .sum();

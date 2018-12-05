@@ -74,8 +74,6 @@ public class FlightServiceControllerTest {
                 .thenReturn(new PageImpl<>(Collections.singletonList(flight)));
 
         when(flightService.findAllFlights()).thenReturn(Collections.singletonList(flight));
-
-        when(flightService.getTotalDuration()).thenReturn(flight.getDuration());
     }
 
     @Test
@@ -141,8 +139,8 @@ public class FlightServiceControllerTest {
         Flight example = new Flight();
         // when getting a page of flights
         TotalsAwarePage<Flight> page = controller.flights(example, pageable);
-        // expect total duration to be requested from the flight service
-        verify(flightService).getTotalDuration();
+        // expect all flights to be requested from the flights service
+        verify(flightService).findFlightsByExample(example);
         // and a page of flights to be requested from the flights service
         verify(flightService).findFlightsByExample(example, pageable);
         // and the resulting page to have the correct content
