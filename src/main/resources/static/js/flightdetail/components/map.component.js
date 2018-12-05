@@ -18,9 +18,11 @@ angular.module("flightdetail").component("map", {
 
         ctrl.$onInit = function() {
             map = L.map('map').fitWorld();
-            L.tileLayer('http://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-                attribution: '&copy; <a href="http://openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            }).addTo(map);
+            var url = 'https://server.arcgisonline.com/' +
+                'ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}';
+            var	attribution = 'Tiles &copy; Esri &mdash; Source: Esri, DeLorme, NAVTEQ, USGS, Intermap, iPC, NRCAN, ' +
+                'Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
+            L.tileLayer(url, {attribution: attribution}).addTo(map);
             L.control.scale().addTo(map);
 
             var command = L.control({position: 'topright'});
