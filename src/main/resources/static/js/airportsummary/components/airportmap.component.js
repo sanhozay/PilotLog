@@ -1,10 +1,7 @@
 angular.module("airportsummary").component("airportmap", {
     controller: function($http, $interval, $filter) {
         var ctrl = this
-        var autoRefresh;
         var map, markers;
-        var once = true;
-
         ctrl.$onInit = function() {
             map = L.map('airportmap').fitWorld();
             var url = 'https://server.arcgisonline.com/' +
@@ -13,18 +10,10 @@ angular.module("airportsummary").component("airportmap", {
                 'Esri Japan, METI, Esri China (Hong Kong), Esri (Thailand), TomTom, 2012'
             L.tileLayer(url, {attribution: attribution}).addTo(map);
             L.control.scale().addTo(map);
-
             markers = L.layerGroup();
             map.addLayer(markers);
-
             ctrl.refresh();
-            autoRefresh = $interval(ctrl.refresh, 5000)
         }
-
-        ctrl.$onDestroy = function() {
-            $interval.cancel(autoRefresh);
-        }
-
         ctrl.refresh = function() {
             var url = "/api/airports.json";
             $http.get(url)
@@ -48,10 +37,8 @@ angular.module("airportsummary").component("airportmap", {
                         ).openPopup();
                         markers.addLayer(marker);
                     });
-                    if (once) {
-                        map.fitBounds([bl, tr], {padding: [20, 20]});
-                        once = false;
-                    }
+                    map.fitBounds([bl, tr], {padding: [20, 20]});
+                    once = false;
                 }
             );
         }
