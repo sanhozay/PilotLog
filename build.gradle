@@ -37,6 +37,13 @@ jar {
     }
 }
 
+processResources {
+    filesMatching('static/js/core/components/heading.component.js') {
+        expand projectVersion: version
+    }
+    outputs.upToDateWhen { false }
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
