@@ -31,6 +31,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
 
@@ -62,6 +63,11 @@ public class AirportServiceController {
         totals.put("departures", totalOf(Airport::getDepartures, page, airportService.getTotalDepartures()));
         totals.put("movements", totalOf(Airport::getMovements, page, airportService.getTotalMovements()));
         return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
+    }
+
+    @GetMapping(path="airports.json", produces = APPLICATION_JSON_VALUE)
+    public List<Airport> allAirports() {
+        return airportService.findAllAirports();
     }
 
     private Total<Integer> totalOf(ToIntFunction<Airport> function, Page<Airport> page, Integer grandTotal) {

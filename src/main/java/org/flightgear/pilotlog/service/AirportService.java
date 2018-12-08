@@ -20,6 +20,8 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Airport;
+import org.flightgear.pilotlog.dto.AirportInfo;
+import org.flightgear.pilotlog.integration.AirportInfoRepository;
 import org.flightgear.pilotlog.integration.AirportRepository;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.integration.FlightRepository;
@@ -41,14 +43,17 @@ public class AirportService {
 
     private final AirportRepository airportRepository;
     private final FlightRepository flightRepository;
+    private final AirportInfoRepository airportInfoRepository;
     private final PageableUtil pageableUtil;
 
     public AirportService(AirportRepository airportRepository,
         FlightRepository flightRepository,
+        AirportInfoRepository airportInfoRepository,
         PageableUtil pageableUtil
     ) {
         this.airportRepository = airportRepository;
         this.flightRepository = flightRepository;
+        this.airportInfoRepository = airportInfoRepository;
         this.pageableUtil = pageableUtil;
     }
 
@@ -63,6 +68,8 @@ public class AirportService {
             .filter(flight -> flight.getDestination() != null)
             .filter(flight -> flight.getDestination().equals(icao)).count();
 
+        AirportInfo airportInfo = airportInfoRepository.getAirportInfo(icao);
+
         Optional<Airport> optional = airportRepository.findById(icao);
         if (optional.isPresent()) {
             Airport airport = optional.get();
@@ -72,10 +79,18 @@ public class AirportService {
                 airport.setArrivals(arrivals);
                 airport.setDepartures(departures);
                 airport.setLast(movements.get(0).getStartTime());
+                if (airportInfo != null) {
+                    airport.setName(airportInfo.getName());
+                    airport.setCoordinate(airportInfo.getCoordinate());
+                }
                 airportRepository.save(airport);
             }
         } else if (movements.size() > 0) {
             Airport airport = new Airport(icao, arrivals, departures, movements.get(0).getStartTime());
+            if (airportInfo != null) {
+                airport.setName(airportInfo.getName());
+                airport.setCoordinate(airportInfo.getCoordinate());
+            }
             airportRepository.save(airport);
         }
     }

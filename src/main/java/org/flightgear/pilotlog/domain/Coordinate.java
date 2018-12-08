@@ -31,8 +31,8 @@ import java.io.Serializable;
 @Embeddable
 public class Coordinate implements Serializable {
 
-    private float latitude;
-    private float longitude;
+    private Float latitude;
+    private Float longitude;
 
     @SuppressWarnings("WeakerAccess")
     public Coordinate() {}
@@ -42,19 +42,19 @@ public class Coordinate implements Serializable {
         this.longitude = longitude;
     }
 
-    public float getLatitude() {
+    public Float getLatitude() {
         return latitude;
     }
 
-    public void setLatitude(float latitude) {
+    public void setLatitude(Float latitude) {
         this.latitude = latitude;
     }
 
-    public float getLongitude() {
+    public Float getLongitude() {
         return longitude;
     }
 
-    public void setLongitude(float longitude) {
+    public void setLongitude(Float longitude) {
         this.longitude = longitude;
     }
 

@@ -47,6 +47,9 @@ public  class Airport implements Serializable  {
     @Id
     private String icao;
 
+    private String name;
+    private Coordinate coordinate;
+
     private int arrivals;
     private int departures;
     private int movements;
@@ -122,6 +125,22 @@ public  class Airport implements Serializable  {
 
     public void setLast(Date last) {
         this.last = last;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public Coordinate getCoordinate() {
+        return coordinate;
+    }
+
+    public void setCoordinate(Coordinate coordinate) {
+        this.coordinate = coordinate;
     }
 
 }

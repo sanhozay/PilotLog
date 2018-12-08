@@ -17,11 +17,14 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-package org.flightgear.pilotlog.domain;
+package org.flightgear.pilotlog.integration;
+
+import org.flightgear.pilotlog.domain.Flight;
+import org.flightgear.pilotlog.domain.FlightStatus;
 
 import java.util.Date;
 
-import static org.flightgear.pilotlog.domain.FlightRepositoryTest.HOUR;
+import static org.flightgear.pilotlog.integration.FlightRepositoryTest.HOUR;
 import static org.flightgear.pilotlog.domain.FlightStatus.COMPLETE;
 import static org.flightgear.pilotlog.domain.FlightStatus.NEW;
 
