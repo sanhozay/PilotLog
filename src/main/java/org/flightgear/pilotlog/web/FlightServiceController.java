@@ -47,6 +47,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -167,7 +168,7 @@ public class FlightServiceController {
         return flightService.findFlightById(id);
     }
 
-    @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
+    @GetMapping(path = "flights/flight/{id}/featurecollection", produces = APPLICATION_JSON_VALUE)
     public FeatureCollection flightTrack(@PathVariable int id) {
 
         Flight flight = flightService.findFlightById(id);
@@ -207,6 +208,15 @@ public class FlightServiceController {
         }
 
         return featureCollection;
+    }
+
+    @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
+    public List<TrackPointDTO> flightProfile(@PathVariable int id) {
+        Flight flight = flightService.findFlightById(id);
+        if (!flight.isTracked()) {
+            return new ArrayList<>();
+        }
+        return flightService.getTrackForFlightWithId(id);
     }
 
     private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {

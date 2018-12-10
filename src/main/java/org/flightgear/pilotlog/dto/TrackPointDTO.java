@@ -19,16 +19,23 @@
 
 package org.flightgear.pilotlog.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
+import java.util.Date;
+
 import org.flightgear.pilotlog.domain.Coordinate;
 
 /**
  * Interface for DTO for track points.
  *
- * Used to build GeoJSON point structures without the overhead of the TrackPoint entity
+ * Used when querying tracks for GeoJSON track and altitude profile.
  */
 public interface TrackPointDTO {
 
     Coordinate getCoordinate();
     float getAltitude();
+
+    @JsonFormat(shape = JsonFormat.Shape.STRING)
+    Date getTimestamp();
 
 }

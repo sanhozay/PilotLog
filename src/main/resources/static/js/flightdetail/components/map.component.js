@@ -58,7 +58,7 @@ angular.module("flightdetail").component("map", {
             if (complete) {
                 return;
             }
-            var url = "/api/flights/flight/" + ctrl.flightId + "/track";
+            var url = "/api/flights/flight/" + ctrl.flightId + "/featurecollection";
             $http.get(url)
                 .then(function(response) {
                     if (line) {
