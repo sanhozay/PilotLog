@@ -1,5 +1,5 @@
 angular.module("flightrecord").component("flightrecord", {
-    controller: function($http, $interval, $filter, $cookies) {
+    controller: function($http, $interval, $filter, $cookies, example) {
         var ctrl = this
         var cookie = "pilotlog.page.size"
         var nextYear = new Date(new Date().setFullYear(new Date().getFullYear() + 1))
@@ -12,8 +12,7 @@ angular.module("flightrecord").component("flightrecord", {
                 size: $cookies.get(cookie) || 10,
                 sort: {property: "id", direction: "DESC"}
             }
-            ctrl.search = {form: {}, example: {}}
-            ctrl.refreshPage(1)
+            ctrl.refreshPage(1);
             autoRefresh = $interval(ctrl.refresh, 1000)
         }
         ctrl.$onDestroy = function() {
@@ -25,22 +24,8 @@ angular.module("flightrecord").component("flightrecord", {
             ctrl.refreshPage(1)
         }
         ctrl.columnClicked = function(flight, property) {
-            if (property == "startTime") {
-                var route = "from " + flight.origin + " to " + flight.destination
-                var aircraft = $filter('capitalize')(flight.aircraft)
-                if (confirm("Delete " + aircraft + "  flight " + route + "?")) {
-                    $http.delete("/api/flights/flight/" + flight.id)
-                        .then(ctrl.refresh)
-                }
-            } else if (property == "aircraft") {
-                ctrl.search.form["aircraft"] = $filter('capitalize')(flight["aircraft"])
-                ctrl.search.example["aircraft"] = $filter('capitalize')(flight["aircraft"])
-                ctrl.refreshPage(1)
-            } else {
-                ctrl.search.form[property] = flight[property]
-                ctrl.search.example[property] = flight[property]
-                ctrl.refreshPage(1)
-            }
+            example.setTerm(property, flight[property])
+            ctrl.refreshPage(1)
         }
         ctrl.headingClicked = function(property) {
             if (ctrl.pageable.sort.property == property) {
@@ -70,7 +55,7 @@ angular.module("flightrecord").component("flightrecord", {
                     url += "&" + sortParam
                 }
             }
-            $http.post(url, ctrl.search.example)
+            $http.post(url, example.flight)
                 .then(function(response) {
                     ctrl.data = response.data
                     if (ctrl.pageable.pageNumber > ctrl.totalPages) {
