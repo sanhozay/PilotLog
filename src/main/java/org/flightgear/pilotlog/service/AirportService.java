@@ -20,10 +20,10 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Airport;
+import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.dto.AirportInfo;
 import org.flightgear.pilotlog.integration.AirportInfoRepository;
 import org.flightgear.pilotlog.integration.AirportRepository;
-import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.integration.FlightRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -109,6 +109,11 @@ public class AirportService {
     }
 
     @Transactional(readOnly = true)
+    public AirportInfo getAirportInfo(String icao) {
+        return airportInfoRepository.getAirportInfo(icao);
+    }
+
+    @Transactional(readOnly = true)
     public int getTotalDepartures() {
         return airportRepository.getTotalDepartures();
     }
@@ -122,6 +127,5 @@ public class AirportService {
     public int getTotalMovements() {
         return airportRepository.getTotalMovements();
     }
-
 
 }

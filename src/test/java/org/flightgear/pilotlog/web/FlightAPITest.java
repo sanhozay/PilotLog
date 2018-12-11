@@ -20,6 +20,7 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Flight;
+import org.flightgear.pilotlog.service.AirportService;
 import org.flightgear.pilotlog.service.FlightService;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,6 +60,9 @@ public class FlightAPITest {
 
     @Autowired
     private MockMvc mvc;
+
+    @MockBean
+    private AirportService airportService;
 
     @MockBean
     private FlightService flightService;

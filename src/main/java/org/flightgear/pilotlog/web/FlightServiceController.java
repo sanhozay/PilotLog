@@ -23,9 +23,11 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
+import org.flightgear.pilotlog.dto.AirportInfo;
 import org.flightgear.pilotlog.dto.Total;
 import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.dto.TrackPointDTO;
+import org.flightgear.pilotlog.service.AirportService;
 import org.flightgear.pilotlog.service.FlightNotFoundException;
 import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.InvalidFlightStatusException;
@@ -70,8 +72,10 @@ import static org.springframework.http.MediaType.TEXT_XML_VALUE;
 public class FlightServiceController {
 
     private final FlightService flightService;
+    private final AirportService airportService;
 
-    public FlightServiceController(FlightService flightService) {
+    public FlightServiceController(FlightService flightService, AirportService airportService) {
+        this.airportService = airportService;
         this.flightService = flightService;
     }
 
@@ -169,7 +173,7 @@ public class FlightServiceController {
     }
 
     @GetMapping(path = "flights/flight/{id}/featurecollection", produces = APPLICATION_JSON_VALUE)
-    public FeatureCollection flightTrack(@PathVariable int id) {
+    public FeatureCollection featureCollection(@PathVariable int id) {
 
         Flight flight = flightService.findFlightById(id);
         if (!flight.isTracked()) {
@@ -186,9 +190,12 @@ public class FlightServiceController {
         FeatureCollection featureCollection = new FeatureCollection();
         DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
 
+        AirportInfo originInfo = airportService.getAirportInfo(flight.getOrigin());
         Feature origin = new Feature();
         origin.setGeometry(new Point(points.get(0)));
         origin.setProperty("icao", flight.getOrigin());
+        origin.setProperty("name", originInfo != null ? originInfo.getName() : "");
+        origin.setProperty("type", "O");
         origin.setProperty("date", dateFormat.format(flight.getStartTime()));
         featureCollection.add(origin);
 
@@ -200,9 +207,12 @@ public class FlightServiceController {
         }
 
         if (flight.getDestination() != null) {
+            AirportInfo destinationInfo = airportService.getAirportInfo(flight.getDestination());
             Feature destination = new Feature();
             destination.setGeometry(new Point(points.get(points.size() - 1)));
             destination.setProperty("icao", flight.getDestination());
+            destination.setProperty("name", destinationInfo != null ? destinationInfo.getName() : "");
+            destination.setProperty("type", "D");
             destination.setProperty("date", dateFormat.format(flight.getEndTime()));
             featureCollection.add(destination);
         }
@@ -211,7 +221,7 @@ public class FlightServiceController {
     }
 
     @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
-    public List<TrackPointDTO> flightProfile(@PathVariable int id) {
+    public List<TrackPointDTO> flightTrack(@PathVariable int id) {
         Flight flight = flightService.findFlightById(id);
         if (!flight.isTracked()) {
             return new ArrayList<>();

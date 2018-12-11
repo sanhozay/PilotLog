@@ -69,9 +69,10 @@ angular.module("flightdetail").component("map", {
                             return {color: "RoyalBlue"};
                         }
                     }).bindPopup(function(layer) {
-                        if (layer.feature.properties.icao) {
-                            return layer.feature.properties.icao +
-                                "<br/> " + layer.feature.properties.date;
+                        var movement = layer.feature.properties;
+                        if (movement.icao) {
+                            return "<b>" + movement.name + "&nbsp;(" + movement.icao + ")</b>" +
+                                "<br/> " + (movement.type == "O" ? "Departed" : "Arrived") + " " + movement.date;
                         }
                     });
                     line.addTo(map);
