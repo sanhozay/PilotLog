@@ -30,10 +30,9 @@ angular.module("airportsummary").component("airportmap", {
                         if (lon > tr[1]) tr[1] = lon;
                         var marker = L.marker([lat, lon], {title: airport.icao});
                         marker.bindPopup(
-                            "<b>" + airport.icao + "</b><br>" +
-                             airport.name + "<br>" +
-                             "Visited " + airport.movements + " times" + "<br>" +
-                             "Last visited " + $filter("date")(airport.last, "dd/MM/yy", "GMT")
+                            "<b>" + airport.name + "&nbsp;(" + airport.icao + ")</b>" +
+                            "<br/>Visited " + airport.movements + " times" +
+                            "<br/>Last visited " + $filter("date")(airport.last, "dd/MM/yy", "GMT")
                         ).openPopup();
                         markers.addLayer(marker);
                     });
