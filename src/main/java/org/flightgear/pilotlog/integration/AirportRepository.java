@@ -31,7 +31,7 @@ public interface AirportRepository extends JpaRepository<Airport, String> {
      *
      * @return the total departures
      */
-    @Query("select sum(departures) from Airport")
+    @Query("select coalesce(sum(departures), 0) from Airport")
     int getTotalDepartures();
 
     /**
@@ -39,7 +39,7 @@ public interface AirportRepository extends JpaRepository<Airport, String> {
      *
      * @return the total arrivals
      */
-    @Query("select sum(arrivals) from Airport")
+    @Query("select coalesce(sum(arrivals), 0) from Airport")
     int getTotalArrivals();
 
     /**
@@ -47,7 +47,7 @@ public interface AirportRepository extends JpaRepository<Airport, String> {
      *
      * @return the total movements
      */
-    @Query("select sum(movements) from Airport")
+    @Query("select coalesce(sum(movements), 0) from Airport")
     int getTotalMovements();
 
 }

@@ -37,7 +37,7 @@ public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
      *
      * @return the total distance
      */
-    @Query("select sum(totalDistance) from Aircraft")
+    @Query("select coalesce(sum(totalDistance), 0) from Aircraft")
     int getTotalDistance();
 
     /**
@@ -45,7 +45,7 @@ public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
      *
      * @return the total duration
      */
-    @Query("select sum(totalDuration) from Aircraft")
+    @Query("select coalesce(sum(totalDuration), 0) from Aircraft")
     int getTotalDuration();
 
     /**
@@ -53,7 +53,7 @@ public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
      *
      * @return the total flights
      */
-    @Query("select sum(totalFlights) from Aircraft")
+    @Query("select coalesce(sum(totalFlights), 0) from Aircraft")
     int getTotalFlights();
 
     /**
@@ -61,7 +61,7 @@ public interface AircraftRepository extends JpaRepository<Aircraft, Integer> {
      *
      * @return the total fuel
      */
-    @Query("select sum(totalFuel) from Aircraft")
+    @Query("select coalesce(sum(totalFuel), 0) from Aircraft")
     int getTotalFuel();
 
 }
