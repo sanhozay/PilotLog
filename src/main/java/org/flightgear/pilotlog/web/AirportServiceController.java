@@ -20,6 +20,7 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Airport;
+import org.flightgear.pilotlog.dto.AirportInfo;
 import org.flightgear.pilotlog.dto.Total;
 import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AirportService;
@@ -27,6 +28,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -68,6 +70,11 @@ public class AirportServiceController {
     @GetMapping(path="airports.json", produces = APPLICATION_JSON_VALUE)
     public List<Airport> allAirports() {
         return airportService.findAllAirports();
+    }
+
+    @GetMapping(path = "airports/airport/{icao}", produces = APPLICATION_JSON_VALUE)
+    public AirportInfo airportInfo(@PathVariable("icao") String icao) {
+        return airportService.findAirportInfoByIcao(icao);
     }
 
     private Total<Integer> totalOf(ToIntFunction<Airport> function, Page<Airport> page, Integer grandTotal) {

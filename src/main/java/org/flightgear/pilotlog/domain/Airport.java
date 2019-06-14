@@ -42,7 +42,7 @@ import java.util.Objects;
     @Index(columnList = "departures"),
 })
 @SuppressWarnings("WeakerAccess")
-public  class Airport implements Serializable  {
+public class Airport implements Serializable  {
 
     @Id
     private String icao;

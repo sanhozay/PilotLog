@@ -98,6 +98,11 @@ public class AirportService {
     // Query methods
 
     @Transactional(readOnly = true)
+    public AirportInfo findAirportInfoByIcao(String icao) {
+        return airportInfoRepository.getAirportInfo(icao);
+    }
+
+    @Transactional(readOnly = true)
     public List<Airport> findAllAirports() {
         return airportRepository.findAll();
     }
