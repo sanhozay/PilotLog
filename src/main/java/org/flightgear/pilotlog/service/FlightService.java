@@ -21,13 +21,15 @@ package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Coordinate;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.dto.TrackPointDTO;
-import org.flightgear.pilotlog.integration.FlightRepository;
 import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.domain.TrackPoint;
+import org.flightgear.pilotlog.dto.FlightDTO;
+import org.flightgear.pilotlog.dto.TrackPointDTO;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.flightgear.pilotlog.integration.TrackPointRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.ExampleMatcher;
@@ -327,6 +329,18 @@ public class FlightService {
             throw new FlightNotFoundException(message);
         }
         return optional.get();
+    }
+
+    @Transactional(readOnly = true)
+    public FlightDTO latestFlight() {
+        Flight flight = flightRepository.findFirstByOrderByStartTimeDesc();
+        TrackPointDTO latestTrack = trackPointRepository.findFirstByFlightIdOrderByOdometerDesc(flight.getId());
+        FlightDTO flightDTO = new FlightDTO();
+        BeanUtils.copyProperties(flight, flightDTO);
+        flightDTO.setCoordinate(latestTrack.getCoordinate());
+        flightDTO.setCurrentAltitude(latestTrack.getAltitude());
+        flightDTO.setTimestamp(latestTrack.getTimestamp());
+        return flightDTO;
     }
 
     @Transactional(readOnly = true)

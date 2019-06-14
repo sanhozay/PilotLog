@@ -34,4 +34,6 @@ public interface TrackPointRepository extends JpaRepository<TrackPoint, Long> {
 
     List<TrackPointDTO> findByFlightIdOrderByOdometer(int id);
 
+    TrackPointDTO findFirstByFlightIdOrderByOdometerDesc(int id);
+
 }

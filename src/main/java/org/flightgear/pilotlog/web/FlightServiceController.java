@@ -24,6 +24,7 @@ import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.dto.AirportInfo;
+import org.flightgear.pilotlog.dto.FlightDTO;
 import org.flightgear.pilotlog.dto.Total;
 import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.dto.TrackPointDTO;
@@ -170,6 +171,11 @@ public class FlightServiceController {
     @GetMapping(path = "flights/flight/{id}", produces = APPLICATION_JSON_VALUE)
     public Flight flight(@PathVariable int id) {
         return flightService.findFlightById(id);
+    }
+
+    @GetMapping(path = "flights/flight/latest", produces = APPLICATION_JSON_VALUE)
+    public FlightDTO latestFlight() {
+        return flightService.latestFlight();
     }
 
     @GetMapping(path = "flights/flight/{id}/featurecollection", produces = APPLICATION_JSON_VALUE)

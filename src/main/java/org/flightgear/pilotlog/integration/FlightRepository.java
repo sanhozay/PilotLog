@@ -88,6 +88,13 @@ public interface FlightRepository extends JpaRepository<Flight, Integer> {
     List<Flight> findCompletedByOriginOrDestinationOrderByStartTimeDesc(@Param("icao") String icao);
 
     /**
+     * Finds the latest flight, regardless of status
+     *
+     * @return the latest flight
+     */
+    Flight findFirstByOrderByStartTimeDesc();
+
+    /**
      * Gets the total duration of all completed flights
      *
      * @return the total duration of completed flights
