@@ -28,7 +28,7 @@ spring:
     open-in-view: false
     show_sql: false
 logging:
-  file: ${HOME}/.h2/pilotlog.log
+  file: ${HOME}/.h2/logs/pilotlog.log
   level:
     root: info
 
