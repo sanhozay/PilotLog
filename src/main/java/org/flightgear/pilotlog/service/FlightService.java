@@ -36,10 +36,12 @@ import org.springframework.data.domain.ExampleMatcher;
 import org.springframework.data.domain.ExampleMatcher.StringMatcher;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Duration;
+import java.time.Instant;
 import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +54,7 @@ import java.util.Set;
  * @author Richard Senior
  */
 @Service
-@SuppressWarnings("WeakerAccess")
+@SuppressWarnings({"unused", "javadoc"})
 public class FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
@@ -101,6 +103,7 @@ public class FlightService {
 
         Flight flight = new Flight(callsign, aircraft, airport, startFuel, startOdometer);
         flight.setStartTime(new Date());
+        flight.setEndTime(new Date());
         flight.setStatus(FlightStatus.ACTIVE);
 
         Coordinate coordinate = new Coordinate(latitude, longitude);
@@ -140,10 +143,12 @@ public class FlightService {
             final String message = String.format("Attempt to end completed flight %s", flight);
             throw new InvalidFlightStatusException(message);
         }
+
         flight.setDestination(airport);
         flight.setEndFuel(endFuel);
         flight.setEndOdometer(endOdometer);
         flight.setEndTime(new Date());
+
         if (flight.getEndFuel() >= flight.getStartFuel()) {
             flight.setStatus(FlightStatus.INVALID);
             log.warn("Invalidated flight #{} because fuel has not decreased", flight.getId());
@@ -152,16 +157,17 @@ public class FlightService {
             flight.setStatus(FlightStatus.COMPLETE);
         }
 
-
         Coordinate coordinate = new Coordinate(latitude, longitude);
         TrackPoint trackPoint = new TrackPoint(altitude, endFuel, endOdometer, coordinate);
         trackPoint.setTimestamp(new Date());
         flight.addTrackPoint(trackPoint);
 
         updateComputedFields(flight);
-        aircraftService.updateSummary(flight.getAircraft());
-        airportService.updateSummary(flight.getOrigin());
-        airportService.updateSummary(flight.getDestination());
+        if (flight.isComplete()) {
+            aircraftService.updateSummary(flight.getAircraft());
+            airportService.updateSummary(flight.getOrigin());
+            airportService.updateSummary(flight.getDestination());
+        }
 
         log.info("Ended flight {}", flight);
         return flight;
@@ -276,9 +282,9 @@ public class FlightService {
                     flight.getStartTime().toInstant(),
                     flight.getEndTime().toInstant()
             ).getSeconds();
-            if (duration == 0 && flight.isComplete()) {
+            if (duration < 60 && flight.isComplete()) {
                 flight.setStatus(FlightStatus.INVALID);
-                log.warn("Invalidating flight {} because duration is zero", flight);
+                log.warn("Invalidating flight {} because duration is {}s", flight, duration);
             }
             flight.setDuration(duration);
         }
@@ -288,13 +294,13 @@ public class FlightService {
         if (flight.getStartOdometer() != null && flight.getEndOdometer() != null) {
             flight.setDistance(flight.getEndOdometer() - flight.getStartOdometer());
         }
-        if (flight.getFuelUsed() != null && flight.getDuration() != null && flight.getDuration() >= 10) {
+        if (flight.getFuelUsed() != null && flight.getDuration() != null && flight.getDuration() > 0) {
             flight.setFuelRate(3600 * flight.getFuelUsed() / flight.getDuration());
         }
-        if (flight.getEndFuel() != null && flight.getFuelRate() != null && flight.getFuelRate() > 0.0) {
+        if (flight.getEndFuel() != null && flight.getFuelRate() != null && flight.getFuelRate() > 0) {
             flight.setReserve(3600 * flight.getEndFuel() / flight.getFuelRate());
         }
-        if (flight.getDistance() != null && flight.getDuration() != null && flight.getDuration() >= 10) {
+        if (flight.getDistance() != null && flight.getDuration() != null && flight.getDuration() > 0) {
             flight.setGroundSpeed((int)(flight.getDistance() / (flight.getDuration() / 3600.0)));
         }
     }
@@ -319,12 +325,32 @@ public class FlightService {
         }
     }
 
+    /**
+     * Purges zombie flights.
+     *
+     * These are active or invalid flights that are not being actively updated.
+     */
+    @Transactional
+    @Scheduled(cron = "0 * * * * *")
+    public void purgeZombieFlights() {
+        Set<Flight> purgeable = new HashSet<>();
+        purgeable.addAll(flightRepository.findByStatus(FlightStatus.ACTIVE));
+        purgeable.addAll(flightRepository.findByStatus(FlightStatus.INVALID));
+        for (Flight flight : purgeable) {
+            Duration lastUpdate = Duration.between(flight.getEndTime().toInstant(), Instant.now());
+            if (lastUpdate.toSeconds() > 60) {
+                flightRepository.delete(flight);
+                log.info("Deleted unresponsive flight {}", flight);
+            }
+        }
+    }
+
     // Query methods
 
     @Transactional(readOnly = true)
     public Flight findFlightById(int id) {
         Optional<Flight> optional = flightRepository.findById(id);
-        if (!optional.isPresent()) {
+        if (optional.isEmpty()) {
             String message = String.format("Could not find flight by id %d", id);
             throw new FlightNotFoundException(message);
         }

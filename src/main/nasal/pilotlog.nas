@@ -117,9 +117,6 @@ var pirep = func {
 var pirepTimer = maketimer(10, pirep);
 
 setlistener("gear/gear/wow", func(node) {
-    if (getprop(inhibited))
-        return;
-    inhibit();
     if (!node.getBoolValue()) {
         departure();
         pirepTimer.start();
