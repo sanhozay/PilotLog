@@ -377,6 +377,7 @@ public class FlightServiceTest {
         flight.setEndFuel(50.0f);
         flight.setStartTime(new Date(0L));
         flight.setEndTime(new Date(3600 * 1000L));
+        flight.setStatus(FlightStatus.COMPLETE);
         // when updating the computed fields
         flightService.updateComputedFields(flight);
         // expect the fuel rate and reserve to be set correctly
@@ -404,6 +405,7 @@ public class FlightServiceTest {
         flight.setEndOdometer(100.0f);
         flight.setStartTime(new Date(0L));
         flight.setEndTime(new Date(3600 * 1000L));
+        flight.setStatus(FlightStatus.COMPLETE);
         // when updating the computed fields
         flightService.updateComputedFields(flight);
         // expect the ground speed to be set correctly

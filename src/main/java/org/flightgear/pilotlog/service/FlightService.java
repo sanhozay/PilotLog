@@ -47,6 +47,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.function.ToDoubleFunction;
 
 /**
  * Service for working with flights.
@@ -58,6 +59,9 @@ import java.util.Set;
 public class FlightService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
+
+    private static final int DEFAULT_SAMPLES = 12;
+    private static final float HOUR = 3600.0f;
 
     private final FlightRepository flightRepository;
     private final TrackPointRepository trackPointRepository;
@@ -71,6 +75,8 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
     private PageableUtil pageableUtil;
 
+    private int movingAverageSamples;
+
     public FlightService(FlightRepository flightRepository,
         TrackPointRepository trackPointRepository,
         AircraftService aircraftService,
@@ -80,6 +86,8 @@ public class FlightService {
         this.trackPointRepository = trackPointRepository;
         this.aircraftService = aircraftService;
         this.airportService = airportService;
+
+        movingAverageSamples = DEFAULT_SAMPLES;
     }
 
     /**
@@ -288,21 +296,56 @@ public class FlightService {
             }
             flight.setDuration(duration);
         }
+
         if (flight.getStartFuel() != null && flight.getEndFuel() != null) {
             flight.setFuelUsed(flight.getStartFuel() - flight.getEndFuel());
         }
+
         if (flight.getStartOdometer() != null && flight.getEndOdometer() != null) {
             flight.setDistance(flight.getEndOdometer() - flight.getStartOdometer());
         }
+
         if (flight.getFuelUsed() != null && flight.getDuration() != null && flight.getDuration() > 0) {
-            flight.setFuelRate(3600 * flight.getFuelUsed() / flight.getDuration());
+            if (flight.isComplete() || !flight.isTracked() || flight.getTrack().size() < movingAverageSamples) {
+                flight.setFuelRate(HOUR * flight.getFuelUsed() / flight.getDuration());
+            } else {
+                flight.setFuelRate(movingAverageRate(TrackPoint::getFuel, flight.getTrack(), movingAverageSamples));
+            }
         }
+
         if (flight.getEndFuel() != null && flight.getFuelRate() != null && flight.getFuelRate() > 0) {
-            flight.setReserve(3600 * flight.getEndFuel() / flight.getFuelRate());
+            flight.setReserve(HOUR * flight.getEndFuel() / flight.getFuelRate());
         }
+
         if (flight.getDistance() != null && flight.getDuration() != null && flight.getDuration() > 0) {
-            flight.setGroundSpeed((int)(flight.getDistance() / (flight.getDuration() / 3600.0)));
+            if (flight.isComplete() || !flight.isTracked() || flight.getTrack().size() < movingAverageSamples) {
+                float groundSpeed = HOUR * flight.getDistance() / flight.getDuration();
+                flight.setGroundSpeed(Math.round(groundSpeed));
+            } else {
+                float groundSpeed = movingAverageRate(TrackPoint::getOdometer, flight.getTrack(), movingAverageSamples);
+                flight.setGroundSpeed(Math.round(groundSpeed));
+            }
         }
+    }
+
+    float movingAverageRate(ToDoubleFunction<TrackPoint> property, List<TrackPoint> track, int samples) {
+        if (track.size() < samples) {
+            throw new IllegalArgumentException("Insufficient samples in track for requested number of samples");
+        }
+
+        int last = track.size() - 1;
+        TrackPoint pointA = track.get(last - (samples - 1));
+        TrackPoint pointB = track.get(last);
+
+        float valueA = (float)property.applyAsDouble(pointA);
+        float valueB = (float)property.applyAsDouble(pointB);
+        float delta = Math.abs(valueA - valueB);
+
+        Instant timeA = pointA.getTimestamp().toInstant();
+        Instant timeB = pointB.getTimestamp().toInstant();
+        Duration duration = Duration.between(timeA, timeB);
+
+        return HOUR * 1000 * (delta / duration.toMillis());
     }
 
     @Transactional
@@ -415,6 +458,15 @@ public class FlightService {
     @Autowired(required = false)
     public void setPageableUtil(PageableUtil pageableUtil) {
         this.pageableUtil = pageableUtil;
+    }
+
+
+    public int getMovingAverageSamples() {
+        return movingAverageSamples;
+    }
+
+    public void setMovingAverageSamples(int movingAverageSamples) {
+        this.movingAverageSamples = movingAverageSamples;
     }
 
 }
