@@ -75,7 +75,7 @@ public class FlightService {
             .withStringMatcher(StringMatcher.STARTING);
     private PageableUtil pageableUtil;
 
-    private int movingAverageSamples;
+    private final int movingAverageSamples;
 
     public FlightService(FlightRepository flightRepository,
         TrackPointRepository trackPointRepository,
@@ -463,10 +463,6 @@ public class FlightService {
 
     public int getMovingAverageSamples() {
         return movingAverageSamples;
-    }
-
-    public void setMovingAverageSamples(int movingAverageSamples) {
-        this.movingAverageSamples = movingAverageSamples;
     }
 
 }
