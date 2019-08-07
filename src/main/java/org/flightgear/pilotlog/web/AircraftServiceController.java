@@ -67,17 +67,25 @@ public class AircraftServiceController {
     }
 
     private Total<Long> totalOf(ToLongFunction<Aircraft> function, Page<Aircraft> page, Long grandTotal) {
+        if (page.getTotalPages() == 1) {
+            long total = Math.round(grandTotal);
+            return new Total<>(total, total);
+        }
         long pageTotal = page.getContent().parallelStream()
                 .mapToLong(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }
 
-    private Total<Double> totalOf(ToDoubleFunction<Aircraft> function, Page<Aircraft> page, Double grandTotal) {
+    private Total<Long> totalOf(ToDoubleFunction<Aircraft> function, Page<Aircraft> page, Double grandTotal) {
+        if (page.getTotalPages() == 1) {
+            long total = Math.round(grandTotal);
+            return new Total<>(total, total);
+        }
         double pageTotal = page.getContent().parallelStream()
                 .mapToDouble(function)
                 .sum();
-        return new Total<>(pageTotal, grandTotal);
+        return new Total<>(Math.round(pageTotal), Math.round(grandTotal));
     }
 
 }

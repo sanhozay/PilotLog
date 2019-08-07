@@ -93,9 +93,9 @@ public class AircraftServiceControllerTest {
         // and the correct number of elements
         assertThat(page.getTotalElements()).isEqualTo(aircraftService.findAllAircraft().size());
         // and totals for distance, duration, flights and fuel
-        assertThat(page.getTotals().get("distance").getTotal()).isEqualTo(aircraft.getTotalDistance());
+        assertThat(page.getTotals().get("distance").getTotal()).isEqualTo(aircraft.getTotalDistance().longValue());
         assertThat(page.getTotals().get("duration").getTotal()).isEqualTo(aircraft.getTotalDuration());
         assertThat(page.getTotals().get("flights").getTotal()).isEqualTo(aircraft.getTotalFlights());
-        assertThat(page.getTotals().get("fuel").getTotal()).isEqualTo(aircraft.getTotalFuel());
+        assertThat(page.getTotals().get("fuel").getTotal()).isEqualTo(aircraft.getTotalFuel().longValue());
     }
 }

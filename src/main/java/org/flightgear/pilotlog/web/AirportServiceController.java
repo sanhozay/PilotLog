@@ -78,6 +78,9 @@ public class AirportServiceController {
     }
 
     private Total<Integer> totalOf(ToIntFunction<Airport> function, Page<Airport> page, Integer grandTotal) {
+        if (page.getTotalPages() == 1) {
+            return new Total<>(grandTotal, grandTotal);
+        }
         int pageTotal = page.getContent().parallelStream()
                 .mapToInt(function)
                 .sum();
