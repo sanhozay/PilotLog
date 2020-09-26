@@ -47,6 +47,10 @@ processResources {
     outputs.upToDateWhen { false }
 }
 
+test {
+    systemProperty 'spring.profiles.active', 'test'
+}
+
 tasks.withType(JavaCompile) {
     options.compilerArgs << '-Xlint:unchecked'
     options.deprecation = true
