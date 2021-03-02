@@ -23,6 +23,7 @@ logging.level:
 spring:
   profiles: production
   datasource.url: jdbc:h2:file:~/.h2/pilotlog
+  h2.console.enabled: true
   jpa:
     hibernate.ddl-auto: update
     open-in-view: false
