@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  *
  * @author Richard Senior
  */
-@SuppressWarnings("serial")
+@SuppressWarnings({"serial", "WeakerAccess"})
 @ResponseStatus(code = HttpStatus.BAD_REQUEST)
 public class InvalidFlightException extends RuntimeException {
 

@@ -21,36 +21,43 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Pilot Log</title>
-    <link href="css/normalize.css" rel="stylesheet" type="text/css"/>
-    <link href="css/pilotlog.css" rel="stylesheet" type="text/css">
+    <title>PilotLog</title>
+    <link href="css/normalize.css" rel="stylesheet"/>
+    <link href="css/pilotlog.css" rel="stylesheet"/>
+    <link href="https://unpkg.com/leaflet@1.3.4/dist/leaflet.css" rel="stylesheet"/>
 </head>
 <body ng-app="application">
-    <header>
-        <heading title="Flight Record"
-                 url="https://github.com/sanhozay/PilotLog"
-                 version="${projectVersion ?: ''}">
-        </heading>
-    </header>
     <content>
         <ng-view></ng-view>
     </content>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-cookies.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.4/angular-route.js"></script>
+    <script src="https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.2/Chart.js"></script>
     <script src="js/application.js"></script>
+    <script src="js/aircraftsummary/aircraftsummary.module.js"></script>
+    <script src="js/airportsummary/airportsummary.module.js"></script>
     <script src="js/core/core.module.js"></script>
-    <script src="js/aircraft/aircraft.module.js"></script>
+    <script src="js/flightdetail/flightdetail.module.js"></script>
     <script src="js/flightrecord/flightrecord.module.js"></script>
-    <script src="js/core/filters/capitalize.filter.js"></script>
-    <script src="js/core/filters/duration.filter.js"></script>
+    <script src="js/aircraftsummary/aircraftsummary.component.js"></script>
+    <script src="js/aircraftsummary/components/aircraft.component.js"></script>
+    <script src="js/airportsummary/airportsummary.component.js"></script>
+    <script src="js/airportsummary/components/airports.component.js"></script>
+    <script src="js/airportsummary/components/airportmap.component.js"></script>
     <script src="js/core/components/heading.component.js"></script>
     <script src="js/core/components/pager.component.js"></script>
-    <script src="js/core/components/status.component.js"></script>
-    <script src="js/aircraft/components/aircraft.component.js"></script>
-    <script src="js/aircraft/components/summary.component.js"></script>
-    <script src="js/flightrecord/components/flightrecord.component.js"></script>
+    <script src="js/core/filters/capitalize.filter.js"></script>
+    <script src="js/core/filters/duration.filter.js"></script>
+    <script src="js/flightdetail/components/altitude.component.js"></script>
+    <script src="js/flightdetail/components/flight.component.js"></script>
+    <script src="js/flightdetail/components/map.component.js"></script>
+    <script src="js/flightdetail/components/leafletRotatedMarker/leaflet.rotatedMarker.js"></script>
+    <script src="js/flightdetail/flightdetail.component.js"></script>
     <script src="js/flightrecord/components/flights.component.js"></script>
     <script src="js/flightrecord/components/search.component.js"></script>
+    <script src="js/flightrecord/components/status.component.js"></script>
+    <script src="js/flightrecord/flightrecord.component.js"></script>
 </body>
 </html>

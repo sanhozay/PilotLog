@@ -20,14 +20,14 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AircraftService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -36,11 +36,12 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("javadoc")
 public class AircraftServiceControllerTest {
 
     @Mock
@@ -64,16 +65,24 @@ public class AircraftServiceControllerTest {
                 .thenReturn(content);
         when(aircraftService.findAllAircraft(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(content));
+
+        when(aircraftService.getTotalDistance()).thenReturn(aircraft.getTotalDistance());
+        when(aircraftService.getTotalDuration()).thenReturn(aircraft.getTotalDuration());
+        when(aircraftService.getTotalFuel()).thenReturn(aircraft.getTotalFuel());
+        when(aircraftService.getTotalFlights()).thenReturn(aircraft.getTotalFlights());
     }
 
     @Test
     public void testAircraftGetRequest() {
         // Given a pageable instance
-        Pageable pageable = new PageRequest(0, 10);
+        Pageable pageable = PageRequest.of(0, 10);
         // when getting an aircraft summary
         TotalsAwarePage<Aircraft> page = controller.aircraft(pageable);
-        // expect all aircraft to be requested from the aircraft service
-        verify(aircraftService).findAllAircraft();
+        // and totals to be requested for distance, fuel, flights and duration
+        verify(aircraftService).getTotalDistance();
+        verify(aircraftService).getTotalFuel();
+        verify(aircraftService).getTotalFlights();
+        verify(aircraftService).getTotalDuration();
         // and a page of aircraft to be requested from the aircraft service
         verify(aircraftService).findAllAircraft(pageable);
         // and the resulting page to have the correct content
@@ -84,9 +93,9 @@ public class AircraftServiceControllerTest {
         // and the correct number of elements
         assertThat(page.getTotalElements()).isEqualTo(aircraftService.findAllAircraft().size());
         // and totals for distance, duration, flights and fuel
-        assertThat(page.getTotals().get("distance").getTotal()).isEqualTo(aircraft.getTotalDistance());
+        assertThat(page.getTotals().get("distance").getTotal()).isEqualTo(aircraft.getTotalDistance().longValue());
         assertThat(page.getTotals().get("duration").getTotal()).isEqualTo(aircraft.getTotalDuration());
         assertThat(page.getTotals().get("flights").getTotal()).isEqualTo(aircraft.getTotalFlights());
-        assertThat(page.getTotals().get("fuel").getTotal()).isEqualTo(aircraft.getTotalFuel());
+        assertThat(page.getTotals().get("fuel").getTotal()).isEqualTo(aircraft.getTotalFuel().longValue());
     }
 }

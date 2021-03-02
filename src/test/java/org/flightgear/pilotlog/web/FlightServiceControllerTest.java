@@ -22,14 +22,14 @@ package org.flightgear.pilotlog.web;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import org.flightgear.pilotlog.domain.Flight;
 import org.flightgear.pilotlog.domain.FlightStatus;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.FlightService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.runners.MockitoJUnitRunner;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -38,13 +38,14 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyFloat;
-import static org.mockito.Matchers.anyString;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyFloat;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
+@SuppressWarnings("javadoc")
 public class FlightServiceControllerTest {
 
     @Mock
@@ -61,8 +62,10 @@ public class FlightServiceControllerTest {
         flight.setStatus(FlightStatus.COMPLETE);
         flight.setDuration(3600);
 
-        when(flightService.beginFlight(anyString(), anyString(), anyString(), anyFloat(), anyFloat()))
-                .thenReturn(new Flight());
+        when(flightService.beginFlight(
+                anyString(), anyString(), anyString(),
+                anyFloat(), anyFloat(), anyFloat(), anyFloat(), anyFloat())
+        ).thenReturn(new Flight());
 
         when(flightService.findFlightsByExample(any(Flight.class)))
                 .thenReturn(Collections.singletonList(flight));
@@ -77,11 +80,16 @@ public class FlightServiceControllerTest {
     public void testDeparture() {
         // Given some flight parameters
         String callsign = "G-SHOZ", aircraft = "pup100", airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 100.0f;
+        float latitude = 51.0f, longitude = 1.0f;
         // When beginning a flight
-        Flight flight = controller.departure(callsign, aircraft, airport, fuel, odometer);
+        Flight flight = controller.departure(
+                callsign, aircraft, airport, altitude, fuel, odometer, latitude, longitude
+        );
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.beginFlight(callsign, aircraft, airport, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.beginFlight(
+                callsign, aircraft, airport, altitude, fuel, odometer, latitude, longitude
+        ));
     }
 
     @Test
@@ -89,11 +97,14 @@ public class FlightServiceControllerTest {
         // Given some flight parameters
         int id = 100;
         String airport = "EGCJ";
-        float fuel = 20.0f, odometer = 0.0f;
+        float fuel = 20.0f, odometer = 0.0f, altitude = 100.0f;
+        float latitude = 51.0f, longitude = 1.0f;
         // When ending a flight
-        Flight flight = controller.arrival(id, airport, fuel, odometer);
+        Flight flight = controller.arrival(id, airport, altitude, fuel, odometer, latitude, longitude);
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.endFlight(id, airport, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.endFlight(
+                id, airport, altitude, fuel, odometer, latitude, longitude
+        ));
     }
 
     @Test
@@ -111,16 +122,20 @@ public class FlightServiceControllerTest {
         // Given some flight parameters
         int id = 100;
         float altitude = 10000, fuel = 18.0f, odometer = 10.0f;
+        float latitude = 51.0f, longitude = 1.0f;
+        float heading = 180.0f;
         // When invalidating a flight
-        Flight flight = controller.pirep(id, altitude, fuel, odometer);
+        Flight flight = controller.pirep(id, altitude, fuel, odometer, latitude, longitude, heading);
         // expect the value returned from the flight service be returned from the method
-        assertThat(flight).isEqualTo(flightService.updateFlight(id, altitude, fuel, odometer));
+        assertThat(flight).isEqualTo(flightService.updateFlight(
+                id, altitude, fuel, odometer, latitude, longitude, heading
+        ));
     }
 
     @Test
     public void testFlightsGetRequest() {
         // Given a pageable instance and an example flight
-        Pageable pageable = new PageRequest(0, 10);
+        Pageable pageable = PageRequest.of(0, 10);
         Flight example = new Flight();
         // when getting a page of flights
         TotalsAwarePage<Flight> page = controller.flights(example, pageable);
@@ -161,9 +176,9 @@ public class FlightServiceControllerTest {
         String csv = controller.flightsCSV();
         // expect the method to return all flights in CSV format
         assertThat(csv.replaceAll("[\r\n\t ]+", "")).isEqualTo("id,callsign,aircraft,origin,startTime," +
-                "startFuel,startOdometer,destination,endTime,endFuel,endOdometer," +
-                "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve" +
-                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,3600,COMPLETE,,true,");
+                "startFuel,startOdometer,heading,destination,endTime,endFuel,endOdometer," +
+                "fuelUsed,fuelRate,distance,groundSpeed,duration,status,altitude,complete,reserve,tracked" +
+                "0,G-SHOZ,EGCJ,pup100,,20.0,0.0,,,,,,,,,,3600,COMPLETE,,true,,");
     }
 
 }

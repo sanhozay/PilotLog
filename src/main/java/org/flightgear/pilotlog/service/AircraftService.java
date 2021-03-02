@@ -20,21 +20,23 @@
 package org.flightgear.pilotlog.service;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.AircraftRepository;
-import org.flightgear.pilotlog.domain.FlightRepository;
+import org.flightgear.pilotlog.integration.AircraftRepository;
+import org.flightgear.pilotlog.integration.FlightRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+/**
+ * Aircraft service.
+ *
+ * @author Richard Senior
+ */
 @Service
-@Transactional
 public class AircraftService {
 
     private static final Logger log = LoggerFactory.getLogger(FlightService.class);
@@ -43,7 +45,6 @@ public class AircraftService {
     private final FlightRepository flightRepository;
     private final PageableUtil pageableUtil;
 
-    @Autowired
     public AircraftService(
             AircraftRepository aircraftRepository,
             FlightRepository flightRepository,
@@ -53,6 +54,21 @@ public class AircraftService {
         this.flightRepository = flightRepository;
         this.pageableUtil = pageableUtil;
     }
+
+    @Transactional
+    public void updateSummary(String model) {
+        Aircraft summary = flightRepository.aircraftSummaryByModel(model);
+        if (summary == null) {
+            Aircraft aircraft = aircraftRepository.findAircraftByModel(model);
+            if (aircraft != null) {
+                aircraftRepository.delete(aircraft);
+            }
+        } else {
+            aircraftRepository.save(summary);
+        }
+    }
+
+    // Query methods
 
     @Transactional(readOnly = true)
     public List<Aircraft> findAllAircraft() {
@@ -65,12 +81,24 @@ public class AircraftService {
         return aircraftRepository.findAll(pageable);
     }
 
-    @Transactional(propagation = Propagation.MANDATORY)
-    public void updateSummary(String model) {
-        Aircraft summary = flightRepository.aircraftSummaryByModel(model);
-        if (summary != null) {
-            aircraftRepository.save(summary);
-        }
+    @Transactional(readOnly = true)
+    public double getTotalDistance() {
+        return aircraftRepository.getTotalDistance();
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalDuration() {
+        return aircraftRepository.getTotalDuration();
+    }
+
+    @Transactional(readOnly = true)
+    public long getTotalFlights() {
+        return aircraftRepository.getTotalFlights();
+    }
+
+    @Transactional(readOnly = true)
+    public double getTotalFuel() {
+        return aircraftRepository.getTotalFuel();
     }
 
 }

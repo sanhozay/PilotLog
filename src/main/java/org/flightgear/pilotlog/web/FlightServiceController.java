@@ -23,12 +23,20 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.dataformat.csv.CsvMapper;
 import com.fasterxml.jackson.dataformat.csv.CsvSchema;
 import org.flightgear.pilotlog.domain.Flight;
-import org.flightgear.pilotlog.domain.Total;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
-import org.flightgear.pilotlog.service.FlightService;
+import org.flightgear.pilotlog.dto.AirportInfo;
+import org.flightgear.pilotlog.dto.FlightDTO;
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.TrackPointDTO;
+import org.flightgear.pilotlog.service.AirportService;
 import org.flightgear.pilotlog.service.FlightNotFoundException;
+import org.flightgear.pilotlog.service.FlightService;
 import org.flightgear.pilotlog.service.InvalidFlightStatusException;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.geojson.Feature;
+import org.geojson.FeatureCollection;
+import org.geojson.LineString;
+import org.geojson.LngLatAlt;
+import org.geojson.Point;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -41,10 +49,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.text.DateFormat;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.ToIntFunction;
+import java.util.stream.Collectors;
 
 import static org.springframework.data.domain.Sort.Direction.DESC;
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
@@ -58,12 +69,14 @@ import static org.springframework.http.MediaType.TEXT_XML_VALUE;
  */
 @RestController
 @RequestMapping("/api")
+@SuppressWarnings("WeakerAccess")
 public class FlightServiceController {
 
     private final FlightService flightService;
+    private final AirportService airportService;
 
-    @Autowired
-    public FlightServiceController(FlightService flightService) {
+    public FlightServiceController(FlightService flightService, AirportService airportService) {
+        this.airportService = airportService;
         this.flightService = flightService;
     }
 
@@ -74,19 +87,30 @@ public class FlightServiceController {
             @RequestParam("callsign") String callsign,
             @RequestParam("aircraft") String aircraft,
             @RequestParam("airport") String airport,
+            @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float startFuel,
-            @RequestParam("odometer") float startOdometer) {
-        return flightService.beginFlight(callsign, aircraft, airport, startFuel, startOdometer);
+            @RequestParam("odometer") float startOdometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude) {
+        return flightService.beginFlight(
+                callsign, aircraft, airport, altitude, startFuel,
+                startOdometer, latitude, longitude
+        );
     }
 
     @GetMapping(path = "arrival", produces = TEXT_XML_VALUE)
     public Flight arrival(
             @RequestParam("id") int id,
             @RequestParam("airport") String airport,
+            @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float endFuel,
-            @RequestParam("odometer") float endOdometer)
+            @RequestParam("odometer") float endOdometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return flightService.endFlight(id, airport, endFuel, endOdometer);
+        return flightService.endFlight(
+                id, airport, altitude, endFuel, endOdometer, latitude, longitude
+        );
     }
 
     @GetMapping(path = "invalidate", produces = TEXT_XML_VALUE)
@@ -100,9 +124,12 @@ public class FlightServiceController {
             @RequestParam("id") int id,
             @RequestParam("altitude") float altitude,
             @RequestParam("fuel") float fuel,
-            @RequestParam("odometer") float odometer)
+            @RequestParam("odometer") float odometer,
+            @RequestParam("latitude") float latitude,
+            @RequestParam("longitude") float longitude,
+            @RequestParam("heading") float heading)
             throws FlightNotFoundException, InvalidFlightStatusException {
-        return flightService.updateFlight(id, altitude, fuel, odometer);
+        return flightService.updateFlight(id, altitude, fuel, odometer, latitude, longitude, heading);
     }
 
     // Additional endpoints
@@ -124,7 +151,7 @@ public class FlightServiceController {
         flightService.deleteFlight(id);
     }
 
-    @GetMapping(path = "flights.json", produces = {APPLICATION_JSON_VALUE})
+    @GetMapping(path = "flights.json", produces = APPLICATION_JSON_VALUE)
     public List<Flight> flightsJSON() {
         return flightService.findAllFlights();
     }
@@ -139,6 +166,73 @@ public class FlightServiceController {
         final CsvMapper mapper = new CsvMapper();
         final CsvSchema schema = mapper.schemaFor(Flight.class).withHeader();
         return mapper.writer(schema).writeValueAsString(flightService.findAllFlights());
+    }
+
+    @GetMapping(path = "flights/flight/{id}", produces = APPLICATION_JSON_VALUE)
+    public Flight flight(@PathVariable int id) {
+        return flightService.findFlightById(id);
+    }
+
+    @GetMapping(path = "flights/flight/latest", produces = APPLICATION_JSON_VALUE)
+    public FlightDTO latestFlight() {
+        return flightService.latestFlight();
+    }
+
+    @GetMapping(path = "flights/flight/{id}/featurecollection", produces = APPLICATION_JSON_VALUE)
+    public FeatureCollection featureCollection(@PathVariable int id) {
+
+        Flight flight = flightService.findFlightById(id);
+        if (!flight.isTracked()) {
+            return new FeatureCollection();
+        }
+
+        List<TrackPointDTO> trackPoints = flightService.getTrackForFlightWithId(id);
+        List<LngLatAlt> points = trackPoints.parallelStream().map(trackPoint -> new LngLatAlt(
+            trackPoint.getCoordinate().getLongitude(),
+            trackPoint.getCoordinate().getLatitude(),
+            trackPoint.getAltitude()
+        )).collect(Collectors.toList());
+
+        FeatureCollection featureCollection = new FeatureCollection();
+        DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.MEDIUM, DateFormat.MEDIUM);
+
+        AirportInfo originInfo = airportService.getAirportInfo(flight.getOrigin());
+        Feature origin = new Feature();
+        origin.setGeometry(new Point(points.get(0)));
+        origin.setProperty("icao", flight.getOrigin());
+        origin.setProperty("name", originInfo != null ? originInfo.getName() : "");
+        origin.setProperty("type", "O");
+        origin.setProperty("date", dateFormat.format(flight.getStartTime()));
+        featureCollection.add(origin);
+
+        if (points.size() > 1) {
+            Feature track = new Feature();
+            LngLatAlt[] p = points.toArray(new LngLatAlt[0]);
+            track.setGeometry(new LineString(p));
+            featureCollection.add(track);
+        }
+
+        if (flight.getDestination() != null) {
+            AirportInfo destinationInfo = airportService.getAirportInfo(flight.getDestination());
+            Feature destination = new Feature();
+            destination.setGeometry(new Point(points.get(points.size() - 1)));
+            destination.setProperty("icao", flight.getDestination());
+            destination.setProperty("name", destinationInfo != null ? destinationInfo.getName() : "");
+            destination.setProperty("type", "D");
+            destination.setProperty("date", dateFormat.format(flight.getEndTime()));
+            featureCollection.add(destination);
+        }
+
+        return featureCollection;
+    }
+
+    @GetMapping(path = "flights/flight/{id}/track", produces = APPLICATION_JSON_VALUE)
+    public List<TrackPointDTO> flightTrack(@PathVariable int id) {
+        Flight flight = flightService.findFlightById(id);
+        if (!flight.isTracked()) {
+            return new ArrayList<>();
+        }
+        return flightService.getTrackForFlightWithId(id);
     }
 
     private Total<Integer> totalOf(ToIntFunction<Flight> function, Page<Flight> page, List<Flight> matches) {

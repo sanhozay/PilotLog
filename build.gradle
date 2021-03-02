@@ -1,47 +1,61 @@
 plugins {
     id 'java'
-    id "org.springframework.boot" version "1.5.10.RELEASE"
+    id "org.springframework.boot" version "2.4.3"
+    id "io.spring.dependency-management" version "1.0.11.RELEASE"
 }
 
 repositories {
     mavenCentral()
 }
 
-version = '1.1.0'
+version = '2.0.0'
+
+sourceCompatibility = '14'
+targetCompatibility = '14'
 
 dependencies {
-    compile(
+    implementation(
         'org.springframework.boot:spring-boot-starter-web',
         'org.springframework.boot:spring-boot-starter-data-jpa',
         'org.springframework.boot:spring-boot-devtools',
         'com.fasterxml.jackson.core:jackson-core',
         'com.fasterxml.jackson.dataformat:jackson-dataformat-csv',
         'com.fasterxml.jackson.dataformat:jackson-dataformat-xml',
+        'de.grundid.opendatalab:geojson-jackson:1.14',
         'com.h2database:h2',
     )
-    testCompile (
+    testImplementation (
         'org.springframework.boot:spring-boot-starter-test',
         'net.sf.beanrunner:beanrunner:1.0.0',
     )
-}
-
-processResources {
-    filesMatching('static/index.html') {
-        expand projectVersion: version
-    }
 }
 
 jar {
     manifest {
         attributes(
             'Implementation-Title': 'PilotLog',
-            'Implementation-Version': version,
             'Main-Class': 'org.flightgear.pilotlog.Application'
         )
     }
 }
 
-springBoot {
-    executable = true
+processResources {
+    filesMatching('static/js/core/components/heading.component.js') {
+        expand projectVersion: version
+    }
+    outputs.upToDateWhen { false }
+}
+
+test {
+    systemProperty 'spring.profiles.active', 'test'
+}
+
+tasks.withType(JavaCompile) {
+    options.compilerArgs << '-Xlint:unchecked'
+    options.deprecation = true
+}
+
+bootJar {
+    launchScript()
 }
 

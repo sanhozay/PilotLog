@@ -19,6 +19,7 @@
 
 package org.flightgear.pilotlog.domain;
 
+import org.flightgear.pilotlog.dto.Total;
 import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;

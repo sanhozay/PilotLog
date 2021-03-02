@@ -20,9 +20,11 @@
 package org.flightgear.pilotlog.domain;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -30,13 +32,17 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Index;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import javax.persistence.Transient;
 import java.io.Serializable;
-import java.time.Duration;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -47,19 +53,21 @@ import java.util.Objects;
 @Entity
 @SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
-@JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer",
+@JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer", "heading",
         "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
         "distance", "groundSpeed", "duration", "status"})
 @Table(indexes = {
-        @Index(columnList = "aircraft"),
-        @Index(columnList = "callsign"),
-        @Index(columnList = "origin"),
-        @Index(columnList = "destination"),
+    @Index(columnList = "aircraft"),
+    @Index(columnList = "callsign"),
+    @Index(columnList = "origin"),
+    @Index(columnList = "destination"),
+    @Index(columnList = "startTime"),
 })
 public class Flight implements Serializable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "flight")
+    @SequenceGenerator(name = "flight", sequenceName = "flight_sequence", allocationSize = 1)
     private int id;
 
     private String callsign, aircraft, origin, destination;
@@ -77,10 +85,16 @@ public class Flight implements Serializable {
     @Enumerated(EnumType.STRING)
     private FlightStatus status;
 
+    @OneToMany(mappedBy = "flight", cascade = CascadeType.ALL)
+    @OrderBy("odometer")
+    @JsonIgnore
+    private List<TrackPoint> track;
+
     // Computed fields
 
     private Integer duration, groundSpeed, altitude;
-    private Float fuelUsed, fuelRate, reserve, distance;
+    private Float fuelUsed, fuelRate, reserve, distance, heading;
+    private Boolean tracked;
 
     public Flight() {}
 
@@ -100,6 +114,20 @@ public class Flight implements Serializable {
     @Transient
     public boolean isComplete() {
         return status == FlightStatus.COMPLETE;
+    }
+
+    /**
+     * Convenience method to add a track point.
+     *
+     * @param trackPoint the track point to add
+     */
+    public void addTrackPoint(TrackPoint trackPoint) {
+        if (track == null) {
+            track = new ArrayList<>();
+        }
+        trackPoint.setFlight(this);
+        track.add(trackPoint);
+        tracked = true;
     }
 
     // Accessors
@@ -256,25 +284,50 @@ public class Flight implements Serializable {
         this.reserve = reserve;
     }
 
+    public List<TrackPoint> getTrack() {
+        return track;
+    }
+
+    public void setTrack(List<TrackPoint> track) {
+        this.track = track;
+    }
+
+    public Float getHeading() {
+        return heading;
+    }
+
+    public void setHeading(Float heading) {
+        this.heading = heading;
+    }
+
+    public Boolean isTracked() {
+        return tracked;
+    }
+
+    public void setTracked(Boolean tracked) {
+        this.tracked = tracked;
+    }
+
     // Comparison and equality
 
     @Override
-    public int hashCode() {
-        return Objects.hash(startTime);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Flight flight = (Flight)o;
+        return Objects.equals(callsign, flight.callsign) &&
+            Objects.equals(aircraft, flight.aircraft) &&
+            Objects.equals(origin, flight.origin) &&
+            Objects.equals(startTime, flight.startTime) &&
+            Objects.equals(startFuel, flight.startFuel) &&
+            Objects.equals(startOdometer, flight.startOdometer) &&
+            status == flight.status &&
+            Objects.equals(altitude, flight.altitude);
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj)
-            return true;
-        if (obj == null)
-            return false;
-        if (getClass() != obj.getClass())
-            return false;
-        final Flight other = (Flight)obj;
-        if (startTime == null)
-            return other.startTime == null;
-        return startTime.equals(other.startTime);
+    public int hashCode() {
+        return Objects.hash(callsign, aircraft, origin, startTime, startFuel, startOdometer, status, altitude);
     }
 
     @Override

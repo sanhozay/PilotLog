@@ -1,25 +1,27 @@
-<div class="pageSizeChooser">
-    <label>Rows:</label>
-    <select ng-model="$ctrl.pageSize" ng-change="$ctrl.pageSizeChanged()">
-        <option value="6">6</option>
-        <option value="8">8</option>
-        <option value="10">10</option>
-        <option value="12">12</option>
-        <option value="16">16</option>
-        <option value="20">20</option>
-        <option value="50">50</option>
-        <option value="100">100</option>
-        <option value="200">200</option>
-        <option value="500">500</option>
-    </select>
-</div>
-<div class="pageBalloons" ng-hide="$ctrl.of <= 1">
-    <label>Page:</label>
-    <ol>
-        <li ng-repeat="page in $ctrl.pages()"
-            class="ng-class: (page < 0) ? 'spacer' : ((page == $ctrl.page) ? 'current' : 'page')"
-            ng-click="$ctrl.goto(page)">
-            {{page > 0 ? page : '...'}}
-        </li>
-    </ol>
+<div class="pager">
+    <div class="pageSizeChooser">
+        <label>Rows:</label>
+        <select ng-model="$ctrl.pageSize" ng-change="$ctrl.pageSizeChanged()">
+            <option value="6">6</option>
+            <option value="8">8</option>
+            <option value="10">10</option>
+            <option value="12">12</option>
+            <option value="16">16</option>
+            <option value="20">20</option>
+            <option value="50">50</option>
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="500">500</option>
+        </select>
+    </div>
+    <div class="pageBalloons" ng-hide="$ctrl.of <= 1">
+        <label>Page:</label>
+        <ol>
+            <li ng-repeat="page in $ctrl.pages()"
+                class="ng-class: (page < 0) ? 'spacer' : ((page == $ctrl.page) ? 'current' : 'page')"
+                ng-click="$ctrl.goto(page)">
+                {{page > 0 ? page : '...'}}
+            </li>
+        </ol>
+    </div>
 </div>

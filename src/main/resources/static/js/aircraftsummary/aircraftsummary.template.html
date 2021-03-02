@@ -1,0 +1,19 @@
+<div id="aircraftsummary">
+    <header>
+        <heading title="Aircraft Summary"
+                 url="https://github.com/sanhozay/PilotLog"
+        </heading>
+    </header>
+    <aircraft content="$ctrl.data.content"
+             totals="$ctrl.data.totals"
+             on-click-heading="$ctrl.headingClicked(property)">
+    </aircraft>
+    <footer>
+        <pager page="$ctrl.pageable.pageNumber"
+               of="$ctrl.data.totalPages"
+               page-size="$ctrl.pageable.size"
+               on-page-changed="$ctrl.refreshPage(page)"
+               on-page-size-changed="$ctrl.adjustPageSize(pageSize)">
+        </pager>
+    </footer>
+</div>

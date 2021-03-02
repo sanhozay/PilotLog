@@ -19,6 +19,8 @@
 
 package org.flightgear.pilotlog.domain;
 
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.junit.Test;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -41,7 +43,7 @@ public class TotalsAwarePageTest {
         List<String> content = Arrays.asList("A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M");
 
         // and a pageable
-        Pageable pageable = new PageRequest(0, 10);
+        Pageable pageable = PageRequest.of(0, 10);
 
         // and a total
         Total total = mock(Total.class);

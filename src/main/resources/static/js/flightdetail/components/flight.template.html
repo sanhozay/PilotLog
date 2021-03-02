@@ -1,0 +1,36 @@
+<div class="flight">
+    <table>
+        <tr>
+            <th>Aircraft Model</th>
+            <td>{{$ctrl.flight.aircraft | capitalize}}</td>
+        </tr>
+        <tr ng-show="$ctrl.flight.status != 'COMPLETE'">
+            <th>Origin</th>
+            <td>{{$ctrl.flight.origin}}</td>
+        </tr>
+        <tr ng-show="$ctrl.flight.status == 'COMPLETE'">
+            <th>Route</th>
+            <td>{{$ctrl.flight.origin}}-{{$ctrl.flight.destination}}</td>
+        </tr>
+        <tr>
+            <th>Flight Distance (nm)</th>
+            <td>{{$ctrl.flight.distance.toFixed()}}</td>
+        </tr>
+        <tr>
+            <th>Average Groundspeed (kt)</th>
+            <td>{{$ctrl.flight.groundSpeed}}</td>
+        </tr>
+        <tr>
+            <th>Maximum Altitude (ft)</th>
+            <td>{{$ctrl.flight.altitude.toFixed()}}</td>
+        </tr>
+        <tr>
+            <th>Flight Duration</th>
+            <td>{{$ctrl.flight.duration | duration}}</td>
+        </tr>
+        <tr>
+            <th>Fuel Reserve</th>
+            <td>{{$ctrl.flight.reserve | duration}}</td>
+        </tr>
+    </table>
+</div>

@@ -19,14 +19,14 @@
 
 package org.flightgear.pilotlog;
 
+import org.flightgear.pilotlog.domain.FlightStatus;
 import org.flightgear.pilotlog.service.AircraftService;
+import org.flightgear.pilotlog.service.AirportService;
 import org.flightgear.pilotlog.service.FlightService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -42,24 +42,36 @@ public class ApplicationInit implements CommandLineRunner {
     private static final Logger log = LoggerFactory.getLogger(ApplicationInit.class);
 
     private final AircraftService aircraftService;
+    private final AirportService airportService;
     private final FlightService flightService;
 
-    @Autowired
-    public ApplicationInit(AircraftService aircraftService, FlightService flightService) {
+    public ApplicationInit(
+        AircraftService aircraftService,
+        AirportService airportService,
+        FlightService flightService
+    ) {
         this.aircraftService = aircraftService;
+        this.airportService = airportService;
         this.flightService = flightService;
     }
 
     @Override
-    @Transactional
     public void run(String... args) {
-        log.info("Updating computed fields on all flights");
-        Set<String> models = new HashSet<>();
-        flightService.findAllFlights().forEach(flight -> {
+        log.info("Updating computed fields on completed flights");
+        Set<String> aircraft = new HashSet<>();
+        Set<String> airports = new HashSet<>();
+        flightService.findByStatusWithTrack(FlightStatus.COMPLETE).forEach(flight -> {
             flightService.updateComputedFields(flight);
-            models.add(flight.getAircraft());
+            flightService.updateTrackedStatus(flight);
+            aircraft.add(flight.getAircraft());
+            airports.add(flight.getOrigin());
+            airports.add(flight.getDestination());
         });
-        models.forEach(aircraftService::updateSummary);
+        log.info("Updating aircraft summaries");
+        aircraft.forEach(aircraftService::updateSummary);
+        log.info("Updating airport summaries");
+        airports.forEach(airportService::updateSummary);
+        log.info("Retrospective updates complete");
     }
 
 }

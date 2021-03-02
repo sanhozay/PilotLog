@@ -29,6 +29,7 @@ import java.io.Serializable;
  * @author Richard Senior
  */
 @Embeddable
+@SuppressWarnings("WeakerAccess")
 public class Statistic<T extends Number> implements Serializable {
 
     private T min, max;

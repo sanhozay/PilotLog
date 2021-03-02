@@ -6,6 +6,77 @@ body {
     min-width: 800px;
 }
 
+.altitude {
+    box-sizing: border-box;
+    clear: right;
+    float: right;
+    height: calc(100vh - 20px - 200px - 280px);
+    min-height: 200px;
+    padding: 10px;
+    width: 50%;
+}
+
+.altitude h1 {
+    font-size: 100%;
+    color: #666666;
+}
+
+.ct-chart {
+    height: 100%;
+    margin: 10px;
+}
+
+.flight {
+    box-sizing: border-box;
+    clear: both;
+    float: right;
+    height: 280px;
+    padding: 10px;
+    width: 50%;
+    margin-bottom: 30px;
+}
+
+.flight table {
+    font-size: 100%;
+    width: 100%;
+}
+
+.flight th {
+    font-family: sans-serif;
+    color: black;
+    text-align: left;
+}
+
+.map {
+    box-sizing: border-box;
+    clear: left;
+    padding: 10px;
+    width: 50%;
+}
+
+#map {
+    height: calc(100vh - 20px - 20px - 200px);
+}
+
+.airports table {
+    box-sizing: border-box;
+    clear: left;
+    padding: 10px;
+    width: 50%;
+}
+
+.airportmap {
+    box-sizing: border-box;
+    clear: both;
+    float: right;
+    padding: 0px 20px;
+    width: 50%;
+}
+
+#airportmap {
+    height: calc(100vh - 20px - 20px - 200px);
+}
+
 /* Heading */
 
 heading img {
@@ -13,7 +84,7 @@ heading img {
     width: 135px;
     height: 155px;
     margin-right: 10px;
-    margin-bottom: 1em;
+    margin-bottom: 10px;
 }
 
 heading .compositeTitle {
@@ -111,23 +182,14 @@ search form .buttons {
     float: right;
 }
 
-/* Views */
-
-flights, summary {
-    margin-top: 2em;
-    width: 100%;
-    clear: both;
-    min-width: 800px;
-}
-
 /* Tables */
 
 table {
-    border: solid #333333 4px;
-    padding: 1ex;
     border-collapse: collapse;
-    width: 100%;
+    border: solid #333333 4px;
     clear: both;
+    padding: 1ex;
+    width: 100%;
 }
 
 table caption {
@@ -218,6 +280,11 @@ footer {
     margin-top: 1em;
 }
 
+#airportsummary footer {
+    clear: left;
+    width: 50%;
+}
+
 /* Pager */
 
 pager {
@@ -285,4 +352,15 @@ status p {
     margin: 0;
     padding: 0;
     color: Gray;
+}
+
+/* Chartist overrides */
+
+.ct-series-a .ct-line {
+    stroke: DarkBlue;
+    stroke-width: 2px;
+}
+
+.ct-series-a .ct-point {
+    display: none;
 }

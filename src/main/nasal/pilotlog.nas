@@ -61,8 +61,11 @@ var departure = func {
     url ~= "?callsign="~getprop("sim/multiplay/callsign");
     url ~= "&aircraft="~getprop("sim/aero");
     url ~= "&airport="~getprop("sim/airport/closest-airport-id");
+    url ~= "&altitude="~getprop("position/altitude-ft");
     url ~= "&fuel="~getprop("consumables/fuel/total-fuel-gals");
     url ~= "&odometer="~getprop("instrumentation/gps/odometer");
+    url ~= "&latitude="~getprop("position/latitude-deg");
+    url ~= "&longitude="~getprop("position/longitude-deg");
     request(url);
 }
 
@@ -73,8 +76,11 @@ var arrival = func {
         url ~= "arrival";
         url ~= "?id="~id;
         url ~= "&airport="~getprop("sim/airport/closest-airport-id");
+        url ~= "&altitude="~getprop("position/altitude-ft");
         url ~= "&fuel="~getprop("consumables/fuel/total-fuel-gals");
         url ~= "&odometer="~getprop("instrumentation/gps/odometer");
+        url ~= "&latitude="~getprop("position/latitude-deg");
+        url ~= "&longitude="~getprop("position/longitude-deg");
         request(url);
     }
 }
@@ -99,6 +105,9 @@ var pirep = func {
         url ~= "&altitude="~getprop("position/altitude-ft");
         url ~= "&fuel="~getprop("consumables/fuel/total-fuel-gals");
         url ~= "&odometer="~getprop("instrumentation/gps/odometer");
+        url ~= "&latitude="~getprop("position/latitude-deg");
+        url ~= "&longitude="~getprop("position/longitude-deg");
+        url ~= "&heading="~getprop("orientation/heading-deg");
         request(url);
     }
 }
@@ -108,9 +117,6 @@ var pirep = func {
 var pirepTimer = maketimer(10, pirep);
 
 setlistener("gear/gear/wow", func(node) {
-    if (getprop(inhibited))
-        return;
-    inhibit();
     if (!node.getBoolValue()) {
         departure();
         pirepTimer.start();

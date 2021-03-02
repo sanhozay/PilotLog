@@ -20,10 +20,9 @@
 package org.flightgear.pilotlog.web;
 
 import org.flightgear.pilotlog.domain.Aircraft;
-import org.flightgear.pilotlog.domain.Total;
-import org.flightgear.pilotlog.domain.TotalsAwarePage;
+import org.flightgear.pilotlog.dto.Total;
+import org.flightgear.pilotlog.dto.TotalsAwarePage;
 import org.flightgear.pilotlog.service.AircraftService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -32,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.function.ToDoubleFunction;
 import java.util.function.ToLongFunction;
@@ -51,7 +49,6 @@ public class AircraftServiceController {
 
     private final AircraftService aircraftService;
 
-    @Autowired
     public AircraftServiceController(AircraftService aircraftService) {
         this.aircraftService = aircraftService;
     }
@@ -60,34 +57,35 @@ public class AircraftServiceController {
     public TotalsAwarePage<Aircraft> aircraft(
             @PageableDefault(sort = "totalFlights", direction = DESC) Pageable pageable
     ) {
-        List<Aircraft> all = aircraftService.findAllAircraft();
         Page<Aircraft> page = aircraftService.findAllAircraft(pageable);
         Map<String, Total> totals = new HashMap<>();
-        totals.put("distance", totalOf(Aircraft::getTotalDistance, all, page));
-        totals.put("duration", totalOf(Aircraft::getTotalDuration, all, page));
-        totals.put("flights", totalOf(Aircraft::getTotalFlights, all, page));
-        totals.put("fuel", totalOf(Aircraft::getTotalFuel, all, page));
+        totals.put("distance", totalOf(Aircraft::getTotalDistance, page, aircraftService.getTotalDistance()));
+        totals.put("duration", totalOf(Aircraft::getTotalDuration, page, aircraftService.getTotalDuration()));
+        totals.put("flights", totalOf(Aircraft::getTotalFlights, page, aircraftService.getTotalFlights()));
+        totals.put("fuel", totalOf(Aircraft::getTotalFuel, page, aircraftService.getTotalFuel()));
         return new TotalsAwarePage<>(page.getContent(), pageable, page.getTotalElements(), totals);
     }
 
-    private Total<Long> totalOf(ToLongFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
-        long grandTotal = all.parallelStream()
-                .mapToLong(function)
-                .sum();
+    private Total<Long> totalOf(ToLongFunction<Aircraft> function, Page<Aircraft> page, Long grandTotal) {
+        if (page.getTotalPages() == 1) {
+            long total = Math.round(grandTotal);
+            return new Total<>(total, total);
+        }
         long pageTotal = page.getContent().parallelStream()
                 .mapToLong(function)
                 .sum();
         return new Total<>(pageTotal, grandTotal);
     }
 
-    private Total<Double> totalOf(ToDoubleFunction<Aircraft> function, List<Aircraft> all, Page<Aircraft> page) {
-        double grandTotal = all.parallelStream()
-                .mapToDouble(function)
-                .sum();
+    private Total<Long> totalOf(ToDoubleFunction<Aircraft> function, Page<Aircraft> page, Double grandTotal) {
+        if (page.getTotalPages() == 1) {
+            long total = Math.round(grandTotal);
+            return new Total<>(total, total);
+        }
         double pageTotal = page.getContent().parallelStream()
                 .mapToDouble(function)
                 .sum();
-        return new Total<>(pageTotal, grandTotal);
+        return new Total<>(Math.round(pageTotal), Math.round(grandTotal));
     }
 
 }
