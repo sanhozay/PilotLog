@@ -1663,6 +1663,7 @@ SA2R:Baradero:-33.8133:-59.5000
 SA2S:Baradero Buenos Aires:-33.8620:-59.4716
 YBAD:Baradine:-30.9519:149.0836
 LEMD:Barajas:40.4872:-3.5628
+LECH:Castellon:40.1230:0.0429
 YBKU:Barakula:-26.4403:150.5160
 YBAB:Baralaba:-24.1899:149.8209
 UMMA:Baranovichi:53.0851:26.0309
@@ -1677,7 +1678,7 @@ SD77:Barber Strip:44.0036:-103.0203
 72GA:Barbour Island:31.5816:-81.2366
 TAPH:Barbuda/codrington:17.6152:-61.8348
 YBAR:Barcaldine:-23.5728:145.2999
-LEBL:Barcelona - El Prat:41.2878:2.0848
+LEBL:Barcelona:41.2878:2.0848
 SWBC:Barcelos:-0.9820:-62.9249
 TA73:Barclays Roost:29.9775:-99.1697
 ENDU:Bardufoss:69.0595:18.5098
@@ -2801,7 +2802,7 @@ NK83:Boss:42.7094:-74.2274
 04OH:Bossow:41.2447:-81.1002
 OK55:Bost Ranch:35.7177:-97.2261
 EG08:Boston:52.9746:-0.0764
-KBOS:Boston Logan Intl:42.3743:-71.0179
+KBOS:Boston Logan:42.3743:-71.0179
 VT23:Bostwick Farm:44.3675:-73.2500
 AK97:Boswell Bay:60.4216:-146.1525
 SIQE:Botelho:-15.9377:-47.7274
@@ -3153,7 +3154,7 @@ YBYI:Bruny Island:-43.2323:147.3782
 7V5:Brush Muni:40.2628:-103.5886
 5WA9:Brush Prairie Aerodrome:45.7238:-122.5499
 NE40:Brusnahan:40.7126:-96.8702
-EBBR:Brussels Airport:50.8989:4.4556
+EBBR:Brussels:50.8989:4.4556
 EBCI:Brussels South - Charleroi:50.4552:4.4367
 92MN:Brutlag Farms:46.0186:-96.1023
 YBYA:Bryah:-25.5140:118.8021
@@ -9775,7 +9776,7 @@ FY16:Ganab:-23.0993:15.5316
 85V:Ganado:35.7074:-109.5088
 SA5U:Gancedo Agroaire:-27.5026:-61.6595
 SA5V:Gancedo Pulverizaciones.m.h:-27.4822:-61.6533
-CYQX:Gander Intl:48.9208:-54.5683
+CYQX:Gander:48.9208:-54.5683
 EDWQ:Ganderkesee Atlas Airfield:53.0369:8.4999
 RKNN:Gangneung:37.7490:128.9292
 RCAY:Gangshan:22.7928:120.2616
@@ -10132,7 +10133,7 @@ KGDW:Gladwin Zettel Mem:43.9717:-84.4829
 98VA:Glascock:38.9457:-77.5429
 NE85:Glaser:41.6903:-98.3034
 06TA:Glaser Field:30.9059:-97.1173
-EGPF:Glasgow:55.8635:-4.4491
+EGPF:Glasgow International:55.8635:-4.4491
 07MT:Glasgow Industrial:48.4303:-106.5518
 KGLW:Glasgow Muni:37.0295:-85.9624
 ED07:Glashuetten - Oberems:50.2435:8.3965
@@ -13180,7 +13181,7 @@ EK31:Kastbjerg:56.6395:10.1615
 LGTL:Kasteli:35.1793:25.3215
 UT11:Kastler Compressor Station:40.9912:-109.2038
 RJTR:Kastner Aaf:35.5112:139.3932
-EKCH:Kastrup:55.6031:12.6330
+EKCH:Copenhagen Kastrup:55.6031:12.6330
 RJAK:Kasumigaura Ab:36.0299:140.1936
 RJSU:Kasuminome Ab:38.2346:140.9234
 FWKG:Kasungu:-13.0161:33.4633
@@ -15625,7 +15626,7 @@ YMAX:Manbullo:-14.5934:132.1843
 D90:Mancelona Municipal:44.9297:-85.0673
 KMHT:Manchester:42.9418:-71.4396
 EGCB:Manchester Barton:53.4712:-2.3944
-EGCC:Manchester Intl:53.3451:-2.2928
+EGCC:Manchester International:53.3451:-2.2928
 C27:Manchester Muni:42.4983:-91.4985
 EGCD:Manchester Woodford:53.3339:-2.1649
 VYMD:Mandalay Intl:21.7200:95.9744
@@ -17322,7 +17323,7 @@ FQMD:Mueda:-11.6631:39.5591
 0IS5:Mueller:38.9356:-89.6275
 95WI:Mueller Farm-vintage Aero:44.2383:-87.6216
 NE79:Mueller Field:40.6540:-96.6217
-EDDM:Muenchen Franz-josef Strauss:48.3628:11.7676
+EDDM:Munich:48.3628:11.7676
 EDDG:Muenster Osnabrueck:52.1313:7.6693
 EDLT:Muenster-telgte:51.9449:7.7688
 M21:Muhlenberg Co:37.2224:-87.1635
@@ -20087,7 +20088,7 @@ T77:Presidio Lely Intl:29.6411:-104.3617
 KPZQ:Presque Isle Co:45.4069:-83.8209
 U10:Preston:42.1042:-111.9168
 A002:Preston Field - Blair Howe:-33.0202:115.6992
-EGPK:Prestwick:55.4870:-4.5885
+EGPK:Glasgow Prestwick:55.4870:-4.5885
 1NA8:Preszler Airstrip:46.6905:-100.0999
 LKPM:Pribram:49.7153:14.0895
 LKPI:Pribyslav:49.5800:15.7576
@@ -22158,7 +22159,7 @@ WS16:Scherrico Meadows:44.8472:-89.8064
 TN80:Schiff:36.2338:-85.4296
 3S5:Schiffer Acres:43.0339:-84.4397
 IS51:Schilson Field:40.4488:-91.2082
-EHAM:Schiphol:52.3166:4.7463
+EHAM:Amsterdam Schiphol:52.3166:4.7463
 48ND:Schirmeister - Private:46.5100:-100.5510
 MY64:Schjeldrup:47.0341:-96.6026
 95MO:Schlemmer:39.2601:-91.6536
