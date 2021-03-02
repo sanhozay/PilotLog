@@ -29,24 +29,21 @@ or CSV format. The latter is easily imported into a spreadsheet.
 PilotLog requires Flightgear 2017.1.0 or later because prior versions do not
 handle the response status line sent by Tomcat server.
 
-To run the service, you will need a Java 8 runtime environment.
+To run the service, you will need a Java 14 runtime environment.
 
-If you are running a Linux distribution, your package manager may have a Java 8
+If you are running a Linux distribution, your package manager may have a Java 14
 runtime environment that you can install.
 
-You can check your Java version in a terminal or command window, for example:  
+You can check your Java version in a terminal or command window, for example:
 
-    $ java -version 
-    java version "1.8.0_31" 
-    Java(TM) SE Runtime Environment (build 1.8.0_31-b13)
-    Java HotSpot(TM) 64-Bit Server VM (build 25.31-b07, mixed mode)
+    $ java -version
+    openjdk version "14.0.2" 2020-07-14
+    OpenJDK Runtime Environment (build 14.0.2+12-46)
+    OpenJDK 64-Bit Server VM (build 14.0.2+12-46, mixed mode, sharing)
 
-You can download a Java runtime environment from
-[Oracle](http://www.oracle.com/technetwork/java/javase/downloads/index.html), or
-you can use the [Open JDK](http://openjdk.java.net). 
+You can download a Java runtime environment from [Open JDK](http://openjdk.java.net).
 
-If you want to build the web service, you will need a Java 8 SDK, either the
-[Oracle JDK](http://www.oracle.com/technetwork/java/javase/downloads/index.html), or
+If you want to build the web service, you will need a Java SDK such as
 [Open JDK](http://openjdk.java.net).
 
 ## Simple Usage
@@ -59,7 +56,7 @@ If you want to build the web service, you will need a Java 8 SDK, either the
 
 ### Starting the service
 
-1. Run the executable JAR file, e.g. `PilotLog-1.0.jar`, from a terminal or
+1. Run the executable JAR file, e.g. `PilotLog-2.0.0.jar`, from a terminal or
    command window
 2. Check the service is running at <http://localhost:8080>
 

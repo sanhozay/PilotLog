@@ -22,7 +22,10 @@ logging.level:
 ---
 spring:
   profiles: production
-  datasource.url: jdbc:h2:file:~/.h2/pilotlog
+  datasource:
+    url: jdbc:h2:file:~/.h2/pilotlog
+    username: sa
+    password:
   h2.console.enabled: true
   jpa:
     hibernate.ddl-auto: update
