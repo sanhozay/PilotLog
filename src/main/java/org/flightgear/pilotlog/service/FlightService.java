@@ -62,6 +62,7 @@ public class FlightService {
 
     private static final int DEFAULT_SAMPLES = 12;
     private static final float HOUR = 3600.0f;
+    private static final float FUEL_TOLERANCE = 0.1f;
 
     private final FlightRepository flightRepository;
     private final TrackPointRepository trackPointRepository;
@@ -157,7 +158,7 @@ public class FlightService {
         flight.setEndOdometer(endOdometer);
         flight.setEndTime(new Date());
 
-        if (flight.getEndFuel() >= flight.getStartFuel()) {
+        if (flight.getEndFuel() >= flight.getStartFuel() && flight.getStartFuel() > 0.0f) {
             flight.setStatus(FlightStatus.INVALID);
             log.warn("Invalidated flight #{} because fuel has not decreased", flight.getId());
         }
@@ -257,6 +258,10 @@ public class FlightService {
         if (flight.getStatus().equals(FlightStatus.COMPLETE)) {
             final String message = String.format("Attempt to update completed flight %s", flight);
             throw new InvalidFlightStatusException(message);
+        }
+        if (flight.getEndFuel() != null && fuel - flight.getEndFuel() > FUEL_TOLERANCE) {
+            flight.setStatus(FlightStatus.INVALID);
+            log.warn("Invalidated flight #{} because fuel increased during flight", flight.getId());
         }
         final int a = 100 * ((int)altitude / 100);
         if (flight.getAltitude() == null || a > flight.getAltitude()) {

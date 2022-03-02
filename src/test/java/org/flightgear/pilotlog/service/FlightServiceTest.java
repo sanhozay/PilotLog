@@ -55,13 +55,15 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @RunWith(MockitoJUnitRunner.class)
-@SuppressWarnings({"javadoc", "unchecked"})
+@SuppressWarnings({"javadoc", "unchecked", "unused"})
 public class FlightServiceTest {
 
     // IDs to simulate flights with differing status
     private static final int ID_MISSING = 0;
     private static final int ID_COMPLETE = 1;
     private static final int ID_ACTIVE = 100;
+    private static final int ID_UPDATED = 101;
+    private static final int ID_GLIDER = 102;
 
     @Mock
     private FlightRepository flightRepository;
@@ -95,12 +97,15 @@ public class FlightServiceTest {
                 // Simulate flight not found
                 return Optional.empty();
             }
-            Flight flight = new Flight("G-SHOZ", "707", "EGNM", 1000.0f, 0.0f);
+            Flight flight = new Flight("G-SHOZ", "707", "EGNM", id == ID_GLIDER ? 0.0f : 1000.0f, 0.0f);
             flight.setId(id);
+            // Updates for active flights
+            if (id == ID_UPDATED) {
+                flight.setEndFuel(flight.getStartFuel() - 10);
+                flight.setAltitude(10000);
+            }
             // Simulate flight not active
             flight.setStatus(id == ID_COMPLETE ? FlightStatus.COMPLETE : FlightStatus.ACTIVE);
-            // Altitude is required for checking altitude updates
-            flight.setAltitude(10000);
             return Optional.of(flight);
         });
         when(flightRepository.findByStatus(any(FlightStatus.class))).thenAnswer((Answer<Set<Flight>>)invocation -> {
@@ -202,6 +207,16 @@ public class FlightServiceTest {
     }
 
     @Test
+    public void testEndFlightFuelFreezeGlider() {
+        // When ending a glider flight with the same fuel as it started
+        Flight flight = flightService.endFlight(ID_GLIDER, "EGLL", 0.0f, 0.0f, 100.0f, 51.0f, -0.2f);
+        // expect the repository to look for the flight
+        verify(flightRepository).findById(ID_GLIDER);
+        // and the status to be set to complete
+        assertThat(flight.getStatus()).isEqualTo(FlightStatus.COMPLETE);
+    }
+
+    @Test
     public void testInvalidateFlight() {
         // When invalidating a flight
         Flight flight = flightService.invalidateFlight(ID_ACTIVE);
@@ -235,12 +250,16 @@ public class FlightServiceTest {
         verify(flightRepository).findById(ID_COMPLETE);
         // and then delete it
         Optional<Flight> optional = flightRepository.findById(ID_COMPLETE);
-        assertThat(optional.isPresent());
-        verify(flightRepository).delete(optional.get());
-        // and update the summary for the aircraft
-        verify(aircraftService).updateSummary(optional.get().getAircraft());
-        verify(airportService).updateSummary(optional.get().getOrigin());
-        verify(airportService).updateSummary(optional.get().getDestination());
+        if (optional.isEmpty()) {
+            assert(false);
+        } else {
+            Flight flight = optional.get();
+            verify(flightRepository).delete(flight);
+            // and update the summary for the aircraft
+            verify(aircraftService).updateSummary(flight.getAircraft());
+            verify(airportService).updateSummary(flight.getOrigin());
+            verify(airportService).updateSummary(flight.getDestination());
+        }
     }
 
     @Test(expected = FlightNotFoundException.class)
@@ -261,11 +280,11 @@ public class FlightServiceTest {
 
     @Test
     public void testUpdateFlight() {
-        // When updating a flight with an lower altitude than cruise, fuel and odometer
-        Flight flight = flightService.updateFlight(ID_ACTIVE, 5000.0f, 900.0f, 100.0f, 53.0f, 1.0f, 0.0f);
+        // When updating a flight with a lower altitude than cruise, fuel and odometer
+        Flight flight = flightService.updateFlight(ID_UPDATED, 5000.0f, 900.0f, 100.0f, 53.0f, 1.0f, 0.0f);
         long now = new Date().getTime();
         // expect the repository to look for the flight
-        verify(flightRepository, times(ID_COMPLETE)).findById(ID_ACTIVE);
+        verify(flightRepository, times(ID_COMPLETE)).findById(ID_UPDATED);
         // and that the altitude is unchanged
         assertThat(flight.getAltitude()).isEqualTo(10000);
         // and the flight to contain a track point for the pilot report
@@ -287,7 +306,7 @@ public class FlightServiceTest {
 
     @Test
     public void testUpdateFlightHigherAltitude() {
-        // When updating a flight with an higher altitude than cruise
+        // When updating a flight with a higher altitude than cruise
         Flight flight = flightService.updateFlight(ID_ACTIVE, 15000, 900.0f, 100.0f, 51.0f, 1.0f, 0.0f);
         // expect the repository to look for the flight
         verify(flightRepository, times(ID_COMPLETE)).findById(ID_ACTIVE);
@@ -299,6 +318,16 @@ public class FlightServiceTest {
         assertThat(flight.getAltitude()).isEqualTo(15000);
         // and the flight service to update completed flights
         verify(flightService).updateComputedFields(flight);
+    }
+
+    @Test
+    public void testUpdateFlightFuelIncrease() {
+        // When updating a flight with a greater fuel quantity
+        Flight flight = flightService.updateFlight(ID_UPDATED, 10000, 1001.0f, 100.0f, 51.0f, 1.0f, 0.0f);
+        // expect the repository to look for the flight
+        verify(flightRepository).findById(ID_UPDATED);
+        // and the status to be set to invalid
+        assertThat(flight.getStatus()).isEqualTo(FlightStatus.INVALID);
     }
 
     @Test(expected = FlightNotFoundException.class)
