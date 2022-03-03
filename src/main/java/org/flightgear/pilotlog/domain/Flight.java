@@ -121,6 +121,7 @@ public class Flight implements Serializable {
      * @return true if the status is INVALID
      */
     @Transient
+    @JsonIgnore
     public boolean isInvalid() {
         return status == FlightStatus.INVALID;
     }
