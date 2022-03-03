@@ -51,7 +51,6 @@ import java.util.Objects;
  * @author Richard Senior
  */
 @Entity
-@SuppressWarnings("serial")
 @JacksonXmlRootElement(localName = "PropertyList")
 @JsonPropertyOrder({"id", "callsign", "aircraft", "origin", "startTime", "startFuel", "startOdometer", "heading",
         "destination", "endTime", "endFuel", "endOdometer", "fuelUsed", "fuelRate",
@@ -109,11 +108,21 @@ public class Flight implements Serializable {
     /**
      * Convenience function to check if a flight is complete.
      *
-     * @return true if the status if COMPLETE
+     * @return true if the status is COMPLETE
      */
     @Transient
     public boolean isComplete() {
         return status == FlightStatus.COMPLETE;
+    }
+
+    /**
+     * Convenience function to check if a flight is invalid.
+     *
+     * @return true if the status is INVALID
+     */
+    @Transient
+    public boolean isInvalid() {
+        return status == FlightStatus.INVALID;
     }
 
     /**

@@ -388,7 +388,8 @@ public class FlightService {
             Duration lastUpdate = Duration.between(flight.getEndTime().toInstant(), Instant.now());
             if (lastUpdate.toSeconds() > 60) {
                 flightRepository.delete(flight);
-                log.info("Deleted unresponsive flight {}", flight);
+                String status = flight.isInvalid() ? "invalid" : "unresponsive";
+                log.info("Purged {} flight {}", status, flight);
             }
         }
     }
