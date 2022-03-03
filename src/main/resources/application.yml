@@ -2,26 +2,29 @@ spring:
   profiles.active: production
 ---
 spring:
-  profiles: test
+  config.activate.on-profile: test
   datasource.url: jdbc:h2:mem:test
   jpa.hibernate.ddl-auto: create
 logging.level:
   root: info
 ---
 spring:
-  profiles: development
+  config.activate.on-profile: development
   datasource:
     url: jdbc:h2:file:~/.h2/pilotlog-dev
-    platform: dev
   jpa:
     hibernate.ddl-auto: create
     open-in-view: false
     show_sql: true
+    defer-datasource-initialization: true
+  sql.init:
+    platform: dev
+    mode: always
 logging.level:
-  root: debug
+  root: info
 ---
 spring:
-  profiles: production
+  config.activate.on-profile: production
   datasource:
     url: jdbc:h2:file:~/.h2/pilotlog
     username: sa
@@ -31,8 +34,9 @@ spring:
     hibernate.ddl-auto: update
     open-in-view: false
     show_sql: false
+  sql.init:
+    mode: never
 logging:
   file.name: ${HOME}/.h2/logs/pilotlog.log
   level:
     root: info
-
